@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=App
+GenericName=App
+Comment=Gnome App
+Categories=GTK
+Icon=org.project.App
+Exec=org.project.App
+Terminal=false
+Type=Application

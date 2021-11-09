@@ -1,0 +1,32 @@
+[package]
+name = "example"
+version = "0.1.0"
+edition = "2018"
+
+[flatpak]
+package-name = "org.project.Example"
+summary = "A simple example app"
+description = "This example shows how to use rust to write gtk apps."
+categories = [ "GTK", "Example" ]
+
+[settings]
+window-width = 100
+window-height = 200
+window-maximized = false
+
+[dependencies]
+
+gtk-app-framework = { path = "../../"}
+
+log = "0.4"
+
+gettext-rs = "0.7"
+gtk = { version = "0.3", package = "gtk4" }
+libadwaita = "0.1.0-alpha-6"
+[dependencies.gdk4]
+version = "0.3"
+[dependencies.glib]
+version = "*"
+
+[build-dependencies]
+gtk-app-framework = { path = "../../"}

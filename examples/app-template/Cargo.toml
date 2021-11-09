@@ -1,0 +1,29 @@
+[package]
+name = "app"
+version = "0.0.1"
+edition = "2018"
+
+[flatpak]
+package-name = "org.project.App"
+
+[settings]
+window-width = { type = "i", default = "1" }
+window-height = { type = "i", default = "1" }
+is-maximized = { type = "b", default = "false" }
+
+[dependencies]
+log = "0.4.11"
+env_logger = "0.9"
+
+gettext-rs = "0.7"
+gtk = { version = "0.3", package = "gtk4" }
+libadwaita = "0.1.0-alpha-6"
+
+[dependencies.gdk4]
+version = "0.3"
+
+[dependencies.glib]
+version = "*"
+
+[build-dependencies]
+gtk-app-framework = { path = "../gtk-app-framework"}

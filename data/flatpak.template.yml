@@ -1,0 +1,23 @@
+app-id: {package_name}
+runtime: org.gnome.Platform
+runtime-version: "40"
+sdk: org.gnome.Sdk
+sdk-extensions:
+  - org.freedesktop.Sdk.Extension.rust-stable
+command: {package_name}
+finish-args:
+  - --socket=wayland
+build-options:
+  append-path: /usr/lib/sdk/rust-stable/bin
+  env:
+    - CARGO_HOME: /run/build/{name}/cargo
+      RUSTFLAGS: --error-format=short --remap-path-prefix =../
+      RUST_BACKTRACE: 1
+modules:
+  - name: {name}
+    buildsystem: simple
+    build-commands:
+      - cargo build --release
+    sources:
+      - type: dir
+        path: ../
