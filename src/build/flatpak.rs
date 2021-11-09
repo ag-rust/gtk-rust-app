@@ -1,25 +1,19 @@
 use std::{
-    collections::HashMap,
     fs::{create_dir_all, File},
-    io::{Read, Write},
+    io::Write,
     path::{Path, PathBuf},
 };
 
-use serde::Deserialize;
-use toml::Value;
-
 use crate::ProjectDescriptor;
 
-pub fn build_flatpak() {
-    let descriptor =
-        parse_project_descriptor(Path::new("Cargo.toml")).expect("Could not find Cargo.toml");
-    let target_dir = Path::new("target/flatpak");
-    create_dir_all(&target_dir).expect("Could not create flatpak build directory.");
+pub fn build_flatpak(project_descriptor: &ProjectDescriptor, target: &Path) {
+    let path = target.join("data");
+    create_dir_all(&path).expect("Could not create data build directory.");
 
-    create_desktop_file(&descriptor, &target_dir).expect("Could not create desktop file.");
-    create_flatpak_yml(&descriptor, &target_dir).expect("Could not create flatpak yml.");
-    create_app_descriptor_xml(&descriptor, &target_dir).expect("Could not create flatpak yml.");
-    create_images(&descriptor, &target_dir).expect("Could not copy app images.");
+    create_desktop_file(project_descriptor, &path).expect("Could not create desktop file.");
+    create_flatpak_yml(project_descriptor, &path).expect("Could not create flatpak yml.");
+    create_app_descriptor_xml(project_descriptor, &path).expect("Could not create flatpak yml.");
+    create_images(project_descriptor, &path).expect("Could not copy app images.");
 }
 
 fn create_images(descriptor: &ProjectDescriptor, path: &Path) -> std::io::Result<()> {
@@ -35,6 +29,7 @@ fn create_images(descriptor: &ProjectDescriptor, path: &Path) -> std::io::Result
         Path::new("./assets/icon.svg"),
         path.join(&format!("{}.svg", &descriptor.app.id)),
     )?;
+    Ok(())
 }
 
 fn create_desktop_file(descriptor: &ProjectDescriptor, path: &Path) -> std::io::Result<()> {
@@ -42,7 +37,7 @@ fn create_desktop_file(descriptor: &ProjectDescriptor, path: &Path) -> std::io::
     let template = include_str!("../../data/app.template.desktop");
 
     let mut path = PathBuf::from(path);
-    path.push(format!("{}.desktop", descriptor.app.package_name));
+    path.push(format!("{}.desktop", descriptor.app.id));
     let mut file = File::create(path)?;
 
     file.write_all(
@@ -57,7 +52,6 @@ fn create_desktop_file(descriptor: &ProjectDescriptor, path: &Path) -> std::io::
 }
 
 fn create_flatpak_yml(descriptor: &ProjectDescriptor, path: &Path) -> std::io::Result<()> {
-    let name = descriptor.app.package_name.split(".").last().unwrap();
     let template = include_str!("../../data/flatpak.template.yml");
 
     let mut path = PathBuf::from(path);
@@ -66,149 +60,110 @@ fn create_flatpak_yml(descriptor: &ProjectDescriptor, path: &Path) -> std::io::R
 
     file.write_all(
         template
-            .replace("{name}", name)
+            .replace("{name}", &descriptor.package.name)
             .replace("{id}", &descriptor.app.id)
             .as_bytes(),
     )?;
     Ok(())
 }
 
+fn as_tag_list<T>(
+    elements: Option<&Vec<T>>,
+    to_tag: impl Fn(&T) -> String + 'static,
+) -> Option<String> {
+    elements.map(|v| {
+        v.iter()
+            .map(|t| to_tag(t))
+            .collect::<Vec<String>>()
+            .join("\n")
+    })
+}
+
+fn to_tag(value: &String, tagname: &str, indentation: usize) -> String {
+    format!("{0}<{1}>{2}</{1}>", " ".repeat(indentation), tagname, value)
+}
+
 fn create_app_descriptor_xml(descriptor: &ProjectDescriptor, path: &Path) -> std::io::Result<()> {
-    // let name = descriptor.package.name;
     let template = include_str!("../../data/appdata.template.xml");
 
     let mut path = PathBuf::from(path);
     path.push(format!("{}.appdata.xml", descriptor.app.id));
     let mut file = File::create(path)?;
 
-    #[rustfmt::skip]
     file.write_all(
         template
-            .replace("{name}", descriptor.package.name)
+            .replace("{id}", &descriptor.app.id)
+            .replace("{name}", &descriptor.package.name)
             .replace("{summary}", &descriptor.app.summary)
             .replace("{description}", &descriptor.app.description)
-            .replace("{id}", &descriptor.app.id)
+            .replace(
+                "{license}",
+                &descriptor.package.license.as_ref().unwrap_or(&"".into()),
+            )
+            .replace(
+                "{homepage}",
+                descriptor.package.homepage.as_ref().unwrap_or(&"".into()),
+            )
+            .replace(
+                "{repository}",
+                &descriptor.package.repository.as_ref().unwrap_or(&"".into()),
+            )
+            .replace("{metadata_license}", &descriptor.app.metadata_license)
+            .replace(
+                "{control}",
+                &as_tag_list(descriptor.app.control.as_ref(), |control| {
+                    to_tag(control, "control", 8)
+                })
+                .unwrap_or("".into()),
+            )
+            .replace(
+                "{display}",
+                &as_tag_list(descriptor.app.display.as_ref(), |display| {
+                    to_tag(display, "display", 8)
+                })
+                .unwrap_or("".into()),
+            )
             .replace(
                 "{categories}",
-                &descriptor
-                    .app
-                    .categories
-                    .iter()
-                    .map(|c| format!("<category>{}</category>\n", c))
-                    .collect::<Vec<String>>()
-                    .join(""),
+                &as_tag_list(Some(&descriptor.app.categories), |category| {
+                    to_tag(category, "category", 8)
+                })
+                .unwrap_or("".into()),
             )
-            .replace("{rating_violence_cartoon}",descriptor.app.rating_violence_cartoon.as_ref().unwrap_or(&"none".into()))
-            .replace("{rating_violence_fantasy}",descriptor.app.rating_violence_fantasy.as_ref().unwrap_or(&"none".into()))
-            .replace("{rating_violence_realistic}",descriptor.app.rating_violence_realistic.as_ref().unwrap_or(&"none".into()))
-            .replace("{rating_violence_bloodshed}",descriptor.app.rating_violence_bloodshed.as_ref().unwrap_or(&"none".into()))
-            .replace("{rating_violence_sexual}",descriptor.app.rating_violence_sexual.as_ref().unwrap_or(&"none".into()))
-            .replace("{rating_drugs_alcohol}",descriptor.app.rating_drugs_alcohol.as_ref().unwrap_or(&"none".into()))
-            .replace("{rating_drugs_narcotics}",descriptor.app.rating_drugs_narcotics.as_ref().unwrap_or(&"none".into()))
-            .replace("{rating_drugs_tobacco}",descriptor.app.rating_drugs_tobacco.as_ref().unwrap_or(&"none".into()))
-            .replace("{rating_sex_nudity}",descriptor.app.rating_sex_nudity.as_ref().unwrap_or(&"none".into()))
-            .replace("{rating_sex_themes}",descriptor.app.rating_sex_themes.as_ref().unwrap_or(&"none".into()))
-            .replace("{rating_language_profanity}",descriptor.app.rating_language_profanity.as_ref().unwrap_or(&"none".into()))
-            .replace("{rating_language_humor}",descriptor.app.rating_language_humor.as_ref().unwrap_or(&"none".into()))
-            .replace("{rating_language_discrimination",descriptor.app.rating_language_discrimination.as_ref().unwrap_or(&"none".into()))
-            .replace("{rating_social_chat}",descriptor.app.rating_social_chat.as_ref().unwrap_or(&"none".into()))
-            .replace("{rating_social_info}",descriptor.app.rating_social_info.as_ref().unwrap_or(&"none".into()))
-            .replace("{rating_social_audio}",descriptor.app.rating_social_audio.as_ref().unwrap_or(&"none".into()))
-            .replace("{rating_social_location}",descriptor.app.rating_social_location.as_ref().unwrap_or(&"none".into()))
-            .replace("{rating_social_contacts}",descriptor.app.rating_social_contacts.as_ref().unwrap_or(&"none".into()))
-            .replace("{rating_money_purchasing}",descriptor.app.rating_money_purchasing.as_ref().unwrap_or(&"none".into()))
-            .replace("{rating_money_gambling}",descriptor.app.rating_money_gambling.as_ref().unwrap_or(&"none".into()))
+            .replace(
+                "{releases}",
+                &as_tag_list(descriptor.app.releases.as_ref(), |r| {
+                    format!("        <release version=\"{}\" date=\"{}\"><description>{}</description></release>", r.version, r.date, r.description)
+                })
+                .unwrap_or("".into()),
+            )
+            .replace(
+                "{screenshots}",
+                &as_tag_list(descriptor.app.screenshots.as_ref(), |s| {
+                    format!("        <screenshot type=\"{}\"><image  type=\"source\">{}</image></screenshot>", s.screenshot_type, s.url)
+                })
+                .unwrap_or("".into()),
+            )
+            .replace(
+                "{author}",
+                &to_tag(&descriptor.package.authors.as_ref().map(|authors| authors
+                     .first()
+                     .map(|name| 
+                        name.split_once("<")
+                            .map(|t| t.0.trim().to_string())
+                            .unwrap_or(name.clone())
+                    ).unwrap_or("".into())).unwrap_or("".into())
+                , "developer_name", 0)
+            )
+            .replace(
+                "{content_rating}",
+                &as_tag_list(descriptor.app.content_rating.as_ref(), |c| {
+                    format!("        <content_attribute type=\"{}\">{}</content_attribute>", c.id, c.value)
+                })
+                .map(|cr| format!("    <content_rating type=\"oars-1.0\">{}</content_rating>", cr))
+                .unwrap_or("".into())
+            )
             .as_bytes(),
     )?;
     Ok(())
-}
-
-#[cfg(test)]
-mod tests {
-    use std::{
-        collections::HashMap,
-        env::temp_dir,
-        fs::{create_dir_all, File},
-        io::{Read, Write},
-        path::PathBuf,
-    };
-
-    use toml::Value;
-
-    use crate::{build::flatpak::create_desktop_file, AppDescriptor, ProjectDescriptor};
-
-    fn init_descriptor() -> ProjectDescriptor {
-        let mut settings = HashMap::new();
-        settings.insert("test".into(), toml::Value::Integer(-20));
-
-        ProjectDescriptor {
-            package: PackageDescriptor {
-                name: "app".into(),
-                version: "0.1.0".into(),
-            },
-            app: AppDescriptor {
-                id: "org.project.App".into(),
-                summary: "This is a test app".into(),
-                description: "A long text block for this app.".into(),
-                categories: vec!["GTK".into(), "App".into()],
-                screenshot: None,
-                release_versions: None,
-                rating_violence_cartoon: None,
-                rating_violence_fantasy: None,
-                rating_violence_realistic: None,
-                rating_violence_bloodshed: None,
-                rating_violence_sexual: None,
-                rating_drugs_alcohol: None,
-                rating_drugs_narcotics: None,
-                rating_drugs_tobacco: None,
-                rating_sex_nudity: None,
-                rating_sex_themes: None,
-                rating_language_profanity: None,
-                rating_language_humor: None,
-                rating_language_discrimination: None,
-                rating_social_chat: None,
-                rating_social_info: None,
-                rating_social_audio: None,
-                rating_social_location: None,
-                rating_social_contacts: None,
-                rating_money_purchasing: None,
-                rating_money_gambling: None,
-            },
-            settings,
-            actions: HashMap::new(),
-        }
-    }
-
-    fn get_temp() -> PathBuf {
-        let mut tmp = temp_dir();
-        tmp.push("gtk-app-framework-tests");
-        create_dir_all(&tmp).unwrap();
-        return tmp;
-    }
-
-    #[test]
-    fn test_create_desktop_file() {
-        let mut tmp = get_temp();
-        tmp.push("test.desktop");
-
-        let d = init_descriptor();
-
-        create_desktop_file(&d, &tmp).unwrap();
-
-        let mut s = String::new();
-        File::open(tmp).unwrap().read_to_string(&mut s).unwrap();
-        assert_eq!(
-            s,
-            r#"[Desktop Entry]
-Name=App
-GenericName=App
-Comment=This is a test app
-Categories=GTK;App
-Icon=org.project.App
-Exec=org.project.App
-Terminal=false
-Type=Application
-"#
-        )
-    }
 }

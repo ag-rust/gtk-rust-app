@@ -1,6 +1,6 @@
 app-id: {id}
 runtime: org.gnome.Platform
-runtime-version: "40"
+runtime-version: "master"
 sdk: org.gnome.Sdk
 sdk-extensions:
   - org.freedesktop.Sdk.Extension.rust-stable
@@ -17,7 +17,9 @@ modules:
   - name: {name}
     buildsystem: simple
     build-commands:
-      - cargo build --release
+      - make flatpak-install
     sources:
       - type: dir
-        path: ../
+        path: ../../target/flatpak
+      - type: dir
+        path: ../flatpak/state/build/{name}-1

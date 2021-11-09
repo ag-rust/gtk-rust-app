@@ -1,0 +1,49 @@
+[package]
+name = "calendar"
+version = "0.1.0"
+edition = "2018"
+license = "GPL-3.0"
+
+[app]
+id = "org.example.Calendar"
+summary = "A calendar app"
+description = "This is an example application of how to impelement a calendar app with Rust and GTK."
+metadata-license = "CC0-1.0"
+categories = [ "GTK" ]
+
+[settings]
+sidebar-width-request = 200
+content-width-request = 300
+window-width = 600
+window-height = 600
+window-maximized = true
+
+[actions]
+quit = { accelerators = [ "<primary>W" ] }
+show-about = { accelerators = [ "F1" ] }
+create-event = { accelerators = [ "<primary>N" ], type = "s" }
+event-created = { accelerators = [ "<primary>S" ], type = "s" }
+select = { type = "s" }
+ui = { type = "s" }
+
+[dependencies]
+log = "0.4"
+env_logger = "0.9"
+
+chrono = { version = "0.4", features = [ "serde" ] }
+serde = { version = "1", features = [ "derive" ] }
+
+# gtk-rust-app = { git = "https://gitlab.com/loers/gtk-rust-app.git" }
+# gstore = { git = "https://gitlab.com/loers/gstore.git" }
+gtk-rust-app = { path = "../../" }
+gstore = { path = "../../../gstore" }
+
+gettext-rs = "0.7"
+gtk = { version = "0.3", package = "gtk4" }
+libadwaita = "0.1.0-alpha-6"
+gdk4 = "0.3"
+glib = "0.14"
+
+[build-dependencies]
+gtk-rust-app = { path = "../../", features = [ "build" ] }
+# gtk-rust-app = { git = "https://gitlab.com/loers/gtk-rust-app.git", features = [ "build" ] }

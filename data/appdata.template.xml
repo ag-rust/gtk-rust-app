@@ -2,53 +2,31 @@
 <component type="desktop">
     <id>{id}</id>
     <name>{name}</name>
-    <project_license>GPL-3.0</project_license>
-    <metadata_license>CC0-1.0</metadata_license>
-    <developer_name>{author}</developer_name>
+    <project_license>{license}</project_license>
+    <metadata_license>{metadata_license}</metadata_license>
+    {author}
     <summary>{summary}</summary>
     <url type="homepage">{homepage}</url>
+    <url type="bugtracker">{repository}</url>
     <description>
-        <p>
-            {description}
-        </p>
+        <p>{description}</p>
     </description>
     <launchable type="desktop-id">{id}.desktop</launchable>
     <categories>
-        <category>...</category>
-        {categories}
+{categories}
     </categories>
     <screenshots>
-        <screenshot type="default">
-            <image type="source">{screenshot}</image>
-        </screenshot>
+{screenshots}
     </screenshots>
     <releases>
-        {release_versions}
-        <!-- <release version="..." date="..."/> -->
+{releases}
     </releases>
     <provides>
         <binary>{id}</binary>
     </provides>
-    <content_rating type="oars-1.0">
-        <content_attribute id="violence-cartoon">{rating_violence_cartoon}</content_attribute>
-        <content_attribute id="violence-fantasy">{rating_violence_fantasy}</content_attribute>
-        <content_attribute id="violence-realistic">{rating_violence_realistic}</content_attribute>
-        <content_attribute id="violence-bloodshed">{rating_violence_bloodshed}</content_attribute>
-        <content_attribute id="violence-sexual">{rating_violence_sexual}</content_attribute>
-        <content_attribute id="drugs-alcohol">{rating_drugs_alcohol}</content_attribute>
-        <content_attribute id="drugs-narcotics">{rating_drugs_narcotics}</content_attribute>
-        <content_attribute id="drugs-tobacco">{rating_drugs_tobacco}</content_attribute>
-        <content_attribute id="sex-nudity">{rating_sex_nudity}</content_attribute>
-        <content_attribute id="sex-themes">{rating_sex_themes}</content_attribute>
-        <content_attribute id="language-profanity">{rating_language_profanity}</content_attribute>
-        <content_attribute id="language-humor">{rating_language_humor}</content_attribute>
-        <content_attribute id="language-discrimination">{rating_language_discrimination}</content_attribute>
-        <content_attribute id="social-chat">{rating_social_chat}</content_attribute>
-        <content_attribute id="social-info">{rating_social_info}</content_attribute>
-        <content_attribute id="social-audio">{rating_social_audio}</content_attribute>
-        <content_attribute id="social-location">{rating_social_location}</content_attribute>
-        <content_attribute id="social-contacts">{rating_social_contacts}</content_attribute>
-        <content_attribute id="money-purchasing">{rating_money_purchasing}</content_attribute>
-        <content_attribute id="money-gambling">{rating_money_gambling}</content_attribute>
-    </content_rating>
+    {content_rating}
+    <recommends>
+{control}
+{display}
+    </recommends>
 </component>
