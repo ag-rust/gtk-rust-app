@@ -1,10 +1,10 @@
-app-id: {package_name}
+app-id: {id}
 runtime: org.gnome.Platform
 runtime-version: "40"
 sdk: org.gnome.Sdk
 sdk-extensions:
   - org.freedesktop.Sdk.Extension.rust-stable
-command: {package_name}
+command: {id}
 finish-args:
   - --socket=wayland
 build-options:
