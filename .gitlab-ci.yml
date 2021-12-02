@@ -1,0 +1,48 @@
+stages:
+  - checks
+  - release
+
+tests:
+  image: rust:latest
+  stage: checks
+  rules:
+    - if: $CI_COMMIT_TAG
+      when: never
+    - if: '$CI_COMMIT_TITLE =~ /chore\(version\)\:\ \d+\.\d+\.\d+/'
+      when: never
+    - when: always
+  script:
+    - rustup component add rustfmt
+    - cargo fmt --all -- --color=always --check
+    - cargo test --release
+
+outdated-check:
+  image: rust:latest
+  stage: checks
+  allow_failure: true
+  rules:
+    - if: $CI_COMMIT_TAG
+      when: never
+    - if: '$CI_COMMIT_TITLE =~ /chore\(version\)\:\ \d+\.\d+\.\d+/'
+      when: never
+    - when: always
+  script:
+    - cargo install cargo-outdated --locked
+    - cargo outdated
+
+release:
+  image: rust:latest
+  stage: release
+  rules:
+    - if: '$CI_COMMIT_TITLE =~ /chore\(version\)\:\ \d+\.\d+\.\d+/'
+      when: never
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+      when: on_success
+  script:
+    - git remote set-url origin https://${GITLAB_USERNAME}:${GITLAB_TOKEN}@${CI_SERVER_HOST}/${CI_PROJECT_PATH}.git
+    - git config --global user.email "gitlab ci"
+    - git config --global user.name "gitlab ci"
+    - cargo install cocogitto --locked
+    - if cog bump --auto; then echo bumped version; else cog bump --patch; fi
+    - export TAG_VERSION=$(grep version Cargo.toml | head -1 | sed 's/version = "//g' | sed 's/"//g')
+    - git push --atomic origin $TAG_VERSION HEAD:$CI_COMMIT_BRANCH

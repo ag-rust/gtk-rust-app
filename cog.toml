@@ -1,0 +1,14 @@
+pre_bump_hooks = [
+    "sed -i \"0,/version = \\\"{{latest}}\\\"/s//version = \\\"{{version}}\\\"/\" Cargo.toml",
+    "cargo update",
+]
+post_bump_hooks = []
+tag_prefix = "v"
+
+[commit_types]
+
+[changelog]
+path = "CHANGELOG.md"
+authors = []
+
+[bump_profiles]

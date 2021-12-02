@@ -1,9 +1,10 @@
 [Desktop Entry]
 Name={name}
-GenericName={name}
+GenericName={generic_name}
 Comment={summary}
 Categories={categories}
 Icon={id}
 Exec={id}
 Terminal=false
 Type=Application
+StartupNotify=true

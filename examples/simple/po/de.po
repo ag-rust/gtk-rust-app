@@ -1,0 +1,65 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-01-10 18:12+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/main.rs:15
+msgid "Check po/ dir for translations."
+msgstr ""
+
+#: src/main.rs:30
+msgid "Home"
+msgstr ""
+
+#: src/main.rs:43
+msgid "Example"
+msgstr ""
+
+#: src/home.rs:14
+msgid "Home page"
+msgstr ""
+
+#: src/home.rs:21
+msgid "Press me"
+msgstr ""
+
+#: target/gra-gen/data/org.example.SimpleExample.appdata.xml:4
+msgid "simple-example"
+msgstr ""
+
+#: target/gra-gen/data/org.example.SimpleExample.appdata.xml:7
+msgid "Florian Loers"
+msgstr ""
+
+#: target/gra-gen/data/org.example.SimpleExample.appdata.xml:8
+msgid "A example app"
+msgstr ""
+
+#: target/gra-gen/data/org.example.SimpleExample.appdata.xml:12
+msgid "This is an simple example application."
+msgstr ""
+
+#: target/gra-gen/data/org.example.SimpleExample.appdata.xml:28
+msgid "Another version."
+msgstr ""
+
+#: target/gra-gen/data/org.example.SimpleExample.appdata.xml:29
+msgid "This is the initial version."
+msgstr ""
+
+#~ msgid "Hello flatpak"
+#~ msgstr "Hallo flatpak"

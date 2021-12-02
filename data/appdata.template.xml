@@ -9,24 +9,16 @@
     <url type="homepage">{homepage}</url>
     <url type="bugtracker">{repository}</url>
     <description>
-        <p>{description}</p>
+{description}
     </description>
     <launchable type="desktop-id">{id}.desktop</launchable>
-    <categories>
-{categories}
-    </categories>
-    <screenshots>
-{screenshots}
-    </screenshots>
-    <releases>
-{releases}
-    </releases>
     <provides>
         <binary>{id}</binary>
     </provides>
-    {content_rating}
-    <recommends>
-{control}
-{display}
-    </recommends>
+{categories}
+{screenshots}
+{releases}
+{content_rating}
+{recommends}
+<translation type="gettext">{name}</translation>
 </component>

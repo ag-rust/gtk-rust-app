@@ -6,7 +6,7 @@ sdk-extensions:
   - org.freedesktop.Sdk.Extension.rust-stable
 command: {id}
 finish-args:
-  - --socket=wayland
+  {permissions}
 build-options:
   append-path: /usr/lib/sdk/rust-stable/bin
   env:
@@ -17,9 +17,7 @@ modules:
   - name: {name}
     buildsystem: simple
     build-commands:
-      - make flatpak-install
+      - make -C target/gra-gen .flatpak-install
     sources:
       - type: dir
-        path: ../../target/flatpak
-      - type: dir
-        path: ../flatpak/state/build/{name}-1
+        path: ../../flatpak-temp

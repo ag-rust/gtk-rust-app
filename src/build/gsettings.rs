@@ -9,14 +9,30 @@ use crate::ProjectDescriptor;
 pub fn build_gschema_settings(project_descriptor: &ProjectDescriptor, target: &Path) {
     let settings_gschema = include_str!("../../data/gschema.template.xml");
 
-    let mut path = PathBuf::from(target);
-    path.push(format!("{}.gschema.xml", project_descriptor.app.id));
+    if project_descriptor.app.is_none() {
+        eprintln!("[gra] Skip gsettings schema generation: Missing [app] section in Cargo.toml");
+        return;
+    }
 
+    if project_descriptor.settings.is_none() {
+        eprintln!(
+            "[gra] Skip gsettings schema generation: Missing [settings] section in Cargo.toml"
+        );
+        return;
+    }
+
+    let app_desc = project_descriptor.app.as_ref().unwrap();
+    let settings_desc = project_descriptor.settings.as_ref().unwrap();
+
+    let mut path = PathBuf::from(target);
+    path.push(format!("{}.gschema.xml", app_desc.id));
+
+    println!("[gra] Create {:?}", path);
     let mut file =
-        File::create(&path).expect(&format!("Could not crate gsettings file {:?}.", &path));
+        File::create(&path).expect(&format!("Could not create gsettings file {:?}.", &path));
 
     let mut keys = Vec::new();
-    for (name, default_value) in project_descriptor.settings.iter() {
+    for (name, default_value) in settings_desc.iter() {
         let value_type = match default_value {
             toml::Value::String(_) => "s",
             toml::Value::Integer(_) => "i",
@@ -33,12 +49,13 @@ pub fn build_gschema_settings(project_descriptor: &ProjectDescriptor, target: &P
         ));
     }
 
-    file.write_all(
+    if let Err(e) = file.write_all(
         settings_gschema
-            .replace("{id}", &project_descriptor.app.id)
-            .replace("{path}", &format!("/{}/", project_descriptor.app.id.replace(".", "/")))
+            .replace("{id}", &app_desc.id)
+            .replace("{path}", &format!("/{}/", app_desc.id.replace(".", "/")))
             .replace("{keys}", &keys.join("\n"))
             .as_bytes(),
-    )
-    .expect(&format!("Could not write gsettings to {:?}.", path));
+    ) {
+        eprintln!("[gra] Could not write gsettings: {:?}", e);
+    }
 }

@@ -1,0 +1,103 @@
+[package]
+name = "simple-example"
+version = "0.1.0"
+edition = "2018"
+authors = ["Florian Loers <florianloers@mailbox.org>"]
+homepage = "https://gitlab.com/loers/gtk-rust-app"
+license = "GPL-3.0"
+repository = "https://gitlab.com/loers/gtk-rust-app"
+default-run = "simple-example"
+
+# This section contains meta information about your app. Checkout [this](https://gitlab.com/loers/gtk-rust-app/-/blob/main/docs/Manifest.md) documentation for further information.
+[app]
+id = "org.example.SimpleExample"
+# A generic name. E.g. if your calculator project name is
+# foo-calc you still want your distro to show the app as "Calculator".
+generic_name = "Simple"
+# License for metadata.
+metadata-license = "CC0-1.0"
+# Short summary of what your app does. 
+# Will be shown from distros for the app as well. 
+# Is also included in the store page.
+summary = "A example app"
+# Description text for your app.
+# You can make use **some** HTML tags
+# See here: 
+# - https://www.freedesktop.org/software/appstream/docs/chap-Metadata.html#tag-description
+# - https://www.freedesktop.org/software/appstream/docs/chap-CollectionData.html#tag-ct-description
+description = """
+<p>This is an simple example application.</p>
+"""
+# Desktop file categories. 
+# See https://specifications.freedesktop.org/menu-spec/menu-spec-1.0.html#category-registry
+categories = ["GTK", "Development"]
+
+# Possible display sizes and how your app can be interacted with
+# See https://www.freedesktop.org/software/appstream/docs/chap-Metadata.html#tag-relations
+recommends = [
+    { display = "small" },
+    { display = "large" },
+    { control = "pointer" },
+    { control = "keyboard" },
+    { control = "touch" },
+]
+# Screenshots that will be shown in the store page. The default screenshot will be the first screen to show in the store.
+# See https://www.freedesktop.org/software/appstream/docs/chap-Metadata.html#tag-screenshots
+screenshots = [
+    { type = "default", url = "https://gitlab.com/loers/gtk-rust-app/-/raw/main/examples/simple/screenshot1.png" },
+    { url = "https://gitlab.com/loers/gtk-rust-app/-/raw/main/examples/simple/screenshot2.png" },
+]
+# The release history
+releases = [
+    { version = "0.0.2", date = "2021-12-04", description = "Another version." },
+    { version = "0.0.1", date = "2021-11-26", description = "This is the initial version." },
+]
+# See https://hughsie.github.io/oars/generate.html
+content_rating = [
+    { id = "language-humor", value = "none" },     # can be ommitted
+    { id = "money-advertising", value = "mild" },
+    { id = "social-contacts", value = "intense" },
+]
+# Flatpak permissions of your app
+# See https://docs.flatpak.org/en/latest/sandbox-permissions.html
+permissions = [
+    "share=network",
+    "socket=x11",
+    "socket=fallback-x11",
+    "share=ipc",
+    "socket=wayland",
+    "device=dri",
+    "socket=pulseaudio",
+]
+
+# Define your apps global settings
+[settings]
+window-width = 600
+window-height = 600
+sidebar-width-request = 200
+main-width-request = 300
+
+# Define gtk actions. See the [GTK Rust book](https://gtk-rs.org/gtk4-rs/stable/latest/book/actions.html) for further information.
+[actions]
+quit = { accelerators = ["<primary>W"] }
+
+[features]
+
+[dependencies]
+log = "0.4"
+env_logger = "0.9"
+gettext-rs = { version = "0.7", features = ["gettext-system"] }
+gtk = { version = "0.3", package = "gtk4" }
+libadwaita = { package = "libadwaita", version = "= 0.1.0-alpha-6" }
+libadwaita-sys = { package = "libadwaita-sys", version = "= 0.1.0-alpha-6" }
+gdk4 = "0.3"
+glib = "0.14"
+
+gtk-rust-app = { git = "https://gitlab.com/loers/gtk-rust-app.git", features = ["ui"] }
+# gtk-rust-app = { path = "../.." }
+
+[build-dependencies]
+gtk-rust-app = { git = "https://gitlab.com/loers/gtk-rust-app.git", features = [
+    "build",
+] }
+# gtk-rust-app = { path = "../..", no-default-features = true, features = ["build"] }
