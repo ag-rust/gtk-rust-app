@@ -10,7 +10,7 @@ Creating apps with gtk-rust-app requires to
 1. Add more metadata to the Cargo.toml
 2. Write some boilerplate code in main.rs
 3. Define App pages
-4. Optionally: Define a build.rs script
+4. Optional: Define a build.rs script
 5. Install cargo-gra subcommand
 
 ### Cargo.toml
