@@ -29,7 +29,6 @@ tests:
 
 outdated-check:
   image: rust:latest
-  stage: checks
   allow_failure: true
   rules:
     - if: $CI_COMMIT_TAG
