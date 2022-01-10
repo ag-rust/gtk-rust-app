@@ -217,9 +217,7 @@ fn get_param_specs(
 
 fn get_param_spec_for_ty(field_ident: Ident, ty: &Type) -> TokenStream {
     let param_spec = match ty {
-        Type::Path(p) => {
-            get_param_spec_for_ident(field_ident, &p.path)
-        }
+        Type::Path(p) => get_param_spec_for_ident(field_ident, &p.path),
         t => {
             unimplemented!("Type {:?} is not implemented in gobjectify", t);
         }
@@ -241,7 +239,7 @@ fn get_param_spec_for_ident(field_ident: Ident, type_path: &Path) -> TokenStream
                         glib::ParamFlags::READWRITE,
                     )
                 ))
-            },
+            }
             "bool" => {
                 TokenStream::from(quote!(
                     //
@@ -511,7 +509,7 @@ pub fn widget(_args: TokenStream, input: TokenStream) -> TokenStream {
             use gtk::glib;
 
             glib::wrapper! {
-                pub struct #widget_name(ObjectSubclass<imp::#widget_name>) 
+                pub struct #widget_name(ObjectSubclass<imp::#widget_name>)
                 @extends gtk::Widget, gtk::Box,
                 @implements gtk::Accessible;
             }

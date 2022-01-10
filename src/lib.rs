@@ -11,11 +11,11 @@ pub mod builder;
 #[cfg(feature = "ui")]
 mod ui;
 #[cfg(feature = "ui")]
+pub use gtk_rust_app_derive::*;
+#[cfg(feature = "ui")]
 pub use ui::components;
 #[cfg(feature = "ui")]
 pub use ui::window::window;
-#[cfg(feature = "ui")]
-pub use gtk_rust_app_derive::*;
 
 // #[cfg(feature = "build")]
 pub mod build;
@@ -71,7 +71,7 @@ pub fn build(output_dir: Option<&std::path::Path>) {
 
     let project_descriptor = parse_project_descriptor(std::path::Path::new("Cargo.toml"))
         .expect("Could not read Cargo.toml");
-    
+
     let target = output_dir.unwrap_or(&std::path::Path::new("target/gra-gen"));
     std::fs::create_dir_all(target).expect("Could not create out dir.");
 

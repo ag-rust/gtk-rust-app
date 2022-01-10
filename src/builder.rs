@@ -19,7 +19,6 @@ pub fn load_styles(_app: &gtk::Application, styles: &str) {
     );
 }
 
-
 pub struct AppBuilder {
     project_descriptor: ProjectDescriptor,
 

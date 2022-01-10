@@ -5,14 +5,14 @@ use libadwaita as adw;
 use crate::__interface;
 
 /// A Page descripes a view in the main view stack of the leaflet_layout.
-/// 
+///
 /// A Page always has an internal name and may define a title and icon.
 ///
 /// # Example
 /// ```rust,no_run
 /// use gtk::prelude::*;
 /// use gtk_rust_app::components::leaflet_layout::Page;
-/// 
+///
 /// Page::new(
 ///     gtk::Box::builder().build(),
 ///     name: "home",
@@ -40,15 +40,15 @@ impl Page {
     }
 }
 
-/// A Header widget describes any widget that is supposed to be shown 
+/// A Header widget describes any widget that is supposed to be shown
 /// in the header bar of the leaflet_layout.
-/// 
+///
 /// # Examples
-/// 
+///
 /// ```rust
 /// use gtk::prelude::*;
 /// use gtk_rust_app::components::leaflet_layout::HeaderWidget;
-/// 
+///
 /// // Place a button on the left side of the header bar
 /// let hw = HeaderWidget::start(gtk::Button::with_label("Test"));
 /// // Place a button on the right side of the header bar
@@ -82,10 +82,10 @@ impl HeaderWidget {
 }
 
 /// A Basic app layout which is based on a libadwaita leaflet widget.
-/// 
+///
 /// This layout uses a AdwLeaflet to build a sidebar on the left and a main content area.
-/// 
-/// 
+///
+///
 /// ```txt
 /// ┌────────┬──────────────────────┐
 /// │        │                  -xo │
@@ -102,12 +102,12 @@ impl HeaderWidget {
 /// │        │                      │
 /// └────────┴──────────────────────┘    
 /// ```
-/// 
+///
 /// The main content shows a vector of widgets views of a AdwViewStack. Those main views are called pages.
-/// 
+///
 /// - The sidebar is hidden when the window size shrinks to a threashold.
 /// - A AdwViewSwitcherBar appears on the bottom to allow mobile navigation.
-/// 
+///
 /// ```txt
 /// ┌───────────┐
 /// │       -xo │
@@ -124,7 +124,7 @@ impl HeaderWidget {
 /// │ H  P1  P2 │
 /// └───────────┘
 /// ```
-/// 
+///
 pub struct LeafletLayout {
     pub leaflet: adw::Leaflet,
     pub sidebar_header: adw::HeaderBar,

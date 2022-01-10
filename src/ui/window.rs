@@ -31,4 +31,3 @@ pub fn window(
 
     return window;
 }
-

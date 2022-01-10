@@ -31,12 +31,8 @@ fn main() {
             )];
 
             // The pages will be placed in this predefined adaptive layout.
-            let leaflet_layout = gtk_rust_app::components::leaflet_layout(
-                settings,
-                Vec::new(),
-                Vec::new(),
-                pages,
-            );
+            let leaflet_layout =
+                gtk_rust_app::components::leaflet_layout(settings, Vec::new(), Vec::new(), pages);
             // and we use the leaflet layout as root content in the apps window.
             let window = gtk_rust_app::window(
                 application,

@@ -111,5 +111,4 @@ pub fn build_gresources(project_descriptor: &ProjectDescriptor, target: &Path) {
             eprintln!("{}", o);
         }
     }
-    
 }

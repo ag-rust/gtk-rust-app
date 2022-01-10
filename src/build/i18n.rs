@@ -76,11 +76,7 @@ pub fn build_gettext(project_descriptor: &ProjectDescriptor, target: &Path) {
 
                 println!("[gra] Generate/Update translations {:?}", &po_file);
 
-                println!(
-                    "[gra] xgettext -f {:?} -o {:?}",
-                    &potfiles,
-                    &pot_file
-                );
+                println!("[gra] xgettext -f {:?} -o {:?}", &potfiles, &pot_file);
                 match std::process::Command::new("xgettext")
                     .arg("-f")
                     .arg(&potfiles)
@@ -109,11 +105,7 @@ pub fn build_gettext(project_descriptor: &ProjectDescriptor, target: &Path) {
                         }
                     }
                 }
-                println!(
-                    "[gra] msgmerge {:?} -U {:?}",
-                    &po_file,
-                    &pot_file
-                );
+                println!("[gra] msgmerge {:?} -U {:?}", &po_file, &pot_file);
                 match std::process::Command::new("msgmerge")
                     .arg(&po_file)
                     .arg(&pot_file)
@@ -136,11 +128,7 @@ pub fn build_gettext(project_descriptor: &ProjectDescriptor, target: &Path) {
                         }
                     }
                 }
-                println!(
-                    "[gra] msgfmt -o {:?} {:?}",
-                    &target_mo,
-                    &pot_file
-                );
+                println!("[gra] msgfmt -o {:?} {:?}", &target_mo, &pot_file);
                 match std::process::Command::new("msgfmt")
                     .arg("-o")
                     .arg(&target_mo)

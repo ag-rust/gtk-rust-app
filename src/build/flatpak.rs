@@ -17,9 +17,10 @@ pub fn build_flatpak(project_descriptor: &ProjectDescriptor, target: &Path) {
 }
 
 fn create_images(descriptor: &ProjectDescriptor, path: &Path) -> std::io::Result<()> {
-
     if descriptor.app.is_none() {
-        eprintln!("[gra] Skip assets/icon.*.png file processing: Missing [app] section in Cargo.toml");
+        eprintln!(
+            "[gra] Skip assets/icon.*.png file processing: Missing [app] section in Cargo.toml"
+        );
         return Ok(());
     }
 
@@ -27,30 +28,21 @@ fn create_images(descriptor: &ProjectDescriptor, path: &Path) -> std::io::Result
 
     let file64 = path.join(&format!("{}.64.png", &app_desc.id));
     println!("[gra] Generate {:?}", file64);
-    std::fs::copy(
-        Path::new("./assets/icon.64.png"),
-        &file64,
-    )?;
+    std::fs::copy(Path::new("./assets/icon.64.png"), &file64)?;
 
     let file128 = path.join(&format!("{}.128.png", &app_desc.id));
     println!("[gra] Generate {:?}", file128);
-    std::fs::copy(
-        Path::new("./assets/icon.128.png"),
-        &file128,
-    )?;
+    std::fs::copy(Path::new("./assets/icon.128.png"), &file128)?;
 
     let file_svg = path.join(&format!("{}.svg", &app_desc.id));
     println!("[gra] Generate {:?}", file_svg);
-    std::fs::copy(
-        Path::new("./assets/icon.svg"),
-        &file_svg,
-    )?;
+    std::fs::copy(Path::new("./assets/icon.svg"), &file_svg)?;
     Ok(())
 }
 
 fn create_desktop_file(descriptor: &ProjectDescriptor, path: &Path) -> std::io::Result<()> {
     let template = include_str!("../../data/app.template.desktop");
-    
+
     if descriptor.app.is_none() {
         eprintln!("[gra] Skip desktop file: Missing [app] section in Cargo.toml");
         return Ok(());
@@ -60,11 +52,14 @@ fn create_desktop_file(descriptor: &ProjectDescriptor, path: &Path) -> std::io::
 
     let mut path = PathBuf::from(path);
     path.push(format!("{}.desktop", app_desc.id));
-    
+
     println!("[gra] Generate {:?}", path);
     let mut file = File::create(path)?;
 
-    let generic_name = app_desc.generic_name.as_ref().unwrap_or(&descriptor.package.name);
+    let generic_name = app_desc
+        .generic_name
+        .as_ref()
+        .unwrap_or(&descriptor.package.name);
 
     file.write_all(
         template
@@ -80,7 +75,7 @@ fn create_desktop_file(descriptor: &ProjectDescriptor, path: &Path) -> std::io::
 
 fn create_flatpak_yml(descriptor: &ProjectDescriptor, path: &Path) -> std::io::Result<()> {
     let template = include_str!("../../data/flatpak.template.yml");
-    
+
     if descriptor.app.is_none() {
         eprintln!("[gra] Skip flatpak.yml file: Missing [app] section in Cargo.toml");
         return Ok(());
@@ -90,14 +85,16 @@ fn create_flatpak_yml(descriptor: &ProjectDescriptor, path: &Path) -> std::io::R
 
     let mut path = PathBuf::from(path);
     path.push(format!("{}.yml", app_desc.id));
-    
+
     println!("[gra] Generate {:?}", path);
     let mut file = File::create(path)?;
 
-    let permissions = app_desc.permissions
+    let permissions = app_desc
+        .permissions
         .iter()
         .map(|p| format!("- --{}", p))
-        .collect::<Vec<String>>().join("\n  ");
+        .collect::<Vec<String>>()
+        .join("\n  ");
     file.write_all(
         template
             .replace("{name}", &descriptor.package.name)
@@ -122,7 +119,12 @@ fn as_tag_list<T>(
 
 fn to_tag(value: &String, tagname: &str, linebreaks: bool, indentation: usize) -> String {
     if linebreaks {
-        format!("{0}<{1}>\n{2}\n{0}</{1}>", " ".repeat(indentation), tagname, value)
+        format!(
+            "{0}<{1}>\n{2}\n{0}</{1}>",
+            " ".repeat(indentation),
+            tagname,
+            value
+        )
     } else {
         format!("{0}<{1}>{2}</{1}>", " ".repeat(indentation), tagname, value)
     }
@@ -130,10 +132,10 @@ fn to_tag(value: &String, tagname: &str, linebreaks: bool, indentation: usize) -
 
 fn create_app_descriptor_xml(descriptor: &ProjectDescriptor, path: &Path) -> std::io::Result<()> {
     let template = include_str!("../../data/appdata.template.xml");
-    
+
     if descriptor.app.is_none() {
         eprintln!("[gra] Skip flatpak.yml file: Missing [app] section in Cargo.toml");
-        return Ok(())
+        return Ok(());
     }
 
     let app_desc = descriptor.app.as_ref().unwrap();
@@ -185,8 +187,8 @@ fn create_app_descriptor_xml(descriptor: &ProjectDescriptor, path: &Path) -> std
                 "{releases}",
                 &as_tag_list(app_desc.releases.as_ref(), |r| {
                     format!("        <release version=\"{}\" date=\"{}\"><description>{}</description></release>", 
-                        r.version, 
-                        r.date, 
+                        r.version,
+                        r.date,
                         r.description
                         )
                 })
@@ -208,7 +210,7 @@ fn create_app_descriptor_xml(descriptor: &ProjectDescriptor, path: &Path) -> std
                 "{author}",
                 &to_tag(&descriptor.package.authors.as_ref().map(|authors| authors
                      .first()
-                     .map(|name| 
+                     .map(|name|
                         name.split_once("<")
                             .map(|t| t.0.trim().to_string())
                             .unwrap_or(name.clone())

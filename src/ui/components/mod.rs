@@ -1,5 +1,5 @@
-mod sidebar;
 mod leaflet_layout;
+mod sidebar;
 
-pub use sidebar::*;
 pub use leaflet_layout::*;
+pub use sidebar::*;
