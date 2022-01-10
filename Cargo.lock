@@ -465,6 +465,27 @@ dependencies = [
 [[package]]
 name = "gtk-rust-app"
 version = "0.0.1"
+source = "git+https://gitlab.com/loers/gtk-rust-app.git#428fda78771277b2321565f9bc9767fb4e855c7b"
+dependencies = [
+ "gdk4",
+ "gettext-rs",
+ "glib",
+ "gtk-rust-app-derive 0.1.0 (git+https://gitlab.com/loers/gtk-rust-app.git)",
+ "gtk4",
+ "libadwaita",
+ "libadwaita-sys",
+ "log",
+ "once_cell",
+ "regex",
+ "serde",
+ "serde_json",
+ "sha2",
+ "toml",
+]
+
+[[package]]
+name = "gtk-rust-app"
+version = "0.0.2"
 dependencies = [
  "gdk4",
  "gettext-rs",
@@ -485,27 +506,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "gtk-rust-app"
-version = "0.0.1"
-source = "git+https://gitlab.com/loers/gtk-rust-app.git#7ac3431750f2ac171850829ed7c4e0211d669c45"
-dependencies = [
- "gdk4",
- "gettext-rs",
- "glib",
- "gtk-rust-app-derive 0.1.0 (git+https://gitlab.com/loers/gtk-rust-app.git)",
- "gtk4",
- "libadwaita",
- "libadwaita-sys",
- "log",
- "once_cell",
- "regex",
- "serde",
- "serde_json",
- "sha2",
- "toml",
-]
-
-[[package]]
 name = "gtk-rust-app-derive"
 version = "0.1.0"
 dependencies = [
@@ -516,7 +516,7 @@ dependencies = [
 [[package]]
 name = "gtk-rust-app-derive"
 version = "0.1.0"
-source = "git+https://gitlab.com/loers/gtk-rust-app.git#7ac3431750f2ac171850829ed7c4e0211d669c45"
+source = "git+https://gitlab.com/loers/gtk-rust-app.git#428fda78771277b2321565f9bc9767fb4e855c7b"
 dependencies = [
  "quote",
  "syn",
@@ -962,7 +962,7 @@ dependencies = [
  "gdk4",
  "gettext-rs",
  "glib",
- "gtk-rust-app 0.0.1 (git+https://gitlab.com/loers/gtk-rust-app.git)",
+ "gtk-rust-app 0.0.1",
  "gtk4",
  "libadwaita",
  "libadwaita-sys",
