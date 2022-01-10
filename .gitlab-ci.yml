@@ -56,4 +56,4 @@ release:
     - cargo install cocogitto --locked
     - if cog bump --auto; then echo bumped version; else cog bump --patch; fi
     - export TAG_VERSION=$(grep version Cargo.toml | head -1 | sed 's/version = "//g' | sed 's/"//g')
-    - git push --atomic origin $TAG_VERSION HEAD:$CI_COMMIT_BRANCH
+    - git push --atomic origin v$TAG_VERSION HEAD:$CI_COMMIT_BRANCH
