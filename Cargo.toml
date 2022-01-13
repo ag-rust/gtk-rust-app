@@ -6,7 +6,7 @@ authors = ["Florian Loers"]
 description = "Framework for writing flatpak apps with GTK in Rust"
 readme = "README.md"
 repository = "https://gitlab.com/loers/gtk-rust-app"
-license = "GPL 3"
+license = "GPL-3.0-or-later"
 keywords = ["GTK", "UI", "flatpak"]
 categories = ["gui"]
 
@@ -33,7 +33,7 @@ sha2 = "0.10"
 serde_json = "1"
 gettext-rs = { version = "0.7", features = ["gettext-system"] }
 gtk-rust-app-derive = { path = "gtk-rust-app-derive", optional = true }
-gstore = { git = "https://gitlab.com/loers/gstore.git", optional = true }
+gstore = { version = "0.5", optional = true }
 gtk = { version = "0.3", package = "gtk4", optional = true }
 gdk4 = { version = "0.3", optional = true }
 glib = { version = "0.14", optional = true }

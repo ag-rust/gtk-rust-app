@@ -448,14 +448,12 @@ dependencies = [
 
 [[package]]
 name = "gstore"
-version = "0.3.0"
-source = "git+https://gitlab.com/loers/gstore.git#d29dbb24e3cb59be4055747ab0f33b2199a4f8a9"
+version = "0.5.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0e40f69c924d7d1e9cdadb3317f4ec950d298277bc7bc099b9b9845af877db3b"
 dependencies = [
  "gdk4",
  "glib",
- "gtk4",
- "libadwaita",
- "libadwaita-sys",
  "log",
  "once_cell",
  "serde",

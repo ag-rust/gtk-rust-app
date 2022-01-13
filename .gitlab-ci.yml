@@ -1,10 +1,40 @@
 stages:
+  - containers
+  - prechecks
   - checks
   - release
 
+build-container-x86-64:
+  image: docker:19.03.12
+  stage: containers
+  services:
+    - docker:19.03.12-dind
+  variables:
+    IMAGE_TAG: $CI_REGISTRY_IMAGE/x86-64:$CI_COMMIT_REF_SLUG
+  script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker build -t $IMAGE_TAG -f ci-x86-64.dockerfile .
+    - docker push $IMAGE_TAG
+  when: manual
+  timeout: 4 hours
+
+build-container-aarch64:
+  image: docker:19.03.12
+  stage: containers
+  services:
+    - docker:19.03.12-dind
+  variables:
+    IMAGE_TAG: $CI_REGISTRY_IMAGE/aarch64:$CI_COMMIT_REF_SLUG
+  script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker build -t $IMAGE_TAG -f ci-aarch64.dockerfile .
+    - docker push $IMAGE_TAG
+  when: manual
+  timeout: 4 hours
+
 formatting:
   image: rust:latest
-  stage: checks
+  stage: prechecks
   rules:
     - if: $CI_COMMIT_TAG
       when: never
@@ -15,22 +45,10 @@ formatting:
     - rustup component add rustfmt
     - cargo fmt --all -- --color=always --check
 
-tests:
-  image: rust:latest
-  stage: checks
-  rules:
-    - if: $CI_COMMIT_TAG
-      when: never
-    - if: '$CI_COMMIT_TITLE =~ /chore\(version\)\:.*/'
-      when: never
-    - when: always
-  script:
-    - cargo test --release
-
 outdated-check:
-  image: rust:latest
+  image: $CI_REGISTRY_IMAGE/x86-64:main
   allow_failure: true
-  stage: checks
+  stage: prechecks
   rules:
     - if: $CI_COMMIT_TAG
       when: never
@@ -38,11 +56,56 @@ outdated-check:
       when: never
     - when: always
   script:
-    - cargo install cargo-outdated --locked
-    - cargo outdated
+    - source $HOME/.cargo/env
+    - cargo outdated -R --exit-code -1
+
+build and test aarch64:
+  image: $CI_REGISTRY_IMAGE/aarch64:main
+  stage: checks
+  allow_failure: true
+  cache:
+    key:
+      files:
+        - Cargo.lock
+      prefix: aarch64-
+    paths:
+      - target/
+  rules:
+    - if: $CI_COMMIT_TAG
+      when: never
+    - if: '$CI_COMMIT_TITLE =~ /chore\(version\)\:.*/'
+      when: never
+    - when: always
+  script:
+    - pacman -Syu base-devel gtk4 libadwaita --noconfirm
+    - curl https://sh.rustup.rs -sSf | sh -s -- -y
+    - source $HOME/.cargo/env
+    - cargo test --release
+  timeout: 4 hours
+
+build and test x86-64:
+  image: $CI_REGISTRY_IMAGE/x86-64:main
+  stage: checks
+  cache:
+    key:
+      files:
+        - Cargo.lock
+      prefix: x86-64-
+    paths:
+      - target/
+  rules:
+    - if: $CI_COMMIT_TAG
+      when: never
+    - if: '$CI_COMMIT_TITLE =~ /chore\(version\)\:.*/'
+      when: never
+    - when: always
+  script:
+    - source $HOME/.cargo/env
+    - cargo test --release
+  timeout: 4 hours
 
 release:
-  image: rust:latest
+  image: $CI_REGISTRY_IMAGE/x86-64:main
   stage: release
   rules:
     - if: '$CI_COMMIT_TITLE =~ /chore\(version\)\:.*/'
@@ -50,11 +113,11 @@ release:
     - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
       when: on_success
   script:
-    - git remote set-url origin https://${GITLAB_USERNAME}:${GITLAB_TOKEN}@${CI_SERVER_HOST}/${CI_PROJECT_PATH}.git
-    - git config --global user.email "gitlab ci"
-    - git config --global user.name "gitlab ci"
-    - cargo install cocogitto --locked
-    - if cog bump --auto; then echo bumped version; else cog bump --patch; fi
-    - export TAG_VERSION=$(grep version Cargo.toml | head -1 | sed 's/version = "//g' | sed 's/"//g')
-    - git push --atomic origin v$TAG_VERSION HEAD:$CI_COMMIT_BRANCH
-    - cargo publish --token $CRATES_IO_TOKEN
+    - echo hi
+    # - git remote set-url origin https://${GITLAB_USERNAME}:${GITLAB_TOKEN}@${CI_SERVER_HOST}/${CI_PROJECT_PATH}.git
+    # - git config --global user.email "gitlab ci"
+    # - git config --global user.name "gitlab ci"
+    # - if cog bump --auto; then echo bumped version; else cog bump --patch; fi
+    # - export TAG_VERSION=$(grep version Cargo.toml | head -1 | sed 's/version = "//g' | sed 's/"//g')
+    # - git push --atomic origin v$TAG_VERSION HEAD:$CI_COMMIT_BRANCH
+    # - cargo publish --token $CRATES_IO_TOKEN
