@@ -113,4 +113,13 @@ release:
     - if: "$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH"
       when: on_success
   script:
-    - echo hi
+    - source $HOME/.cargo/env
+    - whereis cog
+    - git remote set-url origin https://${GITLAB_USERNAME}:${GITLAB_TOKEN}@${CI_SERVER_HOST}/${CI_PROJECT_PATH}.git
+    - git config --global user.email "gitlab ci"
+    - git config --global user.name "gitlab ci"
+    - if cog bump --auto; then echo bumped version; else cog bump --patch; fi
+    - export TAG_VERSION=$(grep version Cargo.toml | head -1 | sed 's/version = "//g' | sed 's/"//g')
+    - git push --atomic origin v$TAG_VERSION HEAD:$CI_COMMIT_BRANCH
+    - cargo publish --token $CRATES_IO_TOKEN
+
