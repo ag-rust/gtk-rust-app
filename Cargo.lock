@@ -448,9 +448,9 @@ dependencies = [
 
 [[package]]
 name = "gstore"
-version = "0.5.3"
+version = "0.5.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0e40f69c924d7d1e9cdadb3317f4ec950d298277bc7bc099b9b9845af877db3b"
+checksum = "cffd81da548a66af28fa5ec4b6a745eed6c3a1d661fdf33f2cea2ebef69627c0"
 dependencies = [
  "gdk4",
  "glib",
@@ -462,8 +462,8 @@ dependencies = [
 
 [[package]]
 name = "gtk-rust-app"
-version = "0.0.1"
-source = "git+https://gitlab.com/loers/gtk-rust-app.git#428fda78771277b2321565f9bc9767fb4e855c7b"
+version = "0.0.2"
+source = "git+https://gitlab.com/loers/gtk-rust-app.git#fced1ec55dbb0d34431ff2ef4efde004fc8ff589"
 dependencies = [
  "gdk4",
  "gettext-rs",
@@ -483,7 +483,7 @@ dependencies = [
 
 [[package]]
 name = "gtk-rust-app"
-version = "0.0.2"
+version = "0.0.3"
 dependencies = [
  "gdk4",
  "gettext-rs",
@@ -514,7 +514,7 @@ dependencies = [
 [[package]]
 name = "gtk-rust-app-derive"
 version = "0.1.0"
-source = "git+https://gitlab.com/loers/gtk-rust-app.git#428fda78771277b2321565f9bc9767fb4e855c7b"
+source = "git+https://gitlab.com/loers/gtk-rust-app.git#fced1ec55dbb0d34431ff2ef4efde004fc8ff589"
 dependencies = [
  "quote",
  "syn",
@@ -960,7 +960,7 @@ dependencies = [
  "gdk4",
  "gettext-rs",
  "glib",
- "gtk-rust-app 0.0.1",
+ "gtk-rust-app 0.0.2",
  "gtk4",
  "libadwaita",
  "libadwaita-sys",

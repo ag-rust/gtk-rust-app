@@ -2,6 +2,14 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## v0.0.3 - 2022-01-13
+#### Continuous Integration
+- Add dockerignoe file - (fced1ec) - Florian Loers
+- Fix yaml file syntax - (722af66) - Florian Loers
+#### Miscellaneous Chores
+- Use gstore from crates.io - (4f56be4) - Florian Loers
+- - -
+
 ## v0.0.2 - 2022-01-10
 #### Continuous Integration
 - Add cargo publish to release job - (428fda7) - Florian Loers
