@@ -1,7 +1,4 @@
 pre_bump_hooks = [
-    # remove the local dependency
-    "sh ./ci/update_dependency.sh gtk-rust-app-derive {{latest}} {{version}}",
-    # include the updated dependency from crates.io
     "cargo bump {{version}}",
     "cargo update",
 ]

@@ -468,7 +468,7 @@ dependencies = [
  "gdk4",
  "gettext-rs",
  "glib",
- "gtk-rust-app-derive 0.1.0 (git+https://gitlab.com/loers/gtk-rust-app.git)",
+ "gtk-rust-app-derive 0.1.0",
  "gtk4",
  "libadwaita",
  "libadwaita-sys",
@@ -489,7 +489,7 @@ dependencies = [
  "gettext-rs",
  "glib",
  "gstore",
- "gtk-rust-app-derive 0.1.0",
+ "gtk-rust-app-derive 0.0.4",
  "gtk4",
  "libadwaita",
  "libadwaita-sys",
@@ -505,7 +505,7 @@ dependencies = [
 
 [[package]]
 name = "gtk-rust-app-derive"
-version = "0.1.0"
+version = "0.0.4"
 dependencies = [
  "quote",
  "syn",
