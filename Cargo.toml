@@ -32,7 +32,7 @@ regex = "1"
 sha2 = "0.10"
 serde_json = "1"
 gettext-rs = { version = "0.7", features = ["gettext-system"] }
-gtk-rust-app-derive = { path = "gtk-rust-app-derive", optional = true }
+gtk-rust-app-derive = { version = "0.1", path = "gtk-rust-app-derive", optional = true }
 gstore = { version = "0.5", optional = true }
 gtk = { version = "0.3", package = "gtk4", optional = true }
 gdk4 = { version = "0.3", optional = true }
