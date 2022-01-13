@@ -4,4 +4,4 @@ RUN pacman -Syu base-devel gtk4 libadwaita --noconfirm && \
     source $HOME/.cargo/env && \
     cargo install cocogitto --locked && \
     cargo install cargo-outdated
-RUN source $HOME/.cargo/env
+ENV PATH="$HOME/.cargo/bin:$PATH"
