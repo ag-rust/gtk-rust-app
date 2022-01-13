@@ -2,6 +2,11 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## v0.0.4 - 2022-01-13
+#### Miscellaneous Chores
+- Set version for dependency to gtk-rust-app-derive - (40c1e2c) - Florian Loers
+- - -
+
 ## v0.0.3 - 2022-01-13
 #### Continuous Integration
 - Add dockerignoe file - (fced1ec) - Florian Loers
