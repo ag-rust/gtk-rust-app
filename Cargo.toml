@@ -32,9 +32,6 @@ regex = "1"
 sha2 = "0.10"
 serde_json = "1"
 gettext-rs = { version = "0.7", features = ["gettext-system"] }
-gtk-rust-app-derive = { path = "gtk-rust-app-derive", optional = true }
-# The following line is required for automated release
-## gtk-rust-app-derive = { version = "0.0.4", optional = true }
 gstore = { version = "0.5", optional = true }
 gtk = { version = "0.3", package = "gtk4", optional = true }
 gdk4 = { version = "0.3", optional = true }
@@ -42,6 +39,12 @@ glib = { version = "0.14", optional = true }
 
 libadwaita = { version = "= 0.1.0-alpha-6", optional = true }
 libadwaita-sys = { version = "= 0.1.0-alpha-6", optional = true }
+
+# Internal dependencies
+gtk-rust-app-derive = { path = "gtk-rust-app-derive", optional = true }
+# The following line is required for automated release
+## gtk-rust-app-derive = { version = "0.0.4", optional = true }
+
 
 [dev-dependencies]
 serde-xml-rs = "0.5.1"

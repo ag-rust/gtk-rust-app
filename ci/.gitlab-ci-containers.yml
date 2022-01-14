@@ -1,0 +1,16 @@
+build-container-x86-64:
+  image: docker:19.03.12
+  stage: containers
+  services:
+    - docker:19.03.12-dind
+  variables:
+    IMAGE_TAG: $CI_REGISTRY_IMAGE/x86-64:$CI_COMMIT_REF_SLUG
+  script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker build -t $IMAGE_TAG -f ci/ci-x86-64.dockerfile .
+    - docker push $IMAGE_TAG
+  timeout: 3 hours
+  only:
+    changes:
+      - ci/ci-x86-64.dockerfile
+      - ci/.gitlab-ci-containers.yml

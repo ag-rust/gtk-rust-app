@@ -2,6 +2,13 @@
 name = "gtk-rust-app-derive"
 version = "0.0.4"
 edition = "2018"
+authors = ["Florian Loers"]
+description = "Macros for gtk-rust-app"
+readme = "README.md"
+repository = "https://gitlab.com/loers/gtk-rust-app"
+license = "GPL-3.0-or-later"
+keywords = ["GTK", "UI"]
+categories = ["gui"]
 
 [lib]
 proc-macro = true

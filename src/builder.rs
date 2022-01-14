@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 use gdk4::gio::SimpleAction;
 use gdk4::prelude::{ApplicationExt, ApplicationExtManual};
 use glib::VariantTy;

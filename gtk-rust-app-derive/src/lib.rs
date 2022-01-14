@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 extern crate proc_macro;
 
 use std::collections::HashSet;

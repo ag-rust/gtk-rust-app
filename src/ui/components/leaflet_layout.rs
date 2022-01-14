@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 use adw::prelude::ActionRowExt;
 use gtk::prelude::*;
 use libadwaita as adw;

@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 #[macro_use]
 extern crate gtk_rust_app;
 #[macro_use]

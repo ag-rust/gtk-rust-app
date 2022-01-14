@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 use gtk::prelude::*;
 
 // Define a UI component with a function

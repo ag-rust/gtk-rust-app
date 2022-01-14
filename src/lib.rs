@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+
 #[allow(unused_imports)]
 #[macro_use]
 extern crate log;
