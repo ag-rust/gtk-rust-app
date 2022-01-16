@@ -1,8 +1,5 @@
 post_bump_hooks = []
 pre_bump_hooks = [
-  """
-    sh -c "./ci/update_dependency.sh gtk-rust-app-derive {{latest}} {{version}}"
-    """,
   "cargo bump {{version}}",
   "cargo update",
 ]

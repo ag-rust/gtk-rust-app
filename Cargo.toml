@@ -40,11 +40,7 @@ glib = { version = "0.14", optional = true }
 libadwaita = { version = "= 0.1.0-alpha-6", optional = true }
 libadwaita-sys = { version = "= 0.1.0-alpha-6", optional = true }
 
-# Internal dependencies
-gtk-rust-app-derive = { path = "gtk-rust-app-derive", optional = true }
-# The following line is required for automated release
-### gtk-rust-app-derive = { version = "0.0.6", optional = true }
-
+gtk-rust-app-derive = { version = "0.0.6", optional = true }
 
 [dev-dependencies]
 serde-xml-rs = "0.5.1"
