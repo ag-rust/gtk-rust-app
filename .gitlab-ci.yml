@@ -65,8 +65,10 @@ release:
     - git remote set-url origin https://${GITLAB_USERNAME}:${GITLAB_TOKEN}@${CI_SERVER_HOST}/${CI_PROJECT_PATH}.git
     - git config --global user.email "gitlab ci"
     - git config --global user.name "gitlab ci"
-    - cd gtk-rust-app-derive && cog bump --auto || cog bump --patch
-    - cd gtk-rust-app-derive && cargo publish --token $CRATES_IO_TOKEN
+    - cd gtk-rust-app-derive
+    - cog bump --auto || cog bump --patch
+    - cargo publish --token $CRATES_IO_TOKEN
+    - cd ..
     - cog bump --auto || cog bump --patch
     - TAG_VERSION=$(grep version Cargo.toml | head -1 | sed 's/version = "//g' | sed 's/"//g')
     - git push --atomic origin v$TAG_VERSION HEAD:$CI_COMMIT_BRANCH
