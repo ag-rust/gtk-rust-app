@@ -1,5 +1,14 @@
 # Rust GTK App Framework
 
+[![pipeline status](https://gitlab.com/loers/gtk-rust-app/badges/main/pipeline.svg)](https://gitlab.com/loers/gtk-rust-app/-/commits/main)
+[![API](https://docs.rs/gtk-rust-app/badge.svg)](https://docs.rs/gtk-rust-app)
+
+<p style="text-align: center;">
+<img src="./icon.svg"/>
+<br>
+<i>(Yes that's the icon)</i>
+</p>
+
 This libaray aims to provide a framework for adaptive GTK4 and libadwaita apps written in Rust.
 
 Writing flatpak apps requires several files (.desktop file, appdata.xml, flatpak manifest). gtk-rust-app and its CLI [`gra`](https://gitlab.com/loers/cargo-gra) allow to generate these files based on an extended Cargo.toml.

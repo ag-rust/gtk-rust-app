@@ -45,6 +45,7 @@ outdated-check:
   stage: prechecks
   extends: [.run_always]
   script:
+    - source $HOME/.cargo/env
     - cargo outdated -R --exit-code -1
 
 build and test x86-64:
@@ -52,13 +53,15 @@ build and test x86-64:
   stage: checks
   extends: [.run_always, .cache-x86-64]
   script:
+    - source $HOME/.cargo/env
     - cargo test --release
 
 release:
-  image: $CI_REGISTRY_IMAGE/x86-64:main
+  image: $CI_REGISTRY_IMAGE/x86-64:$CI_COMMIT_REF_SLUG
   stage: release
   extends: [.run_on_main, .cache-x86-64]
   script:
+    - source $HOME/.cargo/env
     - git remote set-url origin https://${GITLAB_USERNAME}:${GITLAB_TOKEN}@${CI_SERVER_HOST}/${CI_PROJECT_PATH}.git
     - git config --global user.email "gitlab ci"
     - git config --global user.name "gitlab ci"
