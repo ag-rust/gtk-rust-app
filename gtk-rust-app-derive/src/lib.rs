@@ -240,7 +240,7 @@ fn get_param_spec_for_ty(field_ident: Ident, ty: &Type) -> TokenStream {
         Ok(ps) => ps,
         Err(e) => {
             unimplemented!("Type {:?} is not implemented in gobjectify", e);
-        },
+        }
     }
 }
 
