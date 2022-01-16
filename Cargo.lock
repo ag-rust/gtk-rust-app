@@ -424,9 +424,9 @@ dependencies = [
 
 [[package]]
 name = "gstore"
-version = "0.5.5"
+version = "0.5.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "cffd81da548a66af28fa5ec4b6a745eed6c3a1d661fdf33f2cea2ebef69627c0"
+checksum = "cd833859b361ce5570f7daa2bf5c078e2c6ca734fce6abf949f61a893df09469"
 dependencies = [
  "gdk4",
  "glib",
@@ -438,7 +438,7 @@ dependencies = [
 
 [[package]]
 name = "gtk-rust-app"
-version = "0.0.6"
+version = "0.0.7"
 dependencies = [
  "gdk4",
  "gettext-rs",
@@ -865,9 +865,9 @@ dependencies = [
 
 [[package]]
 name = "serde_json"
-version = "1.0.74"
+version = "1.0.75"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ee2bb9cd061c5865d345bb02ca49fcef1391741b672b54a0bf7b679badec3142"
+checksum = "c059c05b48c5c0067d4b4b2b4f0732dd65feb52daf7e0ea09cd87e7dadc1af79"
 dependencies = [
  "itoa",
  "ryu",
@@ -893,9 +893,9 @@ checksum = "9def91fd1e018fe007022791f865d0ccc9b3a0d5001e01aabb8b40e46000afb5"
 
 [[package]]
 name = "smallvec"
-version = "1.7.0"
+version = "1.8.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1ecab6c735a6bb4139c0caafd0cc3635748bbb3acf4550e8138122099251f309"
+checksum = "f2dd574626839106c320a323308629dcb1acfc96e32a8cba364ddc61ac23ee83"
 
 [[package]]
 name = "strum"

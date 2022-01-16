@@ -2,6 +2,11 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## v0.0.7 - 2022-01-16
+#### Continuous Integration
+- Use fixed version for gtk-rust-app-derive - (ee12ef6) - Florian Loers
+- - -
+
 ## v0.0.4 - 2022-01-13
 #### Miscellaneous Chores
 - Set version for dependency to gtk-rust-app-derive - (40c1e2c) - Florian Loers
