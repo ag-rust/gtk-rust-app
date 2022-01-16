@@ -10,7 +10,12 @@ build-container-x86-64:
     - docker build -t $IMAGE_TAG -f ci/ci-x86-64.dockerfile .
     - docker push $IMAGE_TAG
   timeout: 3 hours
-  only:
-    changes:
-      - ci/ci-x86-64.dockerfile
-      - ci/.gitlab-ci-containers.yml
+  rules:
+    - if: $CI_COMMIT_TAG
+      when: never
+    - if: '$CI_COMMIT_TITLE =~ /chore\(version\)\:.*/'
+      when: never
+    - changes:
+        - ci/ci-x86-64.dockerfile
+        - ci/.gitlab-ci-containers.yml
+        - $CI_COMMIT_MESSAGE =~ /\[ci build]/

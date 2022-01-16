@@ -49,5 +49,3 @@ gtk-rust-app-derive = { path = "gtk-rust-app-derive", optional = true }
 [dev-dependencies]
 serde-xml-rs = "0.5.1"
 
-[workspace]
-members = ["examples/simple", "gtk-rust-app-derive"]
