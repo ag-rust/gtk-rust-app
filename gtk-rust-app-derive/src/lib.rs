@@ -219,12 +219,29 @@ fn get_param_specs(
 
 fn get_param_spec_for_ty(field_ident: Ident, ty: &Type) -> TokenStream {
     let param_spec = match ty {
-        Type::Path(p) => get_param_spec_for_ident(field_ident, &p.path),
-        t => {
-            unimplemented!("Type {:?} is not implemented in gobjectify", t);
-        }
+        Type::Path(p) => Ok(get_param_spec_for_ident(field_ident, &p.path)),
+        Type::Array(_) => Err("Array"),
+        Type::BareFn(_) => Err("BareFn"),
+        Type::Group(_) => Err("Group"),
+        Type::ImplTrait(_) => Err("ImplTrait"),
+        Type::Infer(_) => Err("Infer"),
+        Type::Macro(_) => Err("Macro"),
+        Type::Never(_) => Err("Never"),
+        Type::Paren(_) => Err("Paren"),
+        Type::Ptr(_) => Err("Ptr"),
+        Type::Reference(_) => Err("Reference"),
+        Type::Slice(_) => Err("Slice"),
+        Type::TraitObject(_) => Err("TraitObject"),
+        Type::Tuple(_) => Err("Tuple"),
+        Type::Verbatim(_) => Err("Verbatim"),
+        Type::__TestExhaustive(_) => Err("__TestExhaustive"),
     };
-    param_spec
+    match param_spec {
+        Ok(ps) => ps,
+        Err(e) => {
+            unimplemented!("Type {:?} is not implemented in gobjectify", e);
+        },
+    }
 }
 
 fn get_param_spec_for_ident(field_ident: Ident, type_path: &Path) -> TokenStream {
@@ -402,7 +419,6 @@ fn get_gobject_cell_fields(
 
 #[proc_macro_attribute]
 pub fn widget(_args: TokenStream, input: TokenStream) -> TokenStream {
-    // let args = parse_macro_input!(args as Args);
     let input = parse_macro_input!(input as syn::ItemFn);
 
     let function_name = &input.sig.ident;
@@ -411,22 +427,13 @@ pub fn widget(_args: TokenStream, input: TokenStream) -> TokenStream {
             if let Some(return_type) = return_type.path.get_ident() {
                 return_type
             } else {
-                panic!(
-                    "Wrong return type for widget function: {:?} not supported",
-                    &input.sig.output
-                );
+                panic!("Wrong return type for widget function.");
             }
         } else {
-            panic!(
-                "Wrong return type for widget function: {:?} not supported",
-                &input.sig.output
-            );
+            panic!("Wrong return type for widget function.");
         }
     } else {
-        panic!(
-            "Wrong return type for widget function: {:?} not supported",
-            &input.sig.output
-        );
+        panic!("Wrong return type for widget function.");
     };
     let widget_name = quote::format_ident!("{}", return_type);
     let widget_mod_name = quote::format_ident!("widget_{}", function_name);
