@@ -3,11 +3,9 @@
 [![pipeline status](https://gitlab.com/loers/gtk-rust-app/badges/main/pipeline.svg)](https://gitlab.com/loers/gtk-rust-app/-/commits/main)
 [![API](https://docs.rs/gtk-rust-app/badge.svg)](https://docs.rs/gtk-rust-app)
 
-<p style="text-align: center;">
-<img src="./icon.svg"/>
-<br>
-<i>(Yes that's the icon)</i>
-</p>
+![icon.svg"](icon.svg)
+
+*(Yes that's the icon)*
 
 This libaray aims to provide a framework for adaptive GTK4 and libadwaita apps written in Rust.
 
