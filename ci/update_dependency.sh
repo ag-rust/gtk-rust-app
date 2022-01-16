@@ -28,8 +28,8 @@ else
     exit -1
 fi
 
-sed -r "s/$dep(.*)/## $dep\\1/g" Cargo.toml >temp.toml
-sed -r "s/## ## $dep(.*?)($v_from)(.*?)/$dep\\1$v_to\\3/g" temp.toml >Cargo.toml
+sed -r "s/^$dep(.*)/## $dep\\1/g" Cargo.toml >temp.toml
+sed -r "s/## $dep(.*?)($v_from)(.*?)/$dep\\1$v_to\\3/g" temp.toml >Cargo.toml
 rm temp.toml
 
 echo "Success"
