@@ -438,7 +438,7 @@ dependencies = [
 
 [[package]]
 name = "gtk-rust-app"
-version = "0.0.7"
+version = "0.0.6"
 dependencies = [
  "gdk4",
  "gettext-rs",
@@ -460,7 +460,7 @@ dependencies = [
 
 [[package]]
 name = "gtk-rust-app-derive"
-version = "0.0.5"
+version = "0.0.6"
 dependencies = [
  "quote",
  "syn",
