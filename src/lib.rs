@@ -80,8 +80,16 @@ pub fn build(output_dir: Option<&std::path::Path>) {
         build_makefile,
     };
 
-    let project_descriptor = parse_project_descriptor(std::path::Path::new("Cargo.toml"))
-        .expect("Could not read Cargo.toml");
+    let project_descriptor = parse_project_descriptor(std::path::Path::new("Cargo.toml"));
+
+    if project_descriptor.is_err() {
+        eprintln!(
+            "[gra] Could not parse Cargo.toml: {:?}",
+            project_descriptor.unwrap_err()
+        );
+        return;
+    }
+    let project_descriptor = project_descriptor.unwrap();
 
     let target = output_dir.unwrap_or(&std::path::Path::new("target/gra-gen"));
     std::fs::create_dir_all(target).expect("Could not create out dir.");
@@ -96,7 +104,7 @@ pub fn build(output_dir: Option<&std::path::Path>) {
 
 /// Prepare the flatpak-temp directory which may be used to build a flatpak app.
 /// Returns a PathBuf to that directory.
-pub fn prepare_flatpak_temp(project_dir: &PathBuf) -> std::io::Result<PathBuf> {
+pub fn prepare_flatpak_temp(project_dir: &PathBuf) -> Result<PathBuf, String> {
     println!("[gra] Prepare flatpak build...");
 
     let flatpak_temp = project_dir.join("target/flatpak-temp");
@@ -104,15 +112,15 @@ pub fn prepare_flatpak_temp(project_dir: &PathBuf) -> std::io::Result<PathBuf> {
     // setup flatpak-temp dir
     // let flatpak_temp = target_dir.join("flatpak-temp");
     if flatpak_temp.exists() {
-        remove_dir_all(&flatpak_temp)?;
+        remove_dir_all(&flatpak_temp).map_err(|e| e.to_string())?;
     }
 
     println!("[gra] mkdir target/flatpak-temp");
-    create_dir_all(&flatpak_temp)?;
+    create_dir_all(&flatpak_temp).map_err(|e| e.to_string())?;
     println!("[gra] mkdir target/flatpak-temp/target");
-    create_dir_all(&flatpak_temp.join("target"))?;
+    create_dir_all(&flatpak_temp.join("target")).map_err(|e| e.to_string())?;
     println!("[gra] mkdir target/flatpak-temp/.cargo");
-    create_dir_all(&flatpak_temp.join(".cargo"))?;
+    create_dir_all(&flatpak_temp.join(".cargo")).map_err(|e| e.to_string())?;
 
     let mut options = CopyOptions::new();
     options.overwrite = true;
@@ -120,37 +128,39 @@ pub fn prepare_flatpak_temp(project_dir: &PathBuf) -> std::io::Result<PathBuf> {
 
     println!("[gra] cp -r src target/flatpak-temp");
     fs_extra::dir::copy(project_dir.join("src"), &flatpak_temp, &options)
-        .map_err(|e| std::io::Error::new(std::io::ErrorKind::Other, format!("{:?}", e)))?;
+        .map_err(|e| e.to_string())?;
     println!("[gra] cp -r po target/flatpak-temp");
     fs_extra::dir::copy(project_dir.join("po"), &flatpak_temp, &options)
-        .map_err(|e| std::io::Error::new(std::io::ErrorKind::Other, format!("{:?}", e)))?;
+        .map_err(|e| e.to_string())?;
     println!("[gra] cp Cargo.toml target/flatpak-temp");
     std::fs::copy(
         project_dir.join("Cargo.toml"),
         &flatpak_temp.join("Cargo.toml"),
     )
-    .map_err(|e| std::io::Error::new(std::io::ErrorKind::Other, format!("{:?}", e)))?;
+    .map_err(|e| e.to_string())?;
     println!("[gra] cp -r target/gra-gen target/flatpak-temp/target");
     fs_extra::dir::copy(
         project_dir.join("target/gra-gen"),
         &flatpak_temp.join("target"),
         &options,
     )
-    .map_err(|e| std::io::Error::new(std::io::ErrorKind::Other, format!("{:?}", e)))?;
+    .map_err(|e| e.to_string())?;
 
     println!("[gra] Vendoring sources...");
     let c = Command::new("cargo")
         .current_dir(&flatpak_temp)
         .args(["vendor", "target/vendor"])
-        .output()?;
+        .output()
+        .map_err(|e| e.to_string())?;
 
     if let Ok(e) = String::from_utf8(c.stderr) {
         if !e.trim().is_empty() {
             println!("[gra] {}", e);
         }
     }
-    let mut config = File::create(flatpak_temp.join(".cargo").join("config.toml"))?;
-    config.write_all(&c.stdout)?;
+    let mut config =
+        File::create(flatpak_temp.join(".cargo").join("config.toml")).map_err(|e| e.to_string())?;
+    config.write_all(&c.stdout).map_err(|e| e.to_string())?;
 
     Ok(flatpak_temp)
 }

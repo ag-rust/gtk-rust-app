@@ -9,13 +9,7 @@ use std::{
 use crate::ProjectDescriptor;
 
 pub fn build_gettext(project_descriptor: &ProjectDescriptor, target: &Path) {
-    let id = if let Some(app) = &project_descriptor.app {
-        &app.id
-    } else {
-        eprintln!("[gra] Can not build gettext. Missing [app] section");
-        return;
-    };
-
+    let id = &project_descriptor.app.id;
     let domain = &project_descriptor.package.name;
     let target_pot_dir = &target.join("po");
     std::fs::create_dir_all(&target_pot_dir).expect("Could not create target/po.");
@@ -59,7 +53,15 @@ pub fn build_gettext(project_descriptor: &ProjectDescriptor, target: &Path) {
     }
 
     println!("[gra] Update po files");
-    for line in read_lines("po/LINGUAS").unwrap() {
+    let lines = read_lines("po/LINGUAS");
+    if lines.is_err() {
+        eprintln!(
+            "[gra] Can not read po/LINGUAS file: {}",
+            lines.unwrap_err().to_string()
+        );
+        return;
+    }
+    for line in lines.unwrap() {
         if let Ok(line) = line {
             if !line.starts_with("#") {
                 let locale = &line;

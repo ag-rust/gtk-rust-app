@@ -119,14 +119,16 @@ pub fn builder(cargo_toml: &[u8], resources: &[u8]) -> AppBuilder {
     #[cfg(feature = "ui")]
     adw::init();
 
-    let project_descriptor =
-        parse_project_descriptor_bytes(cargo_toml).expect("Could not parse projects Cargo.toml");
-
-    if project_descriptor.app.is_none() {
-        panic!("Expect app section in Cargo.toml");
+    let project_descriptor = parse_project_descriptor_bytes(cargo_toml);
+    if project_descriptor.is_err() {
+        panic!(
+            "Could not parse Cargo.toml: {}",
+            project_descriptor.unwrap_err()
+        );
     }
+    let project_descriptor = project_descriptor.unwrap();
 
-    let app_desc = project_descriptor.app.as_ref().unwrap();
+    let app_desc = &project_descriptor.app;
 
     let app = gtk::Application::builder()
         .application_id(&app_desc.id)
@@ -138,10 +140,7 @@ pub fn builder(cargo_toml: &[u8], resources: &[u8]) -> AppBuilder {
 
     init_gettext(&project_descriptor.package.name);
 
-    let settings = project_descriptor
-        .app
-        .as_ref()
-        .map(|a| gdk4::gio::Settings::new(&a.id));
+    let settings = Some(gdk4::gio::Settings::new(&project_descriptor.app.id));
 
     AppBuilder {
         project_descriptor,

@@ -11,11 +11,6 @@ use crate::ProjectDescriptor;
 pub fn build_gschema_settings(project_descriptor: &ProjectDescriptor, target: &Path) {
     let settings_gschema = include_str!("../../data/gschema.template.xml");
 
-    if project_descriptor.app.is_none() {
-        eprintln!("[gra] Skip gsettings schema generation: Missing [app] section in Cargo.toml");
-        return;
-    }
-
     if project_descriptor.settings.is_none() {
         eprintln!(
             "[gra] Skip gsettings schema generation: Missing [settings] section in Cargo.toml"
@@ -23,7 +18,7 @@ pub fn build_gschema_settings(project_descriptor: &ProjectDescriptor, target: &P
         return;
     }
 
-    let app_desc = project_descriptor.app.as_ref().unwrap();
+    let app_desc = &project_descriptor.app;
     let settings_desc = project_descriptor.settings.as_ref().unwrap();
 
     let mut path = PathBuf::from(target);

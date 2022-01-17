@@ -42,14 +42,17 @@ fn test_build_flatpaks() {
             format!("# gtk-rust-app{}", &caps[1])
         })
         .to_string();
-    println!("{}", test_toml_content);
 
+    let target_branch =
+        std::env::var("CI_MERGE_REQUEST_SOURCE_BRANCH_NAME").unwrap_or("main".to_string());
     let match_repo_dep = regex::Regex::new(r"(?m)^# IT gtk-rust-app(.*)").unwrap();
     let test_toml_content = match_repo_dep
         .replace_all(&test_toml_content, |caps: &Captures| {
             format!("gtk-rust-app{}", &caps[1])
         })
+        .replace("{BRANCH}", &target_branch)
         .to_string();
+    println!("{}", test_toml_content);
 
     let mut f = File::create(&toml).unwrap();
     f.write_all(test_toml_content.as_bytes()).unwrap();

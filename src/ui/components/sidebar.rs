@@ -12,7 +12,7 @@ pub fn sidebar(view_stack: &adw::ViewStack) -> gtk::Widget {
     let sidebar = gtk::ListBox::builder().width_request(100).build();
     sidebar.style_context().add_class("navigation-sidebar");
     scrolled_window.set_child(Some(&sidebar));
-    let model = view_stack.pages().unwrap();
+    let model = view_stack.pages();
     for i in 0..model.n_items() {
         let o = model.item(i).unwrap();
         let page: adw::ViewStackPage = o.downcast().unwrap();

@@ -9,7 +9,7 @@ use toml::Value;
 #[serde(rename(serialize = "component"))]
 pub struct ProjectDescriptor {
     pub package: PackageDescriptor,
-    pub app: Option<AppDescriptor>,
+    pub app: AppDescriptor,
     pub actions: Option<HashMap<String, ActionDescriptor>>,
     pub settings: Option<HashMap<String, Value>>,
 }
@@ -80,29 +80,22 @@ pub struct ActionDescriptor {
     pub accelerators: Option<Vec<String>>,
 }
 
-pub fn parse_project_descriptor(path: &Path) -> std::io::Result<ProjectDescriptor> {
-    let mut file = File::open(path)?;
+pub fn parse_project_descriptor(path: &Path) -> Result<ProjectDescriptor, String> {
+    let mut file = File::open(path).map_err(|e| format!("{:?}", e))?;
     let mut s = String::new();
-    file.read_to_string(&mut s)?;
+    file.read_to_string(&mut s)
+        .map_err(|e| format!("{:?}", e))?;
     parse_project_descriptor_str(&s)
 }
 
-pub fn parse_project_descriptor_str(s: &str) -> std::io::Result<ProjectDescriptor> {
-    let project_descriptor: ProjectDescriptor = toml::from_str(s).map_err(|e| {
-        std::io::Error::new(
-            std::io::ErrorKind::InvalidData,
-            format!("Could not parse project descriptor: {:?}.", e),
-        )
-    })?;
+pub fn parse_project_descriptor_str(s: &str) -> Result<ProjectDescriptor, String> {
+    let project_descriptor: ProjectDescriptor =
+        toml::from_str(s).map_err(|e| format!("{:?}.", e.to_string()))?;
     Ok(project_descriptor)
 }
 
-pub fn parse_project_descriptor_bytes(s: &[u8]) -> std::io::Result<ProjectDescriptor> {
-    let project_descriptor: ProjectDescriptor = toml::from_slice(s).map_err(|e| {
-        std::io::Error::new(
-            std::io::ErrorKind::InvalidData,
-            format!("Could not parse project descriptor: {:?}.", e),
-        )
-    })?;
+pub fn parse_project_descriptor_bytes(s: &[u8]) -> Result<ProjectDescriptor, String> {
+    let project_descriptor: ProjectDescriptor =
+        toml::from_slice(s).map_err(|e| format!("Could not parse project descriptor: {:?}.", e))?;
     Ok(project_descriptor)
 }

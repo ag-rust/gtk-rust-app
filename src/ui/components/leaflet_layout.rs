@@ -282,7 +282,7 @@ pub fn leaflet_layout(
     for view in views {
         if let Some((title, icon)) = &view.title_and_icon {
             view_stack.add_titled(&view.widget, Some(view.name), title);
-            let page = view_stack.page(&view.widget).unwrap();
+            let page = view_stack.page(&view.widget);
             page.set_icon_name(Some(icon));
         } else {
             view_stack.add_named(&view.widget, Some(view.name));
@@ -309,7 +309,7 @@ pub fn leaflet_layout(
 }
 
 fn append_views_to_sidebar(view_stack: &adw::ViewStack, navigation_sidebar: &gtk::ListBox) {
-    let model = view_stack.pages().unwrap();
+    let model = view_stack.pages();
     for i in 0..model.n_items() {
         let o = model.item(i).unwrap();
         let page: adw::ViewStackPage = o.downcast().unwrap();

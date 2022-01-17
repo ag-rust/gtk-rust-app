@@ -138,9 +138,10 @@ pub fn gobjectify(args: TokenStream, input: TokenStream) -> TokenStream {
             }
 
             pub fn property_expression(field: &str) -> gtk::Expression {
-                let ex = gtk::PropertyExpression::new::<gtk::Expression>(
+                let a: Option<gtk::PropertyExpression> = None;
+                let ex = gtk::PropertyExpression::new(
                     Self::gobject_type(),
-                    None,
+                    a,
                     field,
                 );
                 ex.upcast()
@@ -250,7 +251,7 @@ fn get_param_spec_for_ident(field_ident: Ident, type_path: &Path) -> TokenStream
             "String" => {
                 TokenStream::from(quote!(
                     //
-                    glib::ParamSpec::new_string(
+                    glib::ParamSpecString::new(
                         &stringify!(#field_ident).replace("_", "-"),
                         &stringify!(#field_ident).replace("_", "-"),
                         &stringify!(#field_ident).replace("_", "-"),
@@ -262,7 +263,7 @@ fn get_param_spec_for_ident(field_ident: Ident, type_path: &Path) -> TokenStream
             "bool" => {
                 TokenStream::from(quote!(
                     //
-                    glib::ParamSpec::new_boolean(
+                    glib::ParamSpecBoolean::new(
                         &stringify!(#field_ident).replace("_", "-"),
                         &stringify!(#field_ident).replace("_", "-"),
                         &stringify!(#field_ident).replace("_", "-"),
@@ -281,7 +282,7 @@ fn get_param_spec_for_ident(field_ident: Ident, type_path: &Path) -> TokenStream
     } else {
         TokenStream::from(quote!(
             //
-            glib::ParamSpec::new_string(
+            glib::ParamSpecString::new(
                 stringify!(#field_ident),
                 stringify!(#field_ident),
                 stringify!(#field_ident),
@@ -297,7 +298,7 @@ fn _get_param_spec_for_ident(field_ident: Ident, type_ident: &Ident) -> TokenStr
         "String" => {
             TokenStream::from(quote!(
                 //
-                glib::ParamSpec::new_string(
+                glib::ParamSpecString::new(
                     stringify!(#field_ident),
                     stringify!(#field_ident),
                     stringify!(#field_ident),
@@ -310,7 +311,7 @@ fn _get_param_spec_for_ident(field_ident: Ident, type_ident: &Ident) -> TokenStr
             // warn!("Ident type is implemented but not {:?} in gobjectify macro", type_ident);
             TokenStream::from(quote!(
                 //
-                glib::ParamSpec::new_string(
+                glib::ParamSpecString::new(
                     stringify!(#field_ident),
                     stringify!(#field_ident),
                     stringify!(#field_ident),
@@ -414,160 +415,160 @@ fn get_gobject_cell_fields(
     cell_fields
 }
 
-// widget
-// -----------------------------------------------------------------------------------------------------------------
+// // widget
+// // -----------------------------------------------------------------------------------------------------------------
 
-#[proc_macro_attribute]
-pub fn widget(_args: TokenStream, input: TokenStream) -> TokenStream {
-    let input = parse_macro_input!(input as syn::ItemFn);
+// #[proc_macro_attribute]
+// pub fn widget(_args: TokenStream, input: TokenStream) -> TokenStream {
+//     let input = parse_macro_input!(input as syn::ItemFn);
 
-    let function_name = &input.sig.ident;
-    let return_type = if let syn::ReturnType::Type(_, return_type) = &input.sig.output {
-        if let syn::Type::Path(return_type) = return_type.as_ref() {
-            if let Some(return_type) = return_type.path.get_ident() {
-                return_type
-            } else {
-                panic!("Wrong return type for widget function.");
-            }
-        } else {
-            panic!("Wrong return type for widget function.");
-        }
-    } else {
-        panic!("Wrong return type for widget function.");
-    };
-    let widget_name = quote::format_ident!("{}", return_type);
-    let widget_mod_name = quote::format_ident!("widget_{}", function_name);
+//     let function_name = &input.sig.ident;
+//     let return_type = if let syn::ReturnType::Type(_, return_type) = &input.sig.output {
+//         if let syn::Type::Path(return_type) = return_type.as_ref() {
+//             if let Some(return_type) = return_type.path.get_ident() {
+//                 return_type
+//             } else {
+//                 panic!("Wrong return type for widget function.");
+//             }
+//         } else {
+//             panic!("Wrong return type for widget function.");
+//         }
+//     } else {
+//         panic!("Wrong return type for widget function.");
+//     };
+//     let widget_name = quote::format_ident!("{}", return_type);
+//     let widget_mod_name = quote::format_ident!("widget_{}", function_name);
 
-    let fields = get_gobject_fields_from_function(&input);
-    let celled_fields = get_gobject_cell_fields(&fields, None);
-    let param_specs = get_param_specs(&fields, None);
-    let property_setters = get_property_setters(&fields, None);
-    let property_getters = get_property_getters(&fields, None);
-    let constructor_arguments = get_constructor_arguments(&fields, None);
-    let gobject_construct_arguments = get_gobject_constructor_arguments(&fields, None);
+//     let fields = get_gobject_fields_from_function(&input);
+//     let celled_fields = get_gobject_cell_fields(&fields, None);
+//     let param_specs = get_param_specs(&fields, None);
+//     let property_setters = get_property_setters(&fields, None);
+//     let property_getters = get_property_getters(&fields, None);
+//     let constructor_arguments = get_constructor_arguments(&fields, None);
+//     let gobject_construct_arguments = get_gobject_constructor_arguments(&fields, None);
 
-    let gen = quote! {
-        #input
+//     let gen = quote! {
+//         #input
 
-        #[allow(non_snake_case)]
-        mod #widget_mod_name {
-            mod imp {
-                use glib::ToValue;
-                use gtk::glib;
-                use gtk::subclass::prelude::*;
-                use glib::ObjectExt;
-                use glib::Cast;
+//         #[allow(non_snake_case)]
+//         mod #widget_mod_name {
+//             mod imp {
+//                 use glib::ToValue;
+//                 use gtk::glib;
+//                 use gtk::subclass::prelude::*;
+//                 use glib::ObjectExt;
+//                 use glib::Cast;
 
-                #[derive(Default)]
-                pub struct #widget_name {
-                    #celled_fields
-                }
+//                 #[derive(Default)]
+//                 pub struct #widget_name {
+//                     #celled_fields
+//                 }
 
-                #[glib::object_subclass]
-                impl ObjectSubclass for #widget_name {
-                    const NAME: &'static str = stringify!(#widget_name);
-                    type Type = super::#widget_name;
-                    type ParentType = gtk::Widget;
-                }
+//                 #[glib::object_subclass]
+//                 impl ObjectSubclass for #widget_name {
+//                     const NAME: &'static str = stringify!(#widget_name);
+//                     type Type = super::#widget_name;
+//                     type ParentType = gtk::Widget;
+//                 }
 
-                impl ObjectImpl for #widget_name {
-                    fn properties() -> &'static [glib::ParamSpec] {
-                        static PROPERTIES: glib::once_cell::sync::Lazy<Vec<glib::ParamSpec>> =
-                            glib::once_cell::sync::Lazy::new(|| {
-                                vec![
-                                    #param_specs
-                                ]
-                            });
-                        PROPERTIES.as_ref()
-                    }
+//                 impl ObjectImpl for #widget_name {
+//                     fn properties() -> &'static [glib::ParamSpec] {
+//                         static PROPERTIES: glib::once_cell::sync::Lazy<Vec<glib::ParamSpec>> =
+//                             glib::once_cell::sync::Lazy::new(|| {
+//                                 vec![
+//                                     #param_specs
+//                                 ]
+//                             });
+//                         PROPERTIES.as_ref()
+//                     }
 
-                    fn set_property(
-                        &self,
-                        _obj: &Self::Type,
-                        _id: usize,
-                        value: &glib::Value,
-                        pspec: &glib::ParamSpec,
-                    ) {
-                        match pspec.name() {
-                            #property_setters
-                            _ => {
-                                unimplemented!("prop delegation not implemented")
-                            },
-                        }
-                    }
+//                     fn set_property(
+//                         &self,
+//                         _obj: &Self::Type,
+//                         _id: usize,
+//                         value: &glib::Value,
+//                         pspec: &glib::ParamSpec,
+//                     ) {
+//                         match pspec.name() {
+//                             #property_setters
+//                             _ => {
+//                                 unimplemented!("prop delegation not implemented")
+//                             },
+//                         }
+//                     }
 
-                    fn property(
-                        &self,
-                        _obj: &Self::Type,
-                        _id: usize,
-                        pspec: &glib::ParamSpec,
-                    ) -> glib::Value {
-                        match pspec.name() {
-                            #property_getters
-                            _ => {
-                                unimplemented!("prop delegation not implemented")
-                            },
-                        }
-                    }
-                }
+//                     fn property(
+//                         &self,
+//                         _obj: &Self::Type,
+//                         _id: usize,
+//                         pspec: &glib::ParamSpec,
+//                     ) -> glib::Value {
+//                         match pspec.name() {
+//                             #property_getters
+//                             _ => {
+//                                 unimplemented!("prop delegation not implemented")
+//                             },
+//                         }
+//                     }
+//                 }
 
-                impl WidgetImpl for #widget_name {}
-            }
+//                 impl WidgetImpl for #widget_name {}
+//             }
 
-            use glib::Object;
-            use gtk::glib;
+//             use glib::Object;
+//             use gtk::glib;
 
-            glib::wrapper! {
-                pub struct #widget_name(ObjectSubclass<imp::#widget_name>)
-                @extends gtk::Widget, gtk::Box,
-                @implements gtk::Accessible;
-            }
+//             glib::wrapper! {
+//                 pub struct #widget_name(ObjectSubclass<imp::#widget_name>)
+//                 @extends gtk::Widget, gtk::Box,
+//                 @implements gtk::Accessible;
+//             }
 
-            impl #widget_name {
-                pub fn new(
-                    #constructor_arguments
-                ) -> Self {
-                    Object::new(&[
-                        #gobject_construct_arguments
-                    ]).expect(&format!("Failed to create {}.", stringify!(#widget_name)))
-                }
-            }
-        }
+//             impl #widget_name {
+//                 pub fn new(
+//                     #constructor_arguments
+//                 ) -> Self {
+//                     Object::new(&[
+//                         #gobject_construct_arguments
+//                     ]).expect(&format!("Failed to create {}.", stringify!(#widget_name)))
+//                 }
+//             }
+//         }
 
-        pub use #widget_mod_name::#widget_name;
-    };
+//         pub use #widget_mod_name::#widget_name;
+//     };
 
-    TokenStream::from(gen)
-}
+//     TokenStream::from(gen)
+// }
 
-fn get_gobject_fields_from_function(input: &syn::ItemFn) -> Punctuated<Field, Token![,]> {
-    let mut fields: Punctuated<Field, Comma> = Punctuated::new();
-    for arg in &input.sig.inputs {
-        match arg {
-            FnArg::Receiver(_) => panic!("Self argument not supported for widget macro"),
-            FnArg::Typed(arg) => {
-                let ident = match arg.pat.as_ref() {
-                    Pat::Ident(ident) => &ident.ident,
-                    _ => unimplemented!("Function arguments other than simple identifiers are not supported right now"),
-                };
-                let ty = arg.ty.as_ref();
-                let field = syn::parse::<syn::FieldsNamed>(
-                    quote!(
-                        {
-                        pub #ident: #ty
-                        }
-                    )
-                    .into(),
-                )
-                .expect("Could not generate field names from function arguments");
-                let field = field
-                    .named
-                    .first()
-                    .expect("Could get single field from generated fields")
-                    .clone();
-                fields.push(field);
-            }
-        };
-    }
-    fields
-}
+// fn get_gobject_fields_from_function(input: &syn::ItemFn) -> Punctuated<Field, Token![,]> {
+//     let mut fields: Punctuated<Field, Comma> = Punctuated::new();
+//     for arg in &input.sig.inputs {
+//         match arg {
+//             FnArg::Receiver(_) => panic!("Self argument not supported for widget macro"),
+//             FnArg::Typed(arg) => {
+//                 let ident = match arg.pat.as_ref() {
+//                     Pat::Ident(ident) => &ident.ident,
+//                     _ => unimplemented!("Function arguments other than simple identifiers are not supported right now"),
+//                 };
+//                 let ty = arg.ty.as_ref();
+//                 let field = syn::parse::<syn::FieldsNamed>(
+//                     quote!(
+//                         {
+//                         pub #ident: #ty
+//                         }
+//                     )
+//                     .into(),
+//                 )
+//                 .expect("Could not generate field names from function arguments");
+//                 let field = field
+//                     .named
+//                     .first()
+//                     .expect("Could get single field from generated fields")
+//                     .clone();
+//                 fields.push(field);
+//             }
+//         };
+//     }
+//     fields
+// }

@@ -12,15 +12,10 @@ use sha2::Digest;
 use crate::ProjectDescriptor;
 
 pub fn build_gresources(project_descriptor: &ProjectDescriptor, target: &Path) {
-    if project_descriptor.app.is_none() {
-        eprintln!("[gra] Skip compiling gresources: Missing [app] section in Cargo.toml");
-        return;
-    }
-
     let assets = target.join("assets");
     std::fs::create_dir_all(&assets).expect("Could not create target/assets dir");
 
-    let app_desc = project_descriptor.app.as_ref().unwrap();
+    let app_desc = &project_descriptor.app;
 
     let resource_xml_path = assets.join(format!("resources.gresource.xml"));
 

@@ -81,22 +81,18 @@ main-width-request = 300
 [actions]
 quit = { accelerators = ["<primary>W"] }
 
-[features]
-libadwaita-1 = []
-
 [dependencies]
 log = "0.4"
 env_logger = "0.9"
 gettext-rs = { version = "0.7", features = ["gettext-system"] }
-gtk = { version = "0.3", package = "gtk4" }
-libadwaita = { package = "libadwaita", version = "= 0.1.0-alpha-6" }
-libadwaita-sys = { package = "libadwaita-sys", version = "= 0.1.0-alpha-6" }
-gdk4 = "0.3"
-glib = "0.14"
+libadwaita = { package = "libadwaita", version = "0.1" }
+gtk = { version = "0.4", package = "gtk4" }
+gdk4 = "0.4"
+glib = "0.15"
 
-# IT gtk-rust-app = { git = "https://gitlab.com/loers/gtk-rust-app.git", features = ["ui"] }
+# IT gtk-rust-app = { git = "https://gitlab.com/loers/gtk-rust-app.git", branch = "{BRANCH}", features = ["ui"] }
 gtk-rust-app = { path = "../..", features = ["ui"] }
 
 [build-dependencies]
-# IT gtk-rust-app = { git = "https://gitlab.com/loers/gtk-rust-app.git", features = ["build"] }
+# IT gtk-rust-app = { git = "https://gitlab.com/loers/gtk-rust-app.git", branch = "{BRANCH}", features = ["build"] }
 gtk-rust-app = { path = "../..", features = ["build"] }

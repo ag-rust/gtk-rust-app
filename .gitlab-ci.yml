@@ -5,9 +5,9 @@
     - if: '$CI_COMMIT_TITLE =~ /chore\(version\)\:.*/'
       when: never
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-      when: always
+      when: on_success
     - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
-      when: always
+      when: on_success
 
 .run_on_main:
   rules:
@@ -49,7 +49,7 @@ formatting:
     - rustup component add rustfmt
     - cargo fmt --all -- --color=always --check
 
-outdated check:
+outdated-check:
   image: $CI_REGISTRY_IMAGE/x86-64:main
   allow_failure: true
   stage: prechecks
