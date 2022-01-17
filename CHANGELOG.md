@@ -2,6 +2,11 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## v0.1.0 - 2022-01-17
+#### Features
+- Provide gstore with gtk-rust-app - (4867eee) - Florian Loers
+- - -
+
 ## v0.0.7 - 2022-01-16
 #### Continuous Integration
 - Use fixed version for gtk-rust-app-derive - (ee12ef6) - Florian Loers
