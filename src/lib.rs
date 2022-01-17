@@ -26,6 +26,9 @@ pub use once_cell;
 pub use regex;
 pub use serde_json;
 
+#[cfg(feature = "store")]
+pub use gstore;
+
 #[cfg(feature = "ui")]
 pub fn load_resources(resource_bytes: &[u8]) {
     let res = gdk4::gio::Resource::from_data(&resource_bytes.into())

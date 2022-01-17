@@ -1,17 +1,25 @@
-.run_always:
+.run_on_merge_request:
   rules:
     - if: $CI_COMMIT_TAG
       when: never
     - if: '$CI_COMMIT_TITLE =~ /chore\(version\)\:.*/'
       when: never
-    - when: always
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      when: always
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+      when: always
 
 .run_on_main:
   rules:
+    - if: $CI_COMMIT_TAG
+      when: never
     - if: '$CI_COMMIT_TITLE =~ /chore\(version\)\:.*/'
       when: never
-    - if: "$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH"
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      when: never
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
       when: on_success
+
 
 .cache-x86-64:
   cache:
@@ -34,7 +42,7 @@ include:
 formatting:
   image: rust:latest
   stage: prechecks
-  extends: [.run_always]
+  extends: [.run_on_merge_request]
   script:
     - rustup component add rustfmt
     - cargo fmt --all -- --color=always --check
@@ -43,7 +51,7 @@ outdated-check:
   image: $CI_REGISTRY_IMAGE/x86-64:$CI_COMMIT_REF_SLUG
   allow_failure: true
   stage: prechecks
-  extends: [.run_always]
+  extends: [.run_on_merge_request]
   script:
     - source $HOME/.cargo/env
     - cargo outdated -R --exit-code -1
@@ -51,7 +59,7 @@ outdated-check:
 build and test x86-64:
   image: $CI_REGISTRY_IMAGE/x86-64:$CI_COMMIT_REF_SLUG
   stage: checks
-  extends: [.run_always, .cache-x86-64]
+  extends: [.run_on_merge_request, .cache-x86-64]
   script:
     - source $HOME/.cargo/env
     - cargo test --release

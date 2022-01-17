@@ -15,7 +15,11 @@ build-container-x86-64:
       when: never
     - if: '$CI_COMMIT_TITLE =~ /chore\(version\)\:.*/'
       when: never
-    - changes:
+    - if: "$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH"
+      changes:
         - ci/ci-x86-64.dockerfile
         - ci/.gitlab-ci-containers.yml
-        - $CI_COMMIT_MESSAGE =~ /\[ci build]/
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      changes:
+        - ci/ci-x86-64.dockerfile
+        - ci/.gitlab-ci-containers.yml
