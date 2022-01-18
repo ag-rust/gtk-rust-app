@@ -31,7 +31,8 @@
       - target/
 
 stages:
-  - containers
+  - container-x86-64
+  - container-flatpak
   - prechecks
   - checks
   - release
@@ -47,8 +48,8 @@ formatting:
     - rustup component add rustfmt
     - cargo fmt --all -- --color=always --check
 
-outdated-check:
-  image: $CI_REGISTRY_IMAGE/x86-64:$CI_COMMIT_REF_SLUG
+outdated check:
+  image: $CI_REGISTRY_IMAGE/x86-64:main
   allow_failure: true
   stage: prechecks
   extends: [.run_on_merge_request]
@@ -57,7 +58,7 @@ outdated-check:
     - cargo outdated -R --exit-code -1
 
 build and test x86-64:
-  image: $CI_REGISTRY_IMAGE/x86-64:$CI_COMMIT_REF_SLUG
+  image: $CI_REGISTRY_IMAGE/flatpak:main
   stage: checks
   extends: [.run_on_merge_request, .cache-x86-64]
   script:
@@ -65,7 +66,7 @@ build and test x86-64:
     - cargo test --release
 
 release:
-  image: $CI_REGISTRY_IMAGE/x86-64:$CI_COMMIT_REF_SLUG
+  image: $CI_REGISTRY_IMAGE/x86-64:main
   stage: release
   extends: [.run_on_main, .cache-x86-64]
   script:

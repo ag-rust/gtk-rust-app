@@ -1,13 +1,13 @@
 build-container-x86-64:
   image: docker:19.03.12
-  stage: containers
+  stage: container-x86-64
   services:
     - docker:19.03.12-dind
   variables:
-    IMAGE_TAG: $CI_REGISTRY_IMAGE/x86-64:$CI_COMMIT_REF_SLUG
+    IMAGE_TAG: $CI_REGISTRY_IMAGE/x86-64:main
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker build -t $IMAGE_TAG -f ci/ci-x86-64.dockerfile .
+    - docker build -t $IMAGE_TAG -f ci/x86-64.dockerfile .
     - docker push $IMAGE_TAG
   timeout: 3 hours
   rules:
@@ -17,9 +17,37 @@ build-container-x86-64:
       when: never
     - if: "$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH"
       changes:
-        - ci/ci-x86-64.dockerfile
+        - ci/x86-64.dockerfile
         - ci/.gitlab-ci-containers.yml
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       changes:
-        - ci/ci-x86-64.dockerfile
+        - ci/x86-64.dockerfile
+        - ci/.gitlab-ci-containers.yml
+
+build-container-flatpak:
+  image: docker:19.03.12
+  stage: container-flatpak
+  services:
+    - docker:19.03.12-dind
+  variables:
+    IMAGE_TAG: $CI_REGISTRY_IMAGE/flatpak:main
+  script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker build -t $IMAGE_TAG -f ci/flatpak.dockerfile .
+    - docker push $IMAGE_TAG
+  timeout: 3 hours
+  rules:
+    - if: $CI_COMMIT_TAG
+      when: never
+    - if: '$CI_COMMIT_TITLE =~ /chore\(version\)\:.*/'
+      when: never
+    - if: "$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH"
+      changes:
+        - ci/x86-64.dockerfile
+        - ci/ci-flatpak.dockerfile
+        - ci/.gitlab-ci-containers.yml
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      changes:
+        - ci/x86-64.dockerfile
+        - ci/flatpak.dockerfile
         - ci/.gitlab-ci-containers.yml

@@ -20,7 +20,7 @@ FLATPAK_SHARE_DIR=/app/share
 # Build a release binary and install everything in the flaAPP_IDtpak container
 .flatpak-install:
 	@# Install binary
-	@cargo build --release --features libadwaita-1
+	@cargo build --release --features libadwaita-1 
 	@mkdir -p $(FLATPAK_BIN_DIR)
 	@install $(TARGET_DIR)/release/$(BIN_NAME) $(FLATPAK_BIN_DIR)/$(APP_ID)
 

@@ -13,7 +13,20 @@ pub fn build_flatpak(project_descriptor: &ProjectDescriptor, target: &Path) {
     create_dir_all(&path).expect("Could not create data build directory.");
 
     create_desktop_file(project_descriptor, &path).expect("Could not create desktop file.");
-    create_flatpak_yml(project_descriptor, &path).expect("Could not create flatpak yml.");
+
+    let dev_flatpak_manifest = include_str!("../../data/flatpak-dev.template.yml");
+    create_flatpak_yml(
+        project_descriptor,
+        &path,
+        dev_flatpak_manifest,
+        Some(".dev"),
+    )
+    .expect("Could not create flatpak yml.");
+
+    let publish_flatpak_manifest = include_str!("../../data/flatpak.template.yml");
+    create_flatpak_yml(project_descriptor, &path, publish_flatpak_manifest, None)
+        .expect("Could not create flatpak yml.");
+
     create_app_descriptor_xml(project_descriptor, &path).expect("Could not create flatpak yml.");
     create_images(project_descriptor, &path).expect("Could not copy app images.");
 }
@@ -75,9 +88,12 @@ fn create_desktop_file(descriptor: &ProjectDescriptor, path: &Path) -> std::io::
     Ok(())
 }
 
-fn create_flatpak_yml(descriptor: &ProjectDescriptor, path: &Path) -> std::io::Result<()> {
-    let template = include_str!("../../data/flatpak.template.yml");
-
+fn create_flatpak_yml(
+    descriptor: &ProjectDescriptor,
+    path: &Path,
+    template: &str,
+    infix: Option<&str>,
+) -> std::io::Result<()> {
     if descriptor.app.is_none() {
         eprintln!("[gra] Skip flatpak.yml file: Missing [app] section in Cargo.toml");
         return Ok(());
@@ -86,7 +102,7 @@ fn create_flatpak_yml(descriptor: &ProjectDescriptor, path: &Path) -> std::io::R
     let app_desc = descriptor.app.as_ref().unwrap();
 
     let mut path = PathBuf::from(path);
-    path.push(format!("{}.yml", app_desc.id));
+    path.push(format!("{}{}.yml", app_desc.id, infix.unwrap_or("")));
 
     println!("[gra] Generate {:?}", path);
     let mut file = File::create(path)?;
@@ -230,4 +246,79 @@ fn create_app_descriptor_xml(descriptor: &ProjectDescriptor, path: &Path) -> std
             .as_bytes(),
     )?;
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use std::{collections::HashMap, env::temp_dir, vec};
+
+    use crate::AppDescriptor;
+
+    use super::*;
+
+    fn desc() -> ProjectDescriptor {
+        ProjectDescriptor {
+            package: crate::PackageDescriptor {
+                name: String::from("example"),
+                version: String::from("0.1.0"),
+                authors: Some(vec![String::from("Foo Bar")]),
+                homepage: Some(String::from("https://foo.bar")),
+                license: None,
+                repository: None,
+            },
+            app: Some(AppDescriptor {
+                id: String::from("org.example.Test"),
+                generic_name: Some(String::from("Test")),
+                summary: String::from("This is a test"),
+                description: String::from("This is a test description"),
+                categories: vec![String::from("GTK")],
+                metadata_license: String::from("Foo"),
+                screenshots: None,
+                releases: None,
+                content_rating: None,
+                recommends: vec![],
+                permissions: vec!["share=network".into(), "socket=x11".into()],
+                resources: None,
+            }),
+            actions: Some(HashMap::new()),
+            settings: Some(HashMap::new()),
+        }
+    }
+
+    #[test]
+    fn test_flatpak_dev_manifest_generation() {
+        let temp = temp_dir().join("test_flatpak_dev_manifest_generation");
+        create_dir_all(&temp).unwrap();
+        let dev_flatpak_manifest = include_str!("../../data/flatpak-dev.template.yml");
+        create_flatpak_yml(&desc(), temp.as_path(), dev_flatpak_manifest, None)
+            .expect("Could not generate org.example.Test.yml");
+
+        let content = std::fs::read_to_string(temp.join("org.example.Test.yml")).unwrap();
+
+        let unreplaced_tag = regex::Regex::new(r"\{.*\}").unwrap();
+        assert!(!unreplaced_tag.is_match(&content));
+    }
+
+    #[test]
+    fn test_flatpak_prod_manifest_generation() {
+        let temp = temp_dir().join("test_flatpak_prod_manifest_generation");
+        create_dir_all(&temp).unwrap();
+        let manifest = include_str!("../../data/flatpak.template.yml");
+        create_flatpak_yml(&desc(), temp.as_path(), manifest, None)
+            .expect("Could not generate org.example.Test.yml");
+
+        let mut content = std::fs::read_to_string(temp.join("org.example.Test.yml")).unwrap();
+
+        let unreplaced_tag = regex::Regex::new(r"(?m)\{(.*)\}").unwrap();
+        assert!(unreplaced_tag.is_match(&content));
+
+        assert!(content.contains("{archive}"));
+        content = content.replace("{archive}", "");
+
+        assert!(unreplaced_tag.is_match(&content));
+        assert!(content.contains("{sha256}"));
+        content = content.replace("{sha256}", "");
+
+        assert!(!unreplaced_tag.is_match(&content));
+    }
 }
