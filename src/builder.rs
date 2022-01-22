@@ -100,7 +100,7 @@ impl AppBuilder {
     #[cfg(feature = "store")]
     pub fn store<S: std::fmt::Debug + Clone + Default + PartialEq + Eq>(
         mut self,
-        store: &'static gstore::Store<S>,
+        store: &'static mut gstore::Store<S>,
     ) -> Self {
         self.delegate_store = Some(store.delegate());
         self

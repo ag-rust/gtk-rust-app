@@ -36,6 +36,7 @@ stages:
   - prechecks
   - checks
   - release
+  - post-release
 
 include:
   - local: /ci/.gitlab-ci-containers.yml
@@ -78,3 +79,15 @@ release:
     - TAG_VERSION=$(grep version Cargo.toml | head -1 | sed 's/version = "//g' | sed 's/"//g')
     - git push --atomic origin v$TAG_VERSION HEAD:$CI_COMMIT_BRANCH
     - cargo publish --token $CRATES_IO_TOKEN
+
+update dependency cache:
+  image: $CI_REGISTRY_IMAGE/flatpak:main
+  stage: post-release
+  extends: [.cache-x86-64]
+  rules:
+    - if: $CI_COMMIT_TAG
+      when: on_success
+    - when: never
+  script:
+    - cargo clean
+    - cargo build --release
