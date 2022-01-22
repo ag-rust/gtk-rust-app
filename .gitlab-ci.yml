@@ -81,7 +81,7 @@ release:
     - cargo publish --token $CRATES_IO_TOKEN
 
 update dependency cache:
-  image: $CI_REGISTRY_IMAGE/flatpak:main
+  image: $CI_REGISTRY_IMAGE/x86-64:main
   stage: post-release
   extends: [.cache-x86-64]
   rules:
@@ -89,5 +89,6 @@ update dependency cache:
       when: on_success
     - when: never
   script:
+    - source $HOME/.cargo/env
     - cargo clean
     - cargo build --release
