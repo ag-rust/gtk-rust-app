@@ -2,6 +2,11 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## v0.2.1 - 2022-01-22
+#### Miscellaneous Chores
+- Bump gstore version - (b20108e) - Florian Loers
+- - -
+
 ## v0.2.0 - 2022-01-18
 #### Features
 - Generate release flatpak manifest - (55157ee) - Florian Loers
