@@ -430,9 +430,9 @@ dependencies = [
 
 [[package]]
 name = "gstore"
-version = "0.6.4"
+version = "0.6.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "186a96072b6c1f285d66d685a2438bbeb136cbac013e5be8c825c6ba70c4da20"
+checksum = "b59b51944ca7234b0fc1b98e39d7ad1233344e59c0abc6ad13b331303b79f27d"
 dependencies = [
  "gdk4",
  "glib",
@@ -447,7 +447,7 @@ dependencies = [
 
 [[package]]
 name = "gtk-rust-app"
-version = "0.2.1"
+version = "0.2.2"
 dependencies = [
  "fs_extra",
  "gdk4",
