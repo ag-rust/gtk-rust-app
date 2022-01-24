@@ -2,6 +2,11 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## v0.2.3 - 2022-01-24
+#### Miscellaneous Chores
+- Upgrade GTK version - (ca495ee) - Florian Loers
+- - -
+
 ## v0.2.2 - 2022-01-22
 #### Continuous Integration
 - Fix post-release target cache cleanup - (0844607) - Florian Loers
