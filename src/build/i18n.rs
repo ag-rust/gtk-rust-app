@@ -20,7 +20,7 @@ pub fn build_gettext(project_descriptor: &ProjectDescriptor, target: &Path) {
 
     let mut pofiles: Vec<String>;
     match std::process::Command::new("grep")
-        .args(&["-lr", "gettext", "src/"])
+        .args(&["-lr", "-E", "gettext|translatable", "src/"])
         .output()
     {
         Ok(output) => {

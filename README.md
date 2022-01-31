@@ -57,6 +57,7 @@ Create the file main.rs:
 
 ```rust
 // src/main.rs
+
 #[macro_use]
 extern crate gtk_rust_app;
 #[macro_use]
@@ -64,8 +65,12 @@ extern crate log;
 
 use gettextrs::gettext;
 use gtk::prelude::*;
+use gtk_rust_app::widgets::LeafletLayout;
+
+use crate::home::Home;
 
 // This module will contain our home page
+mod card;
 mod home;
 
 fn main() {
@@ -73,8 +78,7 @@ fn main() {
 
     info!("{}", gettext("Check po/ dir for translations."));
 
-    // Call app builder with metadata from your Cargo.toml and the 
-    // gresource file compiled by the `gtk_rust_app::build` script (see below).
+    // call app builder with metadata from your Cargo.toml and the gresource file compiled by the `gtk_rust_app::build` script (see below).
     gtk_rust_app::builder::builder(
         include_bytes!("../Cargo.toml"),
         include_bytes!("../target/gra-gen/compiled.gresource"),
@@ -83,26 +87,23 @@ fn main() {
     .styles(include_str!("styles.css"))
     .build(
         |application, _project_descriptor, settings| {
-            // Define all navigatable pages of the app
-            let pages = vec![gtk_rust_app::ui::components::Page::new(
-                home::home(),
-                "home",
-                Some((gettext("Home"), "go-home-symbolic".into())),
-            )];
+            // setup custom types
+            card::Card::static_type();
 
             // The pages will be placed in this predefined adaptive layout.
-            let leaflet_layout = gtk_rust_app::ui::components::leaflet_layout(
-                settings,
-                Vec::new(),
-                Vec::new(),
-                pages,
-            );
+            let leaflet_layout = LeafletLayout::builder(settings)
+                .add_page(Home::new())
+                .build();
+
+            // LeafletLayout contains a toast overlay
+            leaflet_layout.show_message("Hello world");
+
             // and we use the leaflet layout as root content in the apps window.
-            let window = gtk_rust_app::ui::window(
+            let window = gtk_rust_app::window(
                 application,
                 gettext("Example"),
                 settings,
-                leaflet_layout.leaflet.upcast_ref(),
+                leaflet_layout.upcast_ref(),
             );
             window.show();
         },
@@ -124,43 +125,60 @@ The home page:
 ```rust
 //src/home.rs
 
+use gdk4::subclass::prelude::ObjectSubclassIsExt;
 use gtk::prelude::*;
+use gettextrs::gettext;
+use crate::card::Card;
 
-// Define a UI component with a function
-pub fn home() -> gtk::Widget {
-    // The interface macro allows to define your UI with the common gtk ui XML structures.
-    interface!(r#"
-        <object class="GtkBox" id="page">
-            <property name="visible">True</property>
-            <property name="orientation">vertical</property>
-            <property name="spacing">16</property>
-
-            <child>
-            <object class="GtkLabel" id="label">
-                <property name="label">gettext("Home page")</property>
-            </object>
-            </child>
-            
-            <child>
-            <object class="GtkButton" id="button">
-                <property name="visible">True</property>
-                <property name="label">gettext("Press me")</property>
-            </object>
-            </child>
-
-        </object>
-    "#
-        // Each widget which has an id can be retrieved here as a variable.
-        page: gtk::Box,
-        label: gtk::Label,
-        button: gtk::Button,
-    );
-
-    println!("Do stuff with the widgets: {:?} {:?}", label, button);
-
-    page.upcast()
+// Define a page of your app as a new widget
+#[widget(gtk::Box)]
+#[template(file = "home.ui")]
+struct Home {
+    #[template_child]
+    pub card: TemplateChild<Card>,
 }
 
+impl Home {
+    pub fn constructed(&self) {
+        self.imp().card.connect_card_clicked(|card| {
+            println!("Text prop: {:?}", card.text());
+        });
+    }
+
+    pub fn new() -> Home {
+        glib::Object::new(&[]).expect("Failed to create Home")
+    }
+}
+
+impl gtk_rust_app::widgets::Page for Home {
+    fn name(&self) -> &'static str {
+        "home"
+    }
+
+    fn title_and_icon(&self) -> Option<(String, String)> {
+        Some((gettext("Home"), "go-home-symbolic".into()))
+    }
+}
+```
+
+```xml
+// home.ui
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <template class="Home" parent="GtkBox">
+    <property name="hexpand">True</property>
+    <property name="vexpand">True</property>
+    <property name="orientation">vertical</property>
+    <style>
+      <class name="home" />
+    </style>
+
+    <child>
+      <object class="Card" id="card"></object>
+    </child>
+
+  </template>
+</interface>
 ```
 
 ### Optional: Build script
@@ -169,7 +187,6 @@ Define the build script:
 
 ```rust
 // build.rs
-
 pub fn main() {
     println!("cargo:rerun-if-changed=build.rs");
     println!("cargo:rerun-if-changed=Cargo.toml");

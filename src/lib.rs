@@ -17,15 +17,16 @@ pub mod builder;
 
 #[cfg(feature = "ui")]
 mod ui;
+
 use fs_extra::dir::CopyOptions;
 #[cfg(feature = "ui")]
 pub use gtk_rust_app_derive::*;
 #[cfg(feature = "ui")]
-pub use ui::components;
+pub use ui::widgets;
 #[cfg(feature = "ui")]
 pub use ui::window::window;
 
-// #[cfg(feature = "build")]
+#[cfg(feature = "build")]
 pub mod build;
 
 pub use once_cell;

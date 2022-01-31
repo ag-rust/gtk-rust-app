@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <template class="Home" parent="GtkBox">
+    <property name="hexpand">True</property>
+    <property name="vexpand">True</property>
+    <property name="orientation">vertical</property>
+    <style>
+      <class name="home" />
+    </style>
+
+    <child>
+      <object class="Card" id="card"></object>
+    </child>
+
+  </template>
+</interface>

@@ -1,1 +1,10 @@
 /* SPDX-License-Identifier: GPL-3.0-or-later */
+.home {
+    padding: 1rem;
+}
+.card {
+    padding: 1rem;
+}
+.card>*:not(:last-child) {
+    margin-bottom: 1rem;
+}

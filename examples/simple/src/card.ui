@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <template class="Card" parent="GtkBox">
+    <property name="orientation">vertical</property>
+    <property name="halign">center</property>
+    <property name="valign">center</property>
+
+    <style>
+      <class name="card" />
+    </style>
+
+    <child>
+      <object class="GtkLabel" id="label">
+        <style>
+          <class name="title-2" />
+        </style>
+        <property name="label" translatable="yes">Hello, GTK</property>
+      </object>
+    </child>
+
+    <child>
+      <object class="GtkEntry" id="card_entry">
+        <property name="text">Default text</property>
+      </object>
+    </child>
+
+    <child>
+      <object class="GtkButton" id="card_button">
+        <property name="label">Button</property>
+        <signal name="clicked" handler="on_click" swapped="true"/>
+      </object>
+    </child>
+
+  </template>
+</interface>

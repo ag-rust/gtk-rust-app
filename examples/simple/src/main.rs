@@ -7,8 +7,12 @@ extern crate log;
 
 use gettextrs::gettext;
 use gtk::prelude::*;
+use gtk_rust_app::widgets::LeafletLayout;
+
+use crate::home::Home;
 
 // This module will contain our home page
+mod card;
 mod home;
 
 fn main() {
@@ -25,22 +29,23 @@ fn main() {
     .styles(include_str!("styles.css"))
     .build(
         |application, _project_descriptor, settings| {
-            // Define all navigatable pages of the app
-            let pages = vec![gtk_rust_app::components::Page::new(
-                home::home(),
-                "home",
-                Some((gettext("Home"), "go-home-symbolic".into())),
-            )];
+            // setup custom types
+            card::Card::static_type();
 
             // The pages will be placed in this predefined adaptive layout.
-            let leaflet_layout =
-                gtk_rust_app::components::leaflet_layout(settings, Vec::new(), Vec::new(), pages);
+            let leaflet_layout = LeafletLayout::builder(settings)
+                .add_page(Home::new())
+                .build();
+
+            // LeafletLayout contains a toast overlay
+            leaflet_layout.show_message("Hello world");
+
             // and we use the leaflet layout as root content in the apps window.
             let window = gtk_rust_app::window(
                 application,
                 gettext("Example"),
                 settings,
-                leaflet_layout.leaflet.upcast_ref(),
+                leaflet_layout.upcast_ref(),
             );
             window.show();
         },

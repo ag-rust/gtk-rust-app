@@ -1,38 +1,36 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
+use gdk4::subclass::prelude::ObjectSubclassIsExt;
 use gtk::prelude::*;
+use gettextrs::gettext;
+use crate::card::Card;
 
-// Define a UI component with a function
-pub fn home() -> gtk::Widget {
-    // The interface macro allows to define your UI with the common gtk ui XML structures.
-    interface!(r#"
-        <object class="GtkBox" id="page">
-            <property name="visible">True</property>
-            <property name="orientation">vertical</property>
-            <property name="spacing">16</property>
+// Define a page of your app as a new widget
+#[widget(gtk::Box)]
+#[template(file = "home.ui")]
+struct Home {
+    #[template_child]
+    pub card: TemplateChild<Card>,
+}
 
-            <child>
-            <object class="GtkLabel" id="label">
-                <property name="label">gettext("Home page")</property>
-            </object>
-            </child>
-            
-            <child>
-            <object class="GtkButton" id="button">
-                <property name="visible">True</property>
-                <property name="label">gettext("Press me")</property>
-            </object>
-            </child>
+impl Home {
+    pub fn constructed(&self) {
+        self.imp().card.connect_card_clicked(|card| {
+            println!("Text prop: {:?}", card.text());
+        });
+    }
 
-        </object>
-    "#
-        // Each widget which has an id can be retrieved here as a variable.
-        page: gtk::Box,
-        label: gtk::Label,
-        button: gtk::Button,
-    );
+    pub fn new() -> Home {
+        glib::Object::new(&[]).expect("Failed to create Home")
+    }
+}
 
-    println!("Do stuff with the widgets: {:?} {:?}", label, button);
+impl gtk_rust_app::widgets::Page for Home {
+    fn name(&self) -> &'static str {
+        "home"
+    }
 
-    page.upcast()
+    fn title_and_icon(&self) -> Option<(String, String)> {
+        Some((gettext("Home"), "go-home-symbolic".into()))
+    }
 }
