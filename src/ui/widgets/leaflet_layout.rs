@@ -112,6 +112,8 @@ pub struct LeafletLayout {
     #[template_child]
     pub sidebar: TemplateChild<gtk::Box>,
     #[template_child]
+    pub sidebar_content: TemplateChild<adw::Leaflet>,
+    #[template_child]
     pub sidebar_scrolled_window: TemplateChild<gtk::ScrolledWindow>,
     #[template_child]
     pub main: TemplateChild<gtk::Box>,
@@ -207,6 +209,9 @@ impl LeafletLayout {
     }
     pub fn sidebar(&self) -> &gtk::Box {
         &self.imp().sidebar
+    }
+    pub fn sidebar_content(&self) -> &adw::Leaflet {
+        &self.imp().sidebar_content
     }
     pub fn sidebar_scrolled_window(&self) -> &gtk::ScrolledWindow {
         &self.imp().sidebar_scrolled_window
