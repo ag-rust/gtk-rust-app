@@ -17,7 +17,7 @@ pub fn build_gresources(project_descriptor: &ProjectDescriptor, target: &Path) {
 
     let app_desc = &project_descriptor.app;
 
-    let resource_xml_path = assets.join(format!("resources.gresource.xml"));
+    let resource_xml_path = assets.join("resources.gresource.xml");
 
     let template = include_str!("../../data/gresource.template.xml");
 
@@ -36,7 +36,10 @@ pub fn build_gresources(project_descriptor: &ProjectDescriptor, target: &Path) {
         old_hash = None;
     };
 
-    let icons_path = app_desc.resources.clone().unwrap_or("assets/icons".into());
+    let icons_path = app_desc
+        .resources
+        .clone()
+        .unwrap_or_else(|| "assets/icons".into());
     let icons_path = Path::new(&icons_path);
 
     let mut resources = Vec::new();
@@ -54,7 +57,7 @@ pub fn build_gresources(project_descriptor: &ProjectDescriptor, target: &Path) {
 
     let svg_icon_path = Path::new("assets/icon.svg");
     if svg_icon_path.exists() {
-        let filename = format!("{}", &app_desc.id);
+        let filename = app_desc.id.clone();
         resources.push(format!(
             "    <file preprocess=\"xml-stripblanks\" alias=\"icons/{}.svg\">assets/icon.svg</file>",
             filename,

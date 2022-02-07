@@ -17,12 +17,15 @@ pub fn sidebar(view_stack: &adw::ViewStack) -> gtk::Widget {
         let o = model.item(i).unwrap();
         let page: adw::ViewStackPage = o.downcast().unwrap();
 
-        let name = page.name().map(|n| n.to_string()).unwrap_or("".into());
+        let name = page
+            .name()
+            .map(|n| n.to_string())
+            .unwrap_or_else(|| "".into());
 
         if page.title().is_some() {
             let row = adw::ActionRow::builder()
-                .icon_name(&page.icon_name().unwrap_or("".into()))
-                .title(&page.title().unwrap_or("".into()))
+                .icon_name(&page.icon_name().unwrap_or_else(|| "".into()))
+                .title(&page.title().unwrap_or_else(|| "".into()))
                 .selectable(true)
                 .activatable(true)
                 .build();

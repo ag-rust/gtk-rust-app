@@ -22,7 +22,7 @@ Creating apps with gtk-rust-app requires to
 
 ### Cargo.toml
 
-Define app metadata and the dependency to `gtk-rust-app` in your Cargo.toml (see [Manifest](docs/Manifest.md) for more information):
+Define app metadata and the dependency to `gtk-rust-app` in your Cargo.toml. [Checkout the manifest reference](docs/ManifestReference.md) for more info.
 
 ```toml
 # Cargo.toml
@@ -236,15 +236,6 @@ The app has adaptive behaviour per default.
 LANGUAGE="de_DE:de" LANG="de_DE.utf8" TEXT_DOMAIN="target" cargo run
 ```
 
-## Build
-
-```sh
-# build your binary release
-cargo build --release
-# create a flatpak
-make -C out flat
-```
-
 ## Requirements
 
 Debian dependencies:
@@ -255,7 +246,7 @@ sudo apt install libgraphene-1.0-dev libgtk-4-dev flatpak-builder
 
 Arch dependencies:
 ```
-pacman
+TODO
 ```
 
 To build a flatpak you need the to install gnome-nightly remote. Download https://nightly.gnome.org/gnome-nightly.flatpakrepo.
@@ -269,4 +260,29 @@ flatpak install org.gnome.Sdk//master
 flatpak install org.gnome.Platform//master
 flatpak install org.freedesktop.Sdk.Extension.rust-stable//21.08
 ```
+
+## Writing custom Widgets
+
+The example above already showed a custom GTK widget. The `#[widget]` macro makes it easy and fast to create custom widgets but it abstracts and simplifies some aspects. The GTK Rust book is a good source to understand what the `#[widget]` macro does and how to create custom widgets with full control.
+
+https://gtk-rs.org/gtk4-rs/stable/latest/book/introduction.html
+
+## Domain model and GObjects
+
+Sometimes we need GObjects. Widgets are special GObjects. Similar to the `#[widget]` macro gtk-rust-app allows to define GObejcts quickly with the `#[gobject]` macro. An Example:
+
+We have a domain struct `TodoItem`. Our application state stores these `TodoItems` in a vec and we want to select a single one in a GTK combobox (Or more likely in a `AdwComboRow`) menu. GTK expects a combobox to have a backing `model` which is a list of `GObjects`. Writing a GObject for our `TodoItem` is a lot of boilerplate code and we might not need the whole *objectiveness* because we are not writing object oriented code. Nevertheless we want our combobox to show the possible `TodoItems` and select one probably knowing the selected Id.
+
+To address this problem `gtk-rust-app` provides the attribute macro `gobjectify`. The macro allows to define a set of fields for a struct which will be used to generate a GObject definition.
+
+```rust
+#[gobject(id, name)]
+struct TodoItem {
+    id: String,
+    name: String,
+    text: String,
+}
+```
+
+Will generate the GObject `TodoItemGObject` with the properties `id` and `name` and a public method `TodoItem.gobjectify() -> TodoItemGObject`.
 

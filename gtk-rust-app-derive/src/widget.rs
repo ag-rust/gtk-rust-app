@@ -30,8 +30,7 @@ pub fn widget(args: TokenStream, input: TokenStream) -> TokenStream {
 
     let skip_auto_impl = struct_attrs
         .iter()
-        .find(|a| a.path.is_ident(ATTR_SKIP_AUTO_IMPL))
-        .is_some();
+        .any(|a| a.path.is_ident(ATTR_SKIP_AUTO_IMPL));
 
     let struct_attrs: Vec<Attribute> = struct_attrs
         .into_iter()
@@ -198,8 +197,8 @@ pub fn widget(args: TokenStream, input: TokenStream) -> TokenStream {
     };
 
     if std::env::var("GRA_PRINT_GEN").is_ok() {
-        println!("");
-        println!("");
+        println!();
+        println!();
         println!("###########################################");
         println!("### {} ", widget_name);
         println!("###########################################");
@@ -252,17 +251,14 @@ fn get_property_getters(fields: &Punctuated<Field, Comma>) -> Punctuated<Arm, To
     getters
 }
 
-fn get_property_attr<'a>(field: &'a Field) -> Option<&'a Attribute> {
+fn get_property_attr(field: &Field) -> Option<&Attribute> {
     for attr in &field.attrs {
-        match attr.style {
-            syn::AttrStyle::Outer => {
-                if let Some(ident) = attr.path.get_ident() {
-                    if ident.to_string().starts_with(ATTR_PROPERTY) {
-                        return Some(attr);
-                    }
+        if let syn::AttrStyle::Outer = attr.style {
+            if let Some(ident) = attr.path.get_ident() {
+                if ident.to_string().starts_with(ATTR_PROPERTY) {
+                    return Some(attr);
                 }
             }
-            _ => {}
         }
     }
     None
@@ -293,15 +289,11 @@ fn get_final_struct_fields(fields: &Punctuated<Field, Comma>) -> Punctuated<Fiel
                 field.attrs = field
                     .attrs
                     .into_iter()
-                    .filter_map(|a| {
+                    .filter(|a| {
                         if let Some(ident) = a.path.get_ident() {
-                            if ident.to_string().starts_with("property") {
-                                None
-                            } else {
-                                Some(a)
-                            }
+                            !ident.to_string().starts_with("property")
                         } else {
-                            None
+                            false
                         }
                     })
                     .collect();
@@ -311,7 +303,7 @@ fn get_final_struct_fields(fields: &Punctuated<Field, Comma>) -> Punctuated<Fiel
         }
         filtered_fields.push(field.clone())
     }
-    return filtered_fields;
+    filtered_fields
 }
 
 fn get_fields_with_property_attr(
@@ -323,7 +315,7 @@ fn get_fields_with_property_attr(
             filtered_fields.push(f.clone())
         }
     }
-    return filtered_fields;
+    filtered_fields
 }
 
 fn get_param_specs_from_attrs(fields: &Punctuated<Field, Comma>) -> Punctuated<Expr, Token![,]> {
@@ -331,109 +323,106 @@ fn get_param_specs_from_attrs(fields: &Punctuated<Field, Comma>) -> Punctuated<E
     for field in fields {
         let field_ident = field.ident.as_ref().unwrap();
         for attr in &field.attrs {
-            match attr.style {
-                syn::AttrStyle::Outer => {
-                    if let Some(ident) = attr.path.get_ident() {
-                        if !ident.to_string().starts_with(ATTR_PROPERTY) {
-                            continue;
-                        }
-
-                        if ident.to_string() == ATTR_PROPERTY_STRING {
-                            param_specs.push(
-                                syn::parse(TokenStream::from(quote!(
-                                    //
-                                    glib::ParamSpecString::new(
-                                        &stringify!(#field_ident).replace("_", "-"),
-                                        "",
-                                        "",
-                                        None,
-                                        glib::ParamFlags::READWRITE,
-                                    )
-                                )))
-                                .unwrap(),
-                            );
-                            continue;
-                        }
-
-                        if ident.to_string() == ATTR_PROPERTY_BOOL {
-                            param_specs.push(
-                                syn::parse(TokenStream::from(quote!(
-                                    //
-                                    glib::ParamSpecBoolean::new(
-                                        &stringify!(#field_ident).replace("_", "-"),
-                                        "",
-                                        "",
-                                        false,
-                                        glib::ParamFlags::READWRITE,
-                                    )
-                                )))
-                                .unwrap(),
-                            );
-                            continue;
-                        }
-
-                        if ident.to_string() == ATTR_PROPERTY_I64 {
-                            param_specs.push(
-                                syn::parse(TokenStream::from(quote!(
-                                    //
-                                    glib::ParamSpecInt64::new(
-                                        &stringify!(#field_ident).replace("_", "-"),
-                                        "",
-                                        "",
-                                        i64::MIN,
-                                        i64::MAX,
-                                        0,
-                                        glib::ParamFlags::READWRITE,
-                                    )
-                                )))
-                                .unwrap(),
-                            );
-                            continue;
-                        }
-
-                        if ident.to_string() == ATTR_PROPERTY_U64 {
-                            param_specs.push(
-                                syn::parse(TokenStream::from(quote!(
-                                    //
-                                    glib::ParamSpecUInt64::new(
-                                        &stringify!(#field_ident).replace("_", "-"),
-                                        "",
-                                        "",
-                                        u64::MIN,
-                                        u64::MAX,
-                                        0,
-                                        glib::ParamFlags::READWRITE,
-                                    )
-                                )))
-                                .unwrap(),
-                            );
-                            continue;
-                        }
-
-                        if ident.to_string() == ATTR_PROPERTY_F64 {
-                            param_specs.push(
-                                syn::parse(TokenStream::from(quote!(
-                                    //
-                                    glib::ParamSpecDouble::new(
-                                        &stringify!(#field_ident).replace("_", "-"),
-                                        "",
-                                        "",
-                                        f64::MIN,
-                                        f64::MAX,
-                                        0.,
-                                        glib::ParamFlags::READWRITE,
-                                    )
-                                )))
-                                .unwrap(),
-                            );
-                            continue;
-                        }
-
-                        let e: Expr = syn::parse2(attr.tokens.clone()).unwrap();
-                        param_specs.push(e);
+            if let syn::AttrStyle::Outer = attr.style {
+                if let Some(ident) = attr.path.get_ident() {
+                    if !ident.to_string().starts_with(ATTR_PROPERTY) {
+                        continue;
                     }
+
+                    if *ident == ATTR_PROPERTY_STRING {
+                        param_specs.push(
+                            syn::parse(TokenStream::from(quote!(
+                                //
+                                glib::ParamSpecString::new(
+                                    &stringify!(#field_ident).replace("_", "-"),
+                                    "",
+                                    "",
+                                    None,
+                                    glib::ParamFlags::READWRITE,
+                                )
+                            )))
+                            .unwrap(),
+                        );
+                        continue;
+                    }
+
+                    if *ident == ATTR_PROPERTY_BOOL {
+                        param_specs.push(
+                            syn::parse(TokenStream::from(quote!(
+                                //
+                                glib::ParamSpecBoolean::new(
+                                    &stringify!(#field_ident).replace("_", "-"),
+                                    "",
+                                    "",
+                                    false,
+                                    glib::ParamFlags::READWRITE,
+                                )
+                            )))
+                            .unwrap(),
+                        );
+                        continue;
+                    }
+
+                    if *ident == ATTR_PROPERTY_I64 {
+                        param_specs.push(
+                            syn::parse(TokenStream::from(quote!(
+                                //
+                                glib::ParamSpecInt64::new(
+                                    &stringify!(#field_ident).replace("_", "-"),
+                                    "",
+                                    "",
+                                    i64::MIN,
+                                    i64::MAX,
+                                    0,
+                                    glib::ParamFlags::READWRITE,
+                                )
+                            )))
+                            .unwrap(),
+                        );
+                        continue;
+                    }
+
+                    if *ident == ATTR_PROPERTY_U64 {
+                        param_specs.push(
+                            syn::parse(TokenStream::from(quote!(
+                                //
+                                glib::ParamSpecUInt64::new(
+                                    &stringify!(#field_ident).replace("_", "-"),
+                                    "",
+                                    "",
+                                    u64::MIN,
+                                    u64::MAX,
+                                    0,
+                                    glib::ParamFlags::READWRITE,
+                                )
+                            )))
+                            .unwrap(),
+                        );
+                        continue;
+                    }
+
+                    if *ident == ATTR_PROPERTY_F64 {
+                        param_specs.push(
+                            syn::parse(TokenStream::from(quote!(
+                                //
+                                glib::ParamSpecDouble::new(
+                                    &stringify!(#field_ident).replace("_", "-"),
+                                    "",
+                                    "",
+                                    f64::MIN,
+                                    f64::MAX,
+                                    0.,
+                                    glib::ParamFlags::READWRITE,
+                                )
+                            )))
+                            .unwrap(),
+                        );
+                        continue;
+                    }
+
+                    let e: Expr = syn::parse2(attr.tokens.clone()).unwrap();
+                    param_specs.push(e);
                 }
-                _ => {}
             }
         }
     }
@@ -494,7 +483,7 @@ fn get_signal_attr(field: &Field) -> Option<&Attribute> {
             return Some(attr);
         }
     }
-    return None;
+    None
 }
 
 fn get_signal_ret_attr(field: &Field) -> Option<&Attribute> {
@@ -503,7 +492,7 @@ fn get_signal_ret_attr(field: &Field) -> Option<&Attribute> {
             return Some(attr);
         }
     }
-    return None;
+    None
 }
 
 fn get_signal_connectors(fields: &Punctuated<Field, Comma>) -> Vec<ItemFn> {
@@ -635,7 +624,7 @@ fn is_callback_field(field: &Field) -> bool {
             return true;
         }
     }
-    return false;
+    false
 }
 
 fn get_template_callbacks(fields: &Punctuated<Field, Comma>) -> Vec<ItemFn> {
@@ -662,10 +651,8 @@ fn get_template_callbacks(fields: &Punctuated<Field, Comma>) -> Vec<ItemFn> {
                 )
                 .into(),
             )
-            .expect(&format!(
-                "Could not generate signals from macro argument `{}`",
-                field.to_token_stream()
-            ));
+            .unwrap_or_else(|_| panic!("Could not generate signals from macro argument `{}`",
+                field.to_token_stream()));
             callbacks.push(callback);
         }
     }

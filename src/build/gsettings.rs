@@ -25,8 +25,8 @@ pub fn build_gschema_settings(project_descriptor: &ProjectDescriptor, target: &P
     path.push(format!("{}.gschema.xml", app_desc.id));
 
     println!("[gra] Create {:?}", path);
-    let mut file =
-        File::create(&path).expect(&format!("Could not create gsettings file {:?}.", &path));
+    let mut file = File::create(&path)
+        .unwrap_or_else(|_| panic!("Could not create gsettings file {:?}.", &path));
 
     let mut keys = Vec::new();
     for (name, default_value) in settings_desc.iter() {

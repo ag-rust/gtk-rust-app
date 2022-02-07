@@ -55,13 +55,12 @@ impl AppBuilder {
             for (action_name, desc) in actions {
                 let action = match &desc.type_ {
                     Some(action_type) => {
-                        let t = VariantTy::new(&action_type).expect(&format!(
-                            "Wrong type for action '{}': {:?}",
-                            action_name, action_type
-                        ));
-                        SimpleAction::new(&action_name, Some(&t))
+                        let t = VariantTy::new(action_type).unwrap_or_else(|_| {
+                            panic!("Wrong type for action '{}': {:?}", action_name, action_type)
+                        });
+                        SimpleAction::new(action_name, Some(t))
                     }
-                    None => SimpleAction::new(&action_name, None),
+                    None => SimpleAction::new(action_name, None),
                 };
 
                 #[cfg(feature = "store")]

@@ -41,15 +41,18 @@ stages:
 include:
   - local: /ci/.gitlab-ci-containers.yml
 
-formatting:
-  image: rust:latest
+formatting & clippy:
+  image: $CI_REGISTRY_IMAGE/x86-64:main
   stage: prechecks
   extends: [.run_on_merge_request]
   script:
-    - rustup component add rustfmt
+    - source $HOME/.cargo/env
     - cargo fmt --all -- --color=always --check
+    - cargo clippy --no-deps --features ui,build,store
+    - cd examples/simple && cargo fmt --all -- --color=always --check && cd ../..
+    - cd examples/simple && cargo clippy && cd ../..
 
-outdated-check:
+outdated & audit:
   image: $CI_REGISTRY_IMAGE/x86-64:main
   allow_failure: true
   stage: prechecks
@@ -57,6 +60,7 @@ outdated-check:
   script:
     - source $HOME/.cargo/env
     - cargo outdated -R --exit-code -1
+    - cargo audit
 
 build and test x86-64:
   image: $CI_REGISTRY_IMAGE/flatpak:main

@@ -7,7 +7,7 @@ extern crate log;
 mod descriptor;
 use std::fs::{create_dir_all, remove_dir_all, File};
 use std::io::Write;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::process::Command;
 
 pub use descriptor::*;
@@ -92,20 +92,20 @@ pub fn build(output_dir: Option<&std::path::Path>) {
     }
     let project_descriptor = project_descriptor.unwrap();
 
-    let target = output_dir.unwrap_or(&std::path::Path::new("target/gra-gen"));
+    let target = output_dir.unwrap_or_else(|| std::path::Path::new("target/gra-gen"));
     std::fs::create_dir_all(target).expect("Could not create out dir.");
 
-    build_actions(&project_descriptor, &target);
-    build_gschema_settings(&project_descriptor, &target);
-    build_flatpak(&project_descriptor, &target);
-    build_gresources(&project_descriptor, &target);
-    build_makefile(&project_descriptor, &target);
-    build_gettext(&project_descriptor, &target);
+    build_actions(&project_descriptor, target);
+    build_gschema_settings(&project_descriptor, target);
+    build_flatpak(&project_descriptor, target);
+    build_gresources(&project_descriptor, target);
+    build_makefile(&project_descriptor, target);
+    build_gettext(&project_descriptor, target);
 }
 
 /// Prepare the flatpak-temp directory which may be used to build a flatpak app.
 /// Returns a PathBuf to that directory.
-pub fn prepare_flatpak_temp(project_dir: &PathBuf) -> Result<PathBuf, String> {
+pub fn prepare_flatpak_temp(project_dir: &Path) -> Result<PathBuf, String> {
     println!("[gra] Prepare flatpak build...");
 
     let flatpak_temp = project_dir.join("target/flatpak-temp");

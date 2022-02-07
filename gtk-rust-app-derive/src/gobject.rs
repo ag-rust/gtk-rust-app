@@ -112,6 +112,7 @@ pub fn gobject(args: TokenStream, input: TokenStream) -> TokenStream {
             }
 
             impl #gobject_name {
+                #[allow(clippy::ptr_arg)]
                 pub fn new(
                     #fn_arguments
                 ) -> Self {

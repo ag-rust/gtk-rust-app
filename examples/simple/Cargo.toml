@@ -13,7 +13,7 @@ default-run = "simple-example"
 id = "org.example.SimpleExample"
 # A generic name. E.g. if your calculator project name is
 # foo-calc you still want your distro to show the app as "Calculator".
-generic_name = "Simple"
+generic-name = "Simple"
 # License for metadata.
 metadata-license = "CC0-1.0"
 # Short summary of what your app does. 

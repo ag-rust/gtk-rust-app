@@ -28,11 +28,11 @@ pub fn build_flatpak(project_descriptor: &ProjectDescriptor, target: &Path) {
         .expect("Could not create flatpak yml.");
 
     if let Err(e) = create_app_descriptor_xml(project_descriptor, &path) {
-        eprintln!("[gra] {}", e.to_string());
+        eprintln!("[gra] {}", e);
         return;
     }
     if let Err(e) = create_images(project_descriptor, &path) {
-        eprintln!("{}", e.to_string());
+        eprintln!("[gra] {}", e);
     }
 }
 
@@ -115,15 +115,10 @@ fn as_tag_list<T>(
     elements: Option<&Vec<T>>,
     to_tag: impl Fn(&T) -> String + 'static,
 ) -> Option<String> {
-    elements.map(|v| {
-        v.iter()
-            .map(|t| to_tag(t))
-            .collect::<Vec<String>>()
-            .join("\n")
-    })
+    elements.map(|v| v.iter().map(to_tag).collect::<Vec<String>>().join("\n"))
 }
 
-fn to_tag(value: &String, tagname: &str, linebreaks: bool, indentation: usize) -> String {
+fn to_tag(value: &str, tagname: &str, linebreaks: bool, indentation: usize) -> String {
     if linebreaks {
         format!(
             "{0}<{1}>\n{2}\n{0}</{1}>",
@@ -155,7 +150,7 @@ fn create_app_descriptor_xml(descriptor: &ProjectDescriptor, path: &Path) -> std
             .replace("{description}", &app_desc.description)
             .replace(
                 "{license}",
-                &descriptor.package.license.as_ref().unwrap_or(&"".into()),
+                descriptor.package.license.as_ref().unwrap_or(&"".into()),
             )
             .replace(
                 "{homepage}",
@@ -163,18 +158,18 @@ fn create_app_descriptor_xml(descriptor: &ProjectDescriptor, path: &Path) -> std
             )
             .replace(
                 "{repository}",
-                &descriptor.package.repository.as_ref().unwrap_or(&"".into()),
+                descriptor.package.repository.as_ref().unwrap_or(&"".into()),
             )
             .replace("{metadata_license}", &app_desc.metadata_license)
             .replace(
                 "{recommends}",
                 &as_tag_list(Some(&app_desc.recommends), |re| match re {
-                        crate::Recommend::Display(v) => to_tag(&v, "display", false, 8),
-                        crate::Recommend::Control(v) => to_tag(&v, "control", false, 8),
+                        crate::Recommend::Display(v) => to_tag(v, "display", false, 8),
+                        crate::Recommend::Control(v) => to_tag(v, "control", false, 8),
                     }
                 )
                 .map(|s| to_tag(&s, "recommends", true, 4))
-                .unwrap_or("".into())
+                .unwrap_or_else(|| "".into())
             )
             .replace(
                 "{categories}",
@@ -182,7 +177,7 @@ fn create_app_descriptor_xml(descriptor: &ProjectDescriptor, path: &Path) -> std
                     to_tag(category, "category", false, 8)
                 })
                 .map(|s| to_tag(&s, "categories", true, 4))
-                .unwrap_or("".into()),
+                .unwrap_or_else(|| "".into()),
             )
             .replace(
                 "{releases}",
@@ -194,18 +189,18 @@ fn create_app_descriptor_xml(descriptor: &ProjectDescriptor, path: &Path) -> std
                         )
                 })
                 .map(|s| to_tag(&s, "releases", true, 4))
-                .unwrap_or("".into()),
+                .unwrap_or_else(|| "".into()),
             )
             .replace(
                 "{screenshots}",
                 &as_tag_list(app_desc.screenshots.as_ref(), |s| {
                     format!("        <screenshot {}><image  type=\"source\">{}</image></screenshot>", 
-                        s.type_.as_ref().map(|t| format!("type=\"{}\"", t)).unwrap_or("".into()), 
+                        s.type_.as_ref().map(|t| format!("type=\"{}\"", t)).unwrap_or_else(|| "".into()), 
                         s.url
                     )
                 })
                 .map(|s| to_tag(&s, "screenshots", true, 4))
-                .unwrap_or("".into()),
+                .unwrap_or_else(|| "".into()),
             )
             .replace(
                 "{author}",
@@ -214,8 +209,8 @@ fn create_app_descriptor_xml(descriptor: &ProjectDescriptor, path: &Path) -> std
                      .map(|name|
                         name.split_once("<")
                             .map(|t| t.0.trim().to_string())
-                            .unwrap_or(name.clone())
-                    ).unwrap_or("".into())).unwrap_or("".into())
+                            .unwrap_or_else(|| name.clone())
+                    ).unwrap_or_else(|| "".into())).unwrap_or_else(|| "".into())
                 , "developer_name", false, 0)
             )
             .replace(
@@ -224,7 +219,7 @@ fn create_app_descriptor_xml(descriptor: &ProjectDescriptor, path: &Path) -> std
                     format!("        <content_attribute type=\"{}\">{}</content_attribute>", c.id, c.value)
                 })
                 .map(|cr| format!("    <content_rating type=\"oars-1.0\">\n{}\n    </content_rating>", cr))
-                .unwrap_or("".into())
+                .unwrap_or_else(|| "".into())
             )
             .as_bytes(),
     )?;

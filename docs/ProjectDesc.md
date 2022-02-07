@@ -1,7 +1,6 @@
-# Usage
+# Project template description
 
-The following document aims to explain how `gtk-rust-app` is supposed to help you writing apps.
-
+This document explains the default project structure and where additional code is generated.
 # Code structure
 
 Using `gtk-rust-app` a initial project setup should look like this:

@@ -50,8 +50,7 @@ fn test_build_flatpaks() {
         .replace_all(&test_toml_content, |caps: &Captures| {
             format!("gtk-rust-app{}", &caps[1])
         })
-        .replace("{BRANCH}", &target_branch)
-        .to_string();
+        .replace("{BRANCH}", &target_branch);
     println!("{}", test_toml_content);
 
     let mut f = File::create(&toml).unwrap();

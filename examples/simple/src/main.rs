@@ -59,3 +59,19 @@ fn main() {
         },
     );
 }
+
+// You can define gobjects like this
+#[gobject(id, name)]
+pub struct Pair {
+    id: String,
+    name: String,
+}
+
+impl Pair {
+    pub fn new(id: &str, name: String) -> Self {
+        Self {
+            id: id.into(),
+            name,
+        }
+    }
+}

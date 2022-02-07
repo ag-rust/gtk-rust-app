@@ -16,7 +16,7 @@ pub fn build_actions(project_descriptor: &ProjectDescriptor, target: &Path) {
     }
 
     let mut new_actions_file_content = String::new();
-    for (name, _) in project_descriptor.actions.as_ref().unwrap() {
+    for name in project_descriptor.actions.as_ref().unwrap().keys() {
         new_actions_file_content.push_str(&format!(
             "pub const {}: &str = \"{}\";\n",
             name.to_uppercase().replace("-", "_"),
@@ -36,7 +36,7 @@ pub fn build_actions(project_descriptor: &ProjectDescriptor, target: &Path) {
                 let mut actions_file =
                     File::create(path).expect("Could not create actions.rs file.");
                 actions_file
-                    .write(new_actions_file_content.as_bytes())
+                    .write_all(new_actions_file_content.as_bytes())
                     .expect("Could not write to actions.rs file.");
             }
         }
@@ -44,7 +44,7 @@ pub fn build_actions(project_descriptor: &ProjectDescriptor, target: &Path) {
             println!("[gra] Create {:?}", &path);
             let mut actions_file = File::create(&path).expect("Could not create actions.rs file.");
             actions_file
-                .write(new_actions_file_content.as_bytes())
+                .write_all(new_actions_file_content.as_bytes())
                 .expect("Could not write to actions.rs file.");
         }
     }

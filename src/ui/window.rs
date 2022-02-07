@@ -31,5 +31,5 @@ pub fn window(
         }));
     }
 
-    return window;
+    window
 }

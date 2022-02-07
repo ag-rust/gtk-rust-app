@@ -55,102 +55,98 @@ pub fn build_gettext(project_descriptor: &ProjectDescriptor, target: &Path) {
     println!("[gra] Update po files");
     let lines = read_lines("po/LINGUAS");
     if lines.is_err() {
-        eprintln!(
-            "[gra] Can not read po/LINGUAS file: {}",
-            lines.unwrap_err().to_string()
-        );
+        eprintln!("[gra] Can not read po/LINGUAS file: {}", lines.unwrap_err());
         return;
     }
-    for line in lines.unwrap() {
-        if let Ok(line) = line {
-            if !line.starts_with("#") {
-                let locale = &line;
-                let po_file = format!("po/{}.po", locale);
-                let pot_file = target_pot_dir.join(format!("{}.pot", locale));
-                let target_mo_dir = target.join("locale").join(locale).join("LC_MESSAGES");
-                let target_mo = target
-                    .join("locale")
-                    .join(locale)
-                    .join("LC_MESSAGES")
-                    .join(format!("{}.mo", domain));
+    for line in lines.unwrap().flatten() {
+        if !line.starts_with('#') {
+            let locale = &line;
+            let po_file = format!("po/{}.po", locale);
+            let pot_file = target_pot_dir.join(format!("{}.pot", locale));
+            let target_mo_dir = target.join("locale").join(locale).join("LC_MESSAGES");
+            let target_mo = target
+                .join("locale")
+                .join(locale)
+                .join("LC_MESSAGES")
+                .join(format!("{}.mo", domain));
 
-                if let Err(e) = std::fs::create_dir_all(target_mo_dir) {
+            if let Err(e) = std::fs::create_dir_all(target_mo_dir) {
+                eprintln!("[gra] {:?}", e);
+            }
+
+            println!("[gra] Generate/Update translations {:?}", &po_file);
+
+            println!("[gra] xgettext -f {:?} -o {:?}", &potfiles, &pot_file);
+            match std::process::Command::new("xgettext")
+                .arg("-f")
+                .arg(&potfiles)
+                .arg("-o")
+                .arg(&pot_file)
+                .output()
+            {
+                Err(e) => {
+                    println!("[gra] {:?}", e);
+                }
+                Ok(output) => {
+                    let o = String::from_utf8(output.stdout).unwrap();
+                    if !o.trim().is_empty() {
+                        println!("[gra] {}", o);
+                    }
+                    if !output.stderr.is_empty() {
+                        for line in String::from_utf8(output.stderr)
+                            .unwrap_or_else(|_| "".into())
+                            .lines()
+                        {
+                            if line.is_empty() || line.contains("'rs'") || line.contains("warning")
+                            {
+                                continue;
+                            }
+                            eprintln!("[gra] {}", line);
+                        }
+                    }
+                }
+            }
+            println!("[gra] msgmerge {:?} -U {:?}", &po_file, &pot_file);
+            match std::process::Command::new("msgmerge")
+                .arg(&po_file)
+                .arg(&pot_file)
+                .arg("-U")
+                .output()
+            {
+                Err(e) => {
                     eprintln!("[gra] {:?}", e);
                 }
-
-                println!("[gra] Generate/Update translations {:?}", &po_file);
-
-                println!("[gra] xgettext -f {:?} -o {:?}", &potfiles, &pot_file);
-                match std::process::Command::new("xgettext")
-                    .arg("-f")
-                    .arg(&potfiles)
-                    .arg("-o")
-                    .arg(&pot_file)
-                    .output()
-                {
-                    Err(e) => {
-                        println!("[gra] {:?}", e);
+                Ok(output) => {
+                    let o = String::from_utf8(output.stdout).unwrap();
+                    if !o.trim().is_empty() {
+                        println!("[gra] {}", o);
                     }
-                    Ok(output) => {
-                        let o = String::from_utf8(output.stdout).unwrap();
-                        if !o.trim().is_empty() {
-                            println!("[gra] {}", o);
-                        }
-                        if output.stderr.len() > 0 {
-                            for line in String::from_utf8(output.stderr)
-                                .unwrap_or("".into())
-                                .lines()
-                            {
-                                if line == "" || line.contains("'rs'") || line.contains("warning") {
-                                    continue;
-                                }
-                                eprintln!("[gra] {}", line);
-                            }
-                        }
-                    }
-                }
-                println!("[gra] msgmerge {:?} -U {:?}", &po_file, &pot_file);
-                match std::process::Command::new("msgmerge")
-                    .arg(&po_file)
-                    .arg(&pot_file)
-                    .arg("-U")
-                    .output()
-                {
-                    Err(e) => {
-                        eprintln!("[gra] {:?}", e);
-                    }
-                    Ok(output) => {
-                        let o = String::from_utf8(output.stdout).unwrap();
-                        if !o.trim().is_empty() {
-                            println!("[gra] {}", o);
-                        }
-                        if output.stderr.len() > 0 {
-                            let s = String::from_utf8(output.stderr).unwrap_or("".into());
-                            if !s.contains("...") {
-                                eprintln!("[gra] {}", s)
-                            }
-                        }
-                    }
-                }
-                println!("[gra] msgfmt -o {:?} {:?}", &target_mo, &pot_file);
-                match std::process::Command::new("msgfmt")
-                    .arg("-o")
-                    .arg(&target_mo)
-                    .arg(&po_file)
-                    .output()
-                {
-                    Err(e) => {
-                        eprintln!("[gra] {:?}", e);
-                    }
-                    Ok(output) => {
-                        let o = String::from_utf8(output.stdout).unwrap();
-                        if !o.trim().is_empty() {
-                            println!("[gra] {}", o);
-                        }
-                        if output.stderr.len() > 0 {
-                            let s = String::from_utf8(output.stderr).unwrap_or("".into());
+                    if !output.stderr.is_empty() {
+                        let s = String::from_utf8(output.stderr).unwrap_or_else(|_| "".into());
+                        if !s.contains("...") {
                             eprintln!("[gra] {}", s)
                         }
+                    }
+                }
+            }
+            println!("[gra] msgfmt -o {:?} {:?}", &target_mo, &pot_file);
+            match std::process::Command::new("msgfmt")
+                .arg("-o")
+                .arg(&target_mo)
+                .arg(&po_file)
+                .output()
+            {
+                Err(e) => {
+                    eprintln!("[gra] {:?}", e);
+                }
+                Ok(output) => {
+                    let o = String::from_utf8(output.stdout).unwrap();
+                    if !o.trim().is_empty() {
+                        println!("[gra] {}", o);
+                    }
+                    if !output.stderr.is_empty() {
+                        let s = String::from_utf8(output.stderr).unwrap_or_else(|_| "".into());
+                        eprintln!("[gra] {}", s)
                     }
                 }
             }

@@ -2,7 +2,7 @@ use proc_macro::TokenStream;
 use quote::quote;
 use syn::{parse_macro_input, punctuated::Punctuated, Field, Ident, ItemImpl, Token};
 
-pub fn variant_serde_json(args: TokenStream, input: TokenStream) -> TokenStream {
+pub fn variant_serde_json(_args: TokenStream, input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as syn::ItemStruct);
 
     let fields = match &input.fields {

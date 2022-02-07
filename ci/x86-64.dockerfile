@@ -5,4 +5,5 @@ RUN pacman -Syu base-devel gtk4 libadwaita wget --noconfirm && \
     cargo install cocogitto --locked && \
     cargo install cargo-outdated --locked && \
     cargo install cargo-bump --locked && \
-    cargo install cargo-gra --locked
+    cargo install cargo-gra --locked && \
+    cargo install cargo-audit --locked

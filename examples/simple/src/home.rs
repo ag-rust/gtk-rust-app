@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-use gdk4::subclass::prelude::ObjectSubclassIsExt;
-use gtk::prelude::*;
-use gettextrs::gettext;
 use crate::card::Card;
+use gdk4::subclass::prelude::ObjectSubclassIsExt;
+use gettextrs::gettext;
+use gtk::prelude::*;
 
 // Define a page of your app as a new widget
 #[widget(gtk::Box)]
@@ -32,5 +32,11 @@ impl gtk_rust_app::widgets::Page for Home {
 
     fn title_and_icon(&self) -> Option<(String, String)> {
         Some((gettext("Home"), "go-home-symbolic".into()))
+    }
+}
+
+impl Default for Home {
+    fn default() -> Self {
+        Self::new()
     }
 }
