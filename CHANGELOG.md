@@ -2,6 +2,11 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## v0.4.1 - 2022-02-12
+#### Documentation
+- Add manifest reference - (b851a93) - Florian Loers
+- - -
+
 ## v0.4.0 - 2022-02-06
 #### Features
 - Add sidebar leaflet to LeafletLayout - (cee0a87) - Florian Loers
