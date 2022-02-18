@@ -2,6 +2,11 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## v0.4.2 - 2022-02-18
+#### Miscellaneous Chores
+- Strip binary in flatpak build - (71869aa) - Florian Loers
+- - -
+
 ## v0.4.1 - 2022-02-12
 #### Documentation
 - Add manifest reference - (b851a93) - Florian Loers
