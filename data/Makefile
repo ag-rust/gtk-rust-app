@@ -21,6 +21,7 @@ FLATPAK_SHARE_DIR=/app/share
 .flatpak-install:
 	@# Install binary
 	@cargo build --release
+	@strip $(TARGET_DIR)/release/$(BIN_NAME)
 	@mkdir -p $(FLATPAK_BIN_DIR)
 	@install $(TARGET_DIR)/release/$(BIN_NAME) $(FLATPAK_BIN_DIR)/$(APP_ID)
 
