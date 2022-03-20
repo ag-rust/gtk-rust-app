@@ -65,7 +65,7 @@ pub fn build_gresources(project_descriptor: &ProjectDescriptor, target: &Path) {
     }
 
     let new_file_content = template
-        .replace("{id}", &app_desc.id.replace(".", "/"))
+        .replace("{id}", &app_desc.id.replace('.', "/"))
         .replace("{resources}", &resources.join("\n"));
 
     let mut hasher = sha2::Sha256::new();

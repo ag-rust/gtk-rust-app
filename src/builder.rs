@@ -133,7 +133,7 @@ pub fn builder(cargo_toml: &[u8], resources: &[u8]) -> AppBuilder {
     let app = gtk::Application::builder()
         .application_id(&app_desc.id)
         .build();
-    let resource_base_path = format!("/{}/", app_desc.id.replace(".", "/"));
+    let resource_base_path = format!("/{}/", app_desc.id.replace('.', "/"));
     app.set_resource_base_path(Some(&resource_base_path));
 
     load_resources(resources);

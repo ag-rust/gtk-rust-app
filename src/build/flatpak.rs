@@ -207,7 +207,7 @@ fn create_app_descriptor_xml(descriptor: &ProjectDescriptor, path: &Path) -> std
                 &to_tag(&descriptor.package.authors.as_ref().map(|authors| authors
                      .first()
                      .map(|name|
-                        name.split_once("<")
+                        name.split_once('<')
                             .map(|t| t.0.trim().to_string())
                             .unwrap_or_else(|| name.clone())
                     ).unwrap_or_else(|| "".into())).unwrap_or_else(|| "".into())

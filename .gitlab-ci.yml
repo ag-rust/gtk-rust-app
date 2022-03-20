@@ -23,10 +23,7 @@
 
 .cache-x86-64:
   cache:
-    key:
-      files:
-        - Cargo.lock
-      prefix: x86-64-
+    key: x86-64 
     paths:
       - target/
 
@@ -38,13 +35,20 @@ stages:
   - release
   - post-release
 
-include:
-  - local: /ci/.gitlab-ci-containers.yml
+# Building manjro-base docker images on gitlab does not work currently.
+# include:
+#   - local: /ci/.gitlab-ci-containers.yml
+
 
 formatting & clippy:
   image: $CI_REGISTRY_IMAGE/x86-64:main
   stage: prechecks
   extends: [.run_on_merge_request]
+  cache:
+    key: x86-64-clippy
+    paths:
+      - target/
+      - examples/simple/target/
   script:
     - source $HOME/.cargo/env
     - cargo fmt --all -- --color=always --check
@@ -59,8 +63,9 @@ outdated & audit:
   extends: [.run_on_merge_request]
   script:
     - source $HOME/.cargo/env
-    - cargo outdated -R --exit-code -1
+    - cargo outdated -R
     - cargo audit
+    - cargo outdated -R --exit-code 1
 
 build and test x86-64:
   image: $CI_REGISTRY_IMAGE/flatpak:main
@@ -96,3 +101,11 @@ update dependency cache:
     - source $HOME/.cargo/env
     - cargo clean
     - cargo build --release
+
+released:
+  image: $CI_REGISTRY_IMAGE/x86-64:main
+  stage: post-release
+  rules: 
+    - if: $CI_COMMIT_MESSAGE =~ /chore\(version\):.*/
+  script:
+    - echo "Everything is fine"

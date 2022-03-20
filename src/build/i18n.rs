@@ -18,23 +18,21 @@ pub fn build_gettext(project_descriptor: &ProjectDescriptor, target: &Path) {
     let mut potfiles_file =
         File::create(&potfiles).expect("Could not create target/po/POTFILES.in");
 
-    let mut pofiles: Vec<String>;
-    match std::process::Command::new("grep")
+    let mut pofiles: Vec<String> = match std::process::Command::new("grep")
         .args(&["-lr", "-E", "gettext|translatable", "src/"])
         .output()
     {
-        Ok(output) => {
-            pofiles = String::from_utf8(output.stdout)
-                .unwrap()
-                .lines()
-                .map(String::from)
-                .collect();
-        }
+        Ok(output) => String::from_utf8(output.stdout)
+            .unwrap()
+            .lines()
+            .map(String::from)
+            .collect(),
         Err(e) => {
             eprintln!("[gra] {:?}", e);
             return;
         }
-    }
+    };
+
     pofiles.push(
         target
             .join(format!("data/{}.appdata.xml", id))

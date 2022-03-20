@@ -11,7 +11,7 @@ build-options:
   append-path: /usr/lib/sdk/rust-stable/bin
   env:
       CARGO_HOME: /run/build/{name}/cargo
-      RUSTFLAGS: --error-format=short --remap-path-prefix =../
+      RUSTFLAGS: --remap-path-prefix =../
       RUST_BACKTRACE: "1"
 modules:
   - name: {name}

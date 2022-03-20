@@ -49,7 +49,7 @@ pub fn build_gschema_settings(project_descriptor: &ProjectDescriptor, target: &P
     if let Err(e) = file.write_all(
         settings_gschema
             .replace("{id}", &app_desc.id)
-            .replace("{path}", &format!("/{}/", app_desc.id.replace(".", "/")))
+            .replace("{path}", &format!("/{}/", app_desc.id.replace('.', "/")))
             .replace("{keys}", &keys.join("\n"))
             .as_bytes(),
     ) {

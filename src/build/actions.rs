@@ -19,7 +19,7 @@ pub fn build_actions(project_descriptor: &ProjectDescriptor, target: &Path) {
     for name in project_descriptor.actions.as_ref().unwrap().keys() {
         new_actions_file_content.push_str(&format!(
             "pub const {}: &str = \"{}\";\n",
-            name.to_uppercase().replace("-", "_"),
+            name.to_uppercase().replace('-', "_"),
             name
         ));
     }

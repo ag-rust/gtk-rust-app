@@ -1,8 +1,8 @@
 build-container-x86-64:
-  image: docker:19.03.12
+  image: docker:19.03.15
   stage: container-x86-64
   services:
-    - docker:19.03.12-dind
+    - docker:19.03.15-dind
   variables:
     IMAGE_TAG: $CI_REGISTRY_IMAGE/x86-64:main
   script:
@@ -25,10 +25,10 @@ build-container-x86-64:
         - ci/.gitlab-ci-containers.yml
 
 build-container-flatpak:
-  image: docker:19.03.12
+  image: docker:19.03.15
   stage: container-flatpak
   services:
-    - docker:19.03.12-dind
+    - docker:19.03.15-dind
   variables:
     IMAGE_TAG: $CI_REGISTRY_IMAGE/flatpak:main
   script:
