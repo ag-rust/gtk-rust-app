@@ -2,6 +2,11 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## v0.4.3 - 2022-03-20
+#### Bug Fixes
+- Remove error-format option from release flatpak manifest - (37fe714) - Florian Loers
+- - -
+
 ## v0.4.2 - 2022-02-18
 #### Miscellaneous Chores
 - Strip binary in flatpak build - (71869aa) - Florian Loers
