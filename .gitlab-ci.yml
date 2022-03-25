@@ -20,7 +20,6 @@
     - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
       when: on_success
 
-
 .cache-x86-64:
   cache:
     key: x86-64 
@@ -39,25 +38,21 @@ stages:
 # include:
 #   - local: /ci/.gitlab-ci-containers.yml
 
-
 formatting & clippy:
-  image: $CI_REGISTRY_IMAGE/x86-64:main
+  image: registry.gitlab.com/loers/cargo-gra/x86-64:main
   stage: prechecks
   extends: [.run_on_merge_request]
   cache:
     key: x86-64-clippy
     paths:
       - target/
-      - examples/simple/target/
   script:
     - source $HOME/.cargo/env
     - cargo fmt --all -- --color=always --check
-    - cargo clippy --no-deps --features ui,build,store
-    - cd examples/simple && cargo fmt --all -- --color=always --check && cd ../..
-    - cd examples/simple && cargo clippy && cd ../..
+    - cargo clippy --no-deps --features ui,store
 
 outdated & audit:
-  image: $CI_REGISTRY_IMAGE/x86-64:main
+  image: registry.gitlab.com/loers/cargo-gra/x86-64:main
   allow_failure: true
   stage: prechecks
   extends: [.run_on_merge_request]
@@ -68,7 +63,7 @@ outdated & audit:
     - cargo outdated -R --exit-code 1
 
 build and test x86-64:
-  image: $CI_REGISTRY_IMAGE/flatpak:main
+  image: registry.gitlab.com/loers/cargo-gra/flatpak:main
   stage: checks
   extends: [.run_on_merge_request, .cache-x86-64]
   script:
@@ -76,7 +71,7 @@ build and test x86-64:
     - cargo test --release
 
 release:
-  image: $CI_REGISTRY_IMAGE/x86-64:main
+  image: registry.gitlab.com/loers/cargo-gra/x86-64:main
   stage: release
   extends: [.run_on_main, .cache-x86-64]
   script:
@@ -90,7 +85,7 @@ release:
     - cargo publish --token $CRATES_IO_TOKEN
 
 update dependency cache:
-  image: $CI_REGISTRY_IMAGE/x86-64:main
+  image: registry.gitlab.com/loers/cargo-gra/x86-64:main
   stage: post-release
   extends: [.cache-x86-64]
   rules:
@@ -103,7 +98,7 @@ update dependency cache:
     - cargo build --release
 
 released:
-  image: $CI_REGISTRY_IMAGE/x86-64:main
+  image: registry.gitlab.com/loers/cargo-gra/x86-64:main
   stage: post-release
   rules: 
     - if: $CI_COMMIT_MESSAGE =~ /chore\(version\):.*/

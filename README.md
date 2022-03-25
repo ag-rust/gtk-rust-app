@@ -223,11 +223,11 @@ cargo gra flatpak
 
 That's it. You will see an app like this:
 
-![screenshot1.png](screenshot1.png)
+![screenshot1.png](https://gitlab.com/loers/cargo-gra/-/raw/refactor-build-tooling-from-gtk-rust-app/examples/complete/screenshot1.png)
 
 The app has adaptive behaviour per default.
 
-![screenshot2.png](screenshot2.png)
+![screenshot2.png](https://gitlab.com/loers/cargo-gra/-/raw/refactor-build-tooling-from-gtk-rust-app/examples/complete/screenshot2.png)
 
 ## Run with different language
 
@@ -259,6 +259,10 @@ flatpak install org.gnome.Sdk//master
 flatpak install org.gnome.Platform//master
 flatpak install org.freedesktop.Sdk.Extension.rust-stable//21.08
 ```
+
+## Examples
+
+Checkout the example apps in [carg-gra](https://gitlab.com/loers/cargo-gra/-/tree/refactor-build-tooling-from-gtk-rust-app/examples).
 
 ## Writing custom Widgets
 

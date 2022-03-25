@@ -10,6 +10,7 @@ default-run = "simple-example"
 
 # This section contains meta information about your app. Checkout [this](https://gitlab.com/loers/gtk-rust-app/-/blob/main/docs/Manifest.md) documentation for further information.
 [app]
+flatpak-runtime-version = "42"
 id = "org.example.SimpleExample"
 # A generic name. E.g. if your calculator project name is
 # foo-calc you still want your distro to show the app as "Calculator".
@@ -69,6 +70,31 @@ permissions = [
     "device=dri",
     "socket=pulseaudio",
 ]
+
+flatpak-modules = ["""
+- name: libsass
+  buildsystem: meson
+  builddir: true
+  sources:
+    - type: git
+      url: "https://github.com/lazka/libsass.git"
+      branch: meson
+""", """
+- name: sassc
+  buildsystem: meson
+  builddir: true
+  sources:
+    - type: "git"
+      url: "https://github.com/lazka/sassc.git"
+      branch: meson
+""", """
+- name: libadwaita
+  buildsystem: meson
+  sources:
+    - type: git
+      url: "https://gitlab.gnome.org/GNOME/libadwaita.git"
+      branch: 1.0.3
+"""]
 
 # Define your apps global settings
 [settings]

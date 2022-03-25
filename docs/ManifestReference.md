@@ -7,6 +7,8 @@ This document explain the contents of the extended Cargo.toml content from `gtk-
     - [categories](#categories)
     - [content-rating](#content-rating)
     - [description](#description)
+    - [flatpak-modules](#flatpak-modules)
+    - [flatpak-runtime-version](#flatpak-runtime-version)
     - [generic-name](#generic-name)
     - [id](#id)
     - [metadata-license](#metadata-license)
@@ -28,6 +30,8 @@ The app section contains all metadata of your app.
 | `categories` <a name="categories"></a> | A list of categories your app belongs to.<br>Example:<br>`categories = ["GTK", "Development"]` | `Vec<String>` | [Freedesktop Menu spec](https://specifications.freedesktop.org/menu-spec/menu-spec-1.0.html#category-registry)<br>Used in:<br>`*.appdata.xml`<br>`*.desktop` |
 | `content-rating` <a name="content-rating"></a> | A list of objects to specify age rating for your app.<br>Example:<br>`content-rating = [{ id = "language-humor", value = "mild" }]` | `Vec<{id:String, value:String}>` | [AppStream spec](https://www.freedesktop.org/software/appstream/docs/chap-Metadata.html#tag-content_rating)<br>Used in:<br>`*.appdata.xml` |
 | `description` <a name="description"></a> | A long description of your app. May contain some basic HTML tags (see spec).<br>Example:<br>`description = "<p>Lorem ipsum...</p>"` | `String` <br> (Basic&nbsp;HTML) | [AppStream spec](https://www.freedesktop.org/software/appstream/docs/chap-Metadata.html#tag-description)<br>Used in:<br>`*.appdata.xml` |
+| `flatpak-modules` <a name="flatpak-modules"></a> | A list of flatpak module definitions in yaml.<br>Example:<br> `flatpak-modules = [""" see cargo-gra/examples/complete """]` | `Vec<String>` | [Flatpak manifest reference](https://docs.flatpak.org/en/latest/manifests.html#modules)<br>Used in<br>`*.flatpak.yml` |
+| `flatpak-runtime-version` <a name="flatpak-runtime-version"></a> | The version of the flatpak Gnome runtime to use.<br>Example:<br> `flatpak-runtime-version = "42"` | `String` | [Flatpak manifest reference](https://docs.flatpak.org/en/latest/manifests.html#basic-properties<br>Used in<br>`*.flatpak.yml` |
 | `generic-name` <a name="generic-name"></a> | The generic name of your app. E.g. your clock app is called `clocky` but the displayed name in a distro is still `Clock`<br>Example:<br> `generic-name = "Clock"` | `String` | [Desktop file spec](https://specifications.freedesktop.org/desktop-entry-spec/desktop-entry-spec-latest.html#recognized-keys)<br>Used in<br>`*.desktop` |
 | `id` <a name="id"></a> | The unique identifier of your app.<br>Example:<br> `id = "org.example.TestApp"` | `String` | [AppStream spec](https://www.freedesktop.org/software/appstream/docs/chap-Metadata.html#tag-id-generic)<br>Used in:<br>`*.flatpak.yml`<br>`*.desktop`<br>`*.appdata.xml` |
 | `metadata-license` <a name="metadata-license"></a> | The license of the metadata xml file used to describe your app.<br> This may be a helpful link: https://techbase.kde.org/MetaInfo/DesktopApps#.3Cmetadata_license.2F.3E<br>Example:<br> `metadata-license = "CC0-1.0"` | `String` | [AppStream spec](https://www.freedesktop.org/software/appstream/docs/chap-Metadata.html#tag-metadata_license)<br>Used in:<br>`*.appdata.xml` |

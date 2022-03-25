@@ -40,6 +40,10 @@ pub struct AppDescriptor {
     pub recommends: Vec<Recommend>,
     pub permissions: Vec<String>,
 
+    // flatpak manifest
+    pub flatpak_runtime_version: Option<String>,
+    pub flatpak_modules: Option<Vec<String>>,
+
     // misc
     pub resources: Option<String>,
 }

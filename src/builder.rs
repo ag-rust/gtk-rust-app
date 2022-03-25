@@ -3,13 +3,13 @@
 use gdk4::gio::SimpleAction;
 use gdk4::prelude::{ApplicationExt, ApplicationExtManual};
 use glib::VariantTy;
+use gra::{parse_project_descriptor_bytes, ProjectDescriptor};
 use gtk::prelude::GtkApplicationExt;
 use gtk::prelude::*;
 #[cfg(feature = "ui")]
 use libadwaita as adw;
 
-use crate::parse_project_descriptor_bytes;
-use crate::{init_gettext, load_resources, ProjectDescriptor};
+use crate::{init_gettext, load_resources};
 
 pub fn load_styles(_app: &gtk::Application, styles: &str) {
     let provider = gtk::CssProvider::new();
