@@ -11,7 +11,7 @@ keywords = ["GTK", "UI", "flatpak"]
 categories = ["gui"]
 
 [features]
-default = ["ui"]
+default = ["ui", "build"]
 build = []
 store = ["gstore"]
 ui = [

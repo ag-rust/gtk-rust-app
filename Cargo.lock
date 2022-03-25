@@ -81,9 +81,9 @@ dependencies = [
 
 [[package]]
 name = "cargo-gra"
-version = "0.2.4"
+version = "0.2.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f9f43de792fb53006e8f855f930a97949f1dea8771ce5b3193fedd1ae60baf5c"
+checksum = "27c2e625e9ab77835397419a8d96e56c969668ba89de79f8b3a17870b3f4e025"
 dependencies = [
  "clap",
  "fs_extra",
@@ -507,9 +507,9 @@ dependencies = [
 
 [[package]]
 name = "gtk-rust-app-derive"
-version = "0.1.4"
+version = "0.1.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d77c7387ae34cf1ded312cc627fffd2d11e8f465d3eb2944ef74929ae82a6327"
+checksum = "9ab6b1e648d316c8584a5df94d691034b1e052347a131d72ad3f1bb1cc979eae"
 dependencies = [
  "quote",
  "syn",
@@ -993,9 +993,9 @@ checksum = "73473c0e59e6d5812c5dfe2a064a6444949f089e20eec9a2e5506596494e4623"
 
 [[package]]
 name = "syn"
-version = "1.0.89"
+version = "1.0.90"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ea297be220d52398dcc07ce15a209fce436d361735ac1db700cab3b6cdfb9f54"
+checksum = "704df27628939572cd88d33f171cd6f896f4eaca85252c6e0a72d8d8287ee86f"
 dependencies = [
  "proc-macro2",
  "quote",

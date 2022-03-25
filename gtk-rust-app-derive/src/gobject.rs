@@ -233,7 +233,7 @@ fn get_param_spec_for_ty(field_ident: Ident, ty: &Type) -> TokenStream {
         Type::TraitObject(_) => Err("TraitObject"),
         Type::Tuple(_) => Err("Tuple"),
         Type::Verbatim(_) => Err("Verbatim"),
-        Type::__TestExhaustive(_) => Err("__TestExhaustive"),
+        _ => Err("__NonExhaustive"),
     };
     match param_spec {
         Ok(ps) => ps,
