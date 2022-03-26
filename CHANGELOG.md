@@ -2,6 +2,11 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## v0.5.0 - 2022-03-26
+#### Features
+- Allow to set the flatpak gnome runtime version and preinstalled modules via gra - (7a93e8f) - Florian Loers
+- - -
+
 ## v0.4.3 - 2022-03-20
 #### Bug Fixes
 - Remove error-format option from release flatpak manifest - (37fe714) - Florian Loers
