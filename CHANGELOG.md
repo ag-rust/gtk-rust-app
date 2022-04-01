@@ -2,6 +2,11 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## v0.5.2 - 2022-04-01
+#### Bug Fixes
+- Initialize actions only once at start - (c41fa67) - Florian Loers
+- - -
+
 ## v0.5.1 - 2022-03-28
 #### Bug Fixes
 - Fix compiling issues of gtk-rust-app-derive - (3edc4c1) - Florian Loers
