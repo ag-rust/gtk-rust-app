@@ -50,7 +50,15 @@ impl AppBuilder {
         let pd = project_descriptor.clone();
         let s = settings.clone();
         app.connect_activate(move |app| {
-            let actions = pd.actions.as_ref().unwrap();
+            activate(app, &pd, s.as_ref());
+        });
+
+        app.connect_startup(move |app| {
+            if let Some(styles) = styles {
+                load_styles(app, styles);
+            }
+
+            let actions = project_descriptor.actions.as_ref().unwrap();
 
             for (action_name, desc) in actions {
                 let action = match &desc.type_ {
@@ -84,13 +92,6 @@ impl AppBuilder {
                 app.add_action(&action);
             }
 
-            activate(app, &pd, s.as_ref());
-        });
-
-        app.connect_startup(move |app| {
-            if let Some(styles) = styles {
-                load_styles(app, styles);
-            }
             startup(app, &project_descriptor, settings.as_ref());
         });
 
