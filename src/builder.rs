@@ -63,8 +63,11 @@ impl AppBuilder {
             for (action_name, desc) in actions {
                 let action = match &desc.type_ {
                     Some(action_type) => {
-                        let t = VariantTy::new(action_type).unwrap_or_else(|_| {
-                            panic!("Wrong type for action '{}': {:?}", action_name, action_type)
+                        let t = VariantTy::new(action_type).unwrap_or_else(|e| {
+                            panic!(
+                                "Wrong type for action '{}', {:?}: {}",
+                                action_name, action_type, e
+                            )
                         });
                         SimpleAction::new(action_name, Some(t))
                     }

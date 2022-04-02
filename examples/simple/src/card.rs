@@ -4,7 +4,7 @@ use std::cell::Cell;
 
 // Generate GTK boilerplate code with the `#[widget]` macro
 // See the gtk4-rs book: https://gtk-rs.org/gtk4-rs/stable/latest/book/gobject_subclassing.html
-#[widget(gtk::Box)]
+#[widget(extends gtk::Box)]
 // Define the ui template as described here: https://gtk-rs.org/gtk4-rs/stable/latest/book/interface_builder.html
 #[template(file = "card.ui")]
 pub struct Card {
@@ -47,8 +47,8 @@ impl Card {
     // You have to implement this method, otherwise the `#[widget]` macro will fail;
     pub fn constructed(&self) {
         let s = self;
-        self.imp()
-            .card_entry
+        // for each template_child there is a corresponding getter method returning a ref to the child.
+        self.card_entry()
             .connect_changed(glib::clone!(@weak s => move |entry| {
                 let text = entry.text().to_string();
                 s.imp().text.replace(text);

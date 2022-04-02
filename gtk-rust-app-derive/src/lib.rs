@@ -36,7 +36,7 @@ pub fn gobject(args: TokenStream, input: TokenStream) -> TokenStream {
 /// use gtk::prelude::*;
 /// use std::cell::Cell;
 ///
-/// #[widget]
+/// #[widget(extends gtk::Box)]
 /// #[template(file = "card.ui")]
 /// pub struct Card {
 ///     #[property_string]

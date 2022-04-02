@@ -6,7 +6,7 @@
       when: never
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       when: on_success
-    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+    - if: "$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH"
       when: on_success
 
 .run_on_main:
@@ -17,12 +17,12 @@
       when: never
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       when: never
-    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+    - if: "$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH"
       when: on_success
 
 .cache-x86-64:
   cache:
-    key: x86-64 
+    key: x86-64
     paths:
       - target/
 
@@ -63,15 +63,16 @@ outdated & audit:
     - cargo outdated -R --exit-code 1
 
 build and test x86-64:
-  image: registry.gitlab.com/loers/cargo-gra/flatpak:main
+  image: registry.gitlab.com/loers/cargo-gra/public-x86-64:main
   stage: checks
   extends: [.run_on_merge_request, .cache-x86-64]
   script:
     - source $HOME/.cargo/env
     - cargo test --release
+    - cd examples/simple && cargo gra gen && cargo build --release && cd ../..
 
 release:
-  image: registry.gitlab.com/loers/cargo-gra/x86-64:main
+  image: registry.gitlab.com/loers/cargo-gra/public-x86-64:main
   stage: release
   extends: [.run_on_main, .cache-x86-64]
   script:
@@ -100,7 +101,7 @@ update dependency cache:
 released:
   image: registry.gitlab.com/loers/cargo-gra/x86-64:main
   stage: post-release
-  rules: 
+  rules:
     - if: $CI_COMMIT_MESSAGE =~ /chore\(version\):.*/
   script:
     - echo "Everything is fine"

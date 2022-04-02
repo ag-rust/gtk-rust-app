@@ -4,5 +4,5 @@ pub fn main() {
     println!("cargo:rerun-if-changed=src");
     println!("cargo:rerun-if-changed=assets");
     println!("cargo:rerun-if-changed=po");
-    gtk_rust_app::build(None);
+    // cargo_gra::build(None);
 }

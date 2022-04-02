@@ -2,3 +2,4 @@ target
 .cargo
 *.po~
 Cargo.lock
+!target/gra-gen/actions.rs

@@ -5,11 +5,13 @@ extern crate proc_macro;
 use proc_macro::TokenStream;
 use quote::{quote, ToTokens};
 use syn::{
-    parse_macro_input, punctuated::Punctuated, spanned::Spanned, token::Comma, Arm, Attribute,
-    Expr, Field, Fields, ItemFn, ItemImpl, Path, Token,
+    parse::Parse, parse_macro_input, punctuated::Punctuated, spanned::Spanned, token::Comma, Arm,
+    Attribute, Expr, Field, Fields, Ident, ItemFn, ItemImpl, Path, Token,
 };
 
 const ATTR_SKIP_AUTO_IMPL: &str = "skip_auto_impl";
+
+const ATTR_TEMPLATE_CHILD: &str = "template_child";
 
 const ATTR_SIGNAL: &str = "signal";
 const ATTR_SIGNAL_RETURNING: &str = "signal_returning";
@@ -22,8 +24,75 @@ const ATTR_PROPERTY_U64: &str = "property_u64";
 const ATTR_PROPERTY_I64: &str = "property_i64";
 const ATTR_PROPERTY_F64: &str = "property_f64";
 
+pub struct WidgetMacroArgs {
+    extends_token: Ident,
+    extends: Path,
+    implements_token: Option<Ident>,
+    implements: Punctuated<Path, Comma>,
+}
+
+impl std::fmt::Debug for WidgetMacroArgs {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("WidgetMacroArgs")
+            .field("extends_token", &self.extends_token)
+            .field(
+                "extends",
+                &self
+                    .extends
+                    .segments
+                    .iter()
+                    .map(|s| format!("{}", s.ident))
+                    .collect::<Vec<String>>()
+                    .join("::"),
+            )
+            .field("implements_token", &self.implements_token)
+            .field(
+                "implements",
+                &self
+                    .implements
+                    .iter()
+                    .map(|p| {
+                        p.segments
+                            .iter()
+                            .map(|s| format!("{}", s.ident))
+                            .collect::<Vec<String>>()
+                            .join("::")
+                    })
+                    .collect::<Vec<String>>(),
+            )
+            .finish()
+    }
+}
+
+impl Parse for WidgetMacroArgs {
+    fn parse(input: syn::parse::ParseStream) -> syn::Result<Self> {
+        let extends_token = input.parse()?;
+        let extends = input.parse()?;
+        let mut implements_token = None;
+        let mut implements = Punctuated::new();
+
+        if input.lookahead1().peek(Ident) {
+            implements_token = Some(input.parse()?);
+            implements = Punctuated::parse_terminated(input).unwrap()
+        } else {
+            implements.push(syn::parse(TokenStream::from(quote! { gtk::Widget })).unwrap());
+            implements.push(syn::parse(TokenStream::from(quote! { gtk::Accessible })).unwrap());
+            implements.push(syn::parse(TokenStream::from(quote! { gtk::Buildable })).unwrap());
+            implements
+                .push(syn::parse(TokenStream::from(quote! { gtk::ConstraintTarget })).unwrap());
+            implements.push(syn::parse(TokenStream::from(quote! { gtk::Orientable })).unwrap());
+        }
+        Ok(Self {
+            extends_token,
+            extends,
+            implements_token,
+            implements,
+        })
+    }
+}
+
 pub fn widget(args: TokenStream, input: TokenStream) -> TokenStream {
-    let parent = parse_macro_input!(args as Path);
+    let args = parse_macro_input!(args as WidgetMacroArgs);
     let input = parse_macro_input!(input as syn::ItemStruct);
 
     let struct_attrs = input.attrs;
@@ -63,14 +132,18 @@ pub fn widget(args: TokenStream, input: TokenStream) -> TokenStream {
     let signal_connectors = get_signal_connectors(&fields);
     let signal_emitters = get_signal_emitters(&fields);
 
+    let template_child_accessors = get_template_child_accessors(&fields);
+
     let impl_item;
     if skip_auto_impl {
         impl_item = None;
     } else {
-        impl_item = get_impl_item(&widget_name, &parent);
+        impl_item = get_impl_item(&widget_name, &args.extends);
     }
-
     let template_callbacks = get_template_callbacks(&fields);
+
+    let parent = args.extends;
+    let implements = args.implements;
 
     let gen = quote! {
 
@@ -177,11 +250,13 @@ pub fn widget(args: TokenStream, input: TokenStream) -> TokenStream {
 
         glib::wrapper! {
             pub struct #widget_name(ObjectSubclass<imp::#widget_name>)
-            @extends gtk::Box,
-            @implements gtk::Widget, gtk::Accessible, gtk::Buildable, gtk::ConstraintTarget, gtk::Orientable;
+            @extends #parent,
+            @implements #implements;
         }
 
         impl #widget_name {
+            #(#template_child_accessors)*
+
             #(#signal_connectors)*
 
             #(#signal_emitters)*
@@ -618,43 +693,125 @@ fn get_impl_item(widget_name: &syn::Ident, parent: &Path) -> Option<ItemImpl> {
     None
 }
 
-fn is_callback_field(field: &Field) -> bool {
+enum CallbackField {
+    None,
+    NoArguments,
+}
+
+fn is_callback_field(field: &Field) -> Option<CallbackField> {
     for attr in &field.attrs {
         if attr.path.is_ident(ATTR_CALLBACK) {
-            return true;
+            if let Some(arg) = attr.parse_args::<Ident>().ok() {
+                match arg.to_string().as_str() {
+                    "noargs" => {
+                        return Some(CallbackField::NoArguments);
+                    }
+                    _ => return Some(CallbackField::None),
+                }
+            } else {
+                return Some(CallbackField::None);
+            }
         }
     }
-    false
+    None
 }
 
 fn get_template_callbacks(fields: &Punctuated<Field, Comma>) -> Vec<ItemFn> {
     let mut callbacks: Vec<ItemFn> = Vec::new();
 
     for field in fields {
-        if is_callback_field(field) {
-            let name = field.ident.as_ref().unwrap();
-
-            let callback_name_str = name.to_string();
-            let callback_name = quote::format_ident!("{}_imp", name);
-
-            let callback = syn::parse::<syn::ItemFn>(
-                quote!(
-                    //
-                    #[template_callback(name = #callback_name_str)]
-                    fn #callback_name(&self, widget: gtk::Widget) {
-                        self.#name(
-                            widget.downcast()
-                            .expect(&format!("Callback '{}' argument can not be cast to the given type.", stringify!(#name)))
-                        );
-                    }
-                    //
-                )
-                .into(),
-            )
-            .unwrap_or_else(|_| panic!("Could not generate signals from macro argument `{}`",
-                field.to_token_stream()));
-            callbacks.push(callback);
+        if let Some(widget) = is_callback_field(field) {
+            match widget {
+                CallbackField::None => {
+                    let name = field.ident.as_ref().unwrap();
+                    let callback_name_str = name.to_string();
+                    let callback_name = quote::format_ident!("{}_imp", name);
+                    let callback = syn::parse::<syn::ItemFn>(
+                        quote!(
+                            #[template_callback(name = #callback_name_str)]
+                            fn #callback_name(&self, widget: gtk::Widget) {
+                                self.#name(
+                                    widget.downcast()
+                                    .expect(&format!("Callback '{}' argument can not be cast to the given type.", stringify!(#name)))
+                                );
+                            }
+                        )
+                        .into(),
+                    )
+                    .unwrap_or_else(|_| panic!("Could not generate signals from macro argument `{}`",
+                        field.to_token_stream()));
+                    callbacks.push(callback);
+                }
+                CallbackField::NoArguments => {
+                    let name = field.ident.as_ref().unwrap();
+                    let callback_name_str = name.to_string();
+                    let callback_name = quote::format_ident!("{}_imp", name);
+                    let callback = syn::parse::<syn::ItemFn>(
+                        quote!(
+                            #[template_callback(name = #callback_name_str)]
+                            fn #callback_name(&self) {
+                                self.#name();
+                            }
+                        )
+                        .into(),
+                    )
+                    .unwrap_or_else(|_| {
+                        panic!(
+                            "Could not generate signals from macro argument `{}`",
+                            field.to_token_stream()
+                        )
+                    });
+                    callbacks.push(callback);
+                }
+            }
         }
     }
     callbacks
+}
+
+fn get_template_child_accessors(fields: &Punctuated<Field, Comma>) -> Vec<syn::ImplItemMethod> {
+    let mut methods = Vec::new();
+    for field in fields {
+        if let Some(ident) = field.ident.as_ref() {
+            if get_template_child_attr(field).is_some() {
+                let ty = match &field.ty {
+                    syn::Type::Path(p) => {
+                        let arguments = &p.path.segments.first().unwrap().arguments;
+                        match arguments {
+                            syn::PathArguments::AngleBracketed(arg) => {
+                                match arg.args.first().unwrap() {
+                                    syn::GenericArgument::Type(t) => t,
+                                    _ => unreachable!(
+                                        "Template child fields must have one type argument"
+                                    ),
+                                }
+                            }
+                            _ => {
+                                unreachable!("Template child fields must have a generic argument.")
+                            }
+                        }
+                    }
+                    _ => unreachable!("Template child fields must have a Path type."),
+                };
+                methods.push(
+                    syn::parse(TokenStream::from(quote! {
+                        fn #ident(&self) -> &#ty {
+                            &self.imp().#ident
+                        }
+                    }))
+                    .unwrap(),
+                );
+            }
+        }
+    }
+    return methods;
+}
+
+fn get_template_child_attr(field: &Field) -> Option<&Attribute> {
+    for attr in &field.attrs {
+        if attr.path.is_ident(ATTR_TEMPLATE_CHILD) {
+            return Some(attr);
+        }
+    }
+    None
 }

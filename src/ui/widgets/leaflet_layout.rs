@@ -96,7 +96,7 @@ impl HeaderWidget {
 /// └───────────┘
 /// ```
 ///
-#[widget(gtk::Box)]
+#[widget(extends gtk::Box)]
 #[template(file = "leaflet_layout.xml")]
 pub struct LeafletLayout {
     #[template_child]
@@ -192,38 +192,38 @@ impl LeafletLayout {
             }));
     }
 
-    pub fn leaflet(&self) -> &adw::Leaflet {
-        &self.imp().leaflet
+    pub fn get_leaflet(&self) -> &adw::Leaflet {
+        self.leaflet()
     }
-    pub fn sidebar_header(&self) -> &adw::HeaderBar {
-        &self.imp().sidebar_header
+    pub fn get_sidebar_header(&self) -> &adw::HeaderBar {
+        self.sidebar_header()
     }
-    pub fn main_header(&self) -> &adw::HeaderBar {
-        &self.imp().main_header
+    pub fn get_main_header(&self) -> &adw::HeaderBar {
+        self.main_header()
     }
-    pub fn view_stack(&self) -> &adw::ViewStack {
-        &self.imp().view_stack
+    pub fn get_view_stack(&self) -> &adw::ViewStack {
+        self.view_stack()
     }
-    pub fn navigation_sidebar(&self) -> &gtk::ListBox {
-        &self.imp().navigation_sidebar
+    pub fn get_navigation_sidebar(&self) -> &gtk::ListBox {
+        self.navigation_sidebar()
     }
-    pub fn sidebar(&self) -> &gtk::Box {
-        &self.imp().sidebar
+    pub fn get_sidebar(&self) -> &gtk::Box {
+        self.sidebar()
     }
-    pub fn sidebar_content(&self) -> &adw::Leaflet {
-        &self.imp().sidebar_content
+    pub fn get_sidebar_content(&self) -> &adw::Leaflet {
+        self.sidebar_content()
     }
-    pub fn sidebar_scrolled_window(&self) -> &gtk::ScrolledWindow {
-        &self.imp().sidebar_scrolled_window
+    pub fn get_sidebar_scrolled_window(&self) -> &gtk::ScrolledWindow {
+        self.sidebar_scrolled_window()
     }
-    pub fn main(&self) -> &gtk::Box {
-        &self.imp().main
+    pub fn get_main(&self) -> &gtk::Box {
+        self.main()
     }
-    pub fn view_switcher_bar(&self) -> &adw::ViewSwitcherBar {
-        &self.imp().view_switcher_bar
+    pub fn get_view_switcher_bar(&self) -> &adw::ViewSwitcherBar {
+        self.view_switcher_bar()
     }
-    pub fn toast_overlay(&self) -> &adw::ToastOverlay {
-        &self.imp().toast_overlay
+    pub fn get_toast_overlay(&self) -> &adw::ToastOverlay {
+        self.toast_overlay()
     }
 
     pub fn is_mobile(&self) -> bool {

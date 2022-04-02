@@ -6,7 +6,7 @@ use gettextrs::gettext;
 use gtk::prelude::*;
 
 // Define a page of your app as a new widget
-#[widget(gtk::Box)]
+#[widget(extends gtk::Box)]
 #[template(file = "home.ui")]
 struct Home {
     #[template_child]
