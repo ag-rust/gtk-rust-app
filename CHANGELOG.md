@@ -2,6 +2,11 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## v0.6.1 - 2022-04-03
+#### Bug Fixes
+- Return SignalHandlerId in generated connector methods - (39611f8) - Florian Loers
+- - -
+
 ## v0.6.0 - 2022-04-03
 #### Features
 - Allow to set extend and implement types in widget macro - (3fd2a0e) - Florian Loers
