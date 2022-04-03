@@ -2,6 +2,11 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## v0.6.0 - 2022-04-03
+#### Features
+- Allow to set extend and implement types in widget macro - (3fd2a0e) - Florian Loers
+- - -
+
 ## v0.5.4 - 2022-04-01
 #### Miscellaneous Chores
 - Ignore default features from cargo-gra - (fca2672) - Florian Loers
