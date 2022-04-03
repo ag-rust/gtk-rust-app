@@ -584,14 +584,14 @@ fn get_signal_connectors(fields: &Punctuated<Field, Comma>) -> Vec<ItemFn> {
                 let connector = syn::parse::<syn::ItemFn>(
                     quote!(
                         //
-                        fn #connector_ident(&self, f: impl Fn(&Self) + 'static) {
+                        fn #connector_ident(&self, f: impl Fn(&Self) + 'static) -> glib::SignalHandlerId {
                             self.connect_closure(
                                 stringify!(#name),
                                 false,
                                 closure_local!(move |s: Self| {
                                     f(&s);
                                 }),
-                            );
+                            )
                         }
                         //
                     )
