@@ -6,8 +6,6 @@ use glib::VariantTy;
 use gra::{parse_project_descriptor_bytes, ProjectDescriptor};
 use gtk::prelude::GtkApplicationExt;
 use gtk::prelude::*;
-#[cfg(feature = "ui")]
-use libadwaita as adw;
 
 use crate::{init_gettext, load_resources};
 
@@ -120,8 +118,8 @@ pub fn builder(cargo_toml: &[u8], resources: &[u8]) -> AppBuilder {
     if let Err(e) = gtk::init() {
         error!("Couldn't initialize GTK: {:?}", e);
     }
-    #[cfg(feature = "ui")]
-    adw::init();
+    #[cfg(feature = "libadwaita")]
+    libadwaita::init();
 
     let project_descriptor = parse_project_descriptor_bytes(cargo_toml);
     if project_descriptor.is_err() {

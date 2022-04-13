@@ -152,6 +152,7 @@ pub fn widget(args: TokenStream, input: TokenStream) -> TokenStream {
             use glib::ToValue;
             use gtk::glib;
             use gtk::subclass::prelude::*;
+            #[cfg(feature = "libadwaita")]
             use libadwaita::subclass::prelude::*;
             use glib::ObjectExt;
             use glib::Cast;
