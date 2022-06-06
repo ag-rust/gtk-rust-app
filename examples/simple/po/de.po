@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-03-26 08:40+0100\n"
+"POT-Creation-Date: 2022-06-18 09:42+0200\n"
 "PO-Revision-Date: 2022-01-14 09:59+0100\n"
 "Last-Translator: Florian Loers <florianloers@mailbox.org>\n"
 "Language: German\n"
@@ -16,16 +16,16 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: src/card.ui:17
+msgid "Hello, GTK"
+msgstr ""
+
 #: src/main.rs:21
 msgid "Check po/ dir for translations."
 msgstr ""
 
 #: src/main.rs:46
 msgid "Example"
-msgstr ""
-
-#: src/card.ui:17
-msgid "Hello, GTK"
 msgstr ""
 
 #: src/home.rs:34
@@ -48,11 +48,11 @@ msgstr ""
 msgid "This is an simple example application."
 msgstr ""
 
-#: target/gra-gen/data/org.example.SimpleExample.appdata.xml:28
+#: target/gra-gen/data/org.example.SimpleExample.appdata.xml:30
 msgid "Another version."
 msgstr ""
 
-#: target/gra-gen/data/org.example.SimpleExample.appdata.xml:29
+#: target/gra-gen/data/org.example.SimpleExample.appdata.xml:36
 msgid "This is the initial version."
 msgstr ""
 

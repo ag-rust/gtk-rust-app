@@ -24,10 +24,9 @@ pub struct Card {
     ))]
     test_prop: Cell<bool>,
 
-    // Signals can be specified with the #[signal] macro.
+    // Signals for your custom component can be specified with the #[signal] macro.
     #[signal]
     pub card_changed: (),
-    // Signals can be specified with the #[signal] macro.
     #[signal]
     pub card_clicked: (),
 
@@ -35,27 +34,34 @@ pub struct Card {
     // See https://gtk-rs.org/gtk4-rs/stable/latest/book/interface_builder.html
     #[template_child]
     pub card_button: TemplateChild<gtk::Button>,
+    #[signal_handler(card_button clicked)]
+    pub on_card_button_clicked: (),
 
     #[template_child]
     pub card_entry: TemplateChild<gtk::Entry>,
-
-    #[callback]
-    pub on_click: (),
+    #[signal_handler(card_entry changed)]
+    pub on_card_entry_changed: (),
 }
 
 impl Card {
     // You have to implement this method, otherwise the `#[widget]` macro will fail;
-    pub fn constructed(&self) {
-        let s = self;
-        // for each template_child there is a corresponding getter method returning a ref to the child.
-        self.card_entry()
-            .connect_changed(glib::clone!(@weak s => move |entry| {
-                let text = entry.text().to_string();
-                s.imp().text.replace(text);
-                s.emit_card_changed()
-            }));
+    pub fn constructed(&self) {}
+
+    fn on_card_button_clicked(&self, _b: gtk::Button) {
+        self.emit_card_clicked();
     }
 
+    fn on_card_entry_changed(&self, e: gtk::Entry) {
+        let text = e.text();
+        // You can also access template children via generated accessor methods:
+        // let text = self.card_entry().text
+
+        self.set_text(text.into());
+        self.emit_card_changed();
+    }
+
+    // #[signal] macros generate internal connectors
+    // You can choose to define public connectors like this
     pub fn connect_card_clicked(&self, f: impl Fn(&Self) + 'static) {
         self._connect_card_clicked(f);
     }
@@ -68,7 +74,7 @@ impl Card {
         self.property("text")
     }
 
-    pub fn on_click(&self, _: gtk::Button) {
-        self.emit_card_clicked();
+    fn set_text(&self, text: String) {
+        self.set_property("text", text);
     }
 }

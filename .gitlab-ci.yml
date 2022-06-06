@@ -38,6 +38,7 @@ stages:
 # include:
 #   - local: /ci/.gitlab-ci-containers.yml
 
+
 formatting & clippy:
   image: registry.gitlab.com/loers/cargo-gra/x86-64:main
   stage: prechecks

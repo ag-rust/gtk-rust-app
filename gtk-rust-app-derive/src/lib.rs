@@ -90,6 +90,11 @@ pub fn widget(args: TokenStream, input: TokenStream) -> TokenStream {
     widget::widget(args, input)
 }
 
+// #[proc_macro_attribute]
+// pub fn with_store(args: TokenStream, input: TokenStream) -> TokenStream {
+//     widget::with_store(args, input)
+// }
+
 /// Auto implement FromVariant and ToVariant for a struct
 #[proc_macro_attribute]
 pub fn variant_serde_json(args: TokenStream, input: TokenStream) -> TokenStream {
