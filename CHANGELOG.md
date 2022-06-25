@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## v0.7.0 - 2022-06-25
+#### Features
+- Widgets now can define global store selectors - (418322a) - Florian Loers
+
+- - -
+
 ## v0.6.1 - 2022-04-03
 #### Bug Fixes
 - Return SignalHandlerId in generated connector methods - (39611f8) - Florian Loers
