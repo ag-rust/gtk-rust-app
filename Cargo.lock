@@ -70,9 +70,9 @@ dependencies = [
 
 [[package]]
 name = "cargo-gra"
-version = "0.3.0"
+version = "0.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "81b6e810b324e053b011ca04785a7782889ea10595dd0f47b776a28360cf1bbf"
+checksum = "37aa2494c8591fd8e56a530c1baf6ea540977dd1827f8ce74b7cc299c67963ed"
 dependencies = [
  "fs_extra",
  "nix",
@@ -459,7 +459,7 @@ dependencies = [
 
 [[package]]
 name = "gtk-rust-app"
-version = "0.7.0"
+version = "0.7.1"
 dependencies = [
  "cargo-gra",
  "gdk4",

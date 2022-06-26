@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## v0.7.1 - 2022-06-26
+#### Miscellaneous Chores
+- Improve gettext error messages - (78f35a4) - Florian Loers
+
+- - -
+
 ## v0.7.0 - 2022-06-25
 #### Features
 - Widgets now can define global store selectors - (418322a) - Florian Loers
