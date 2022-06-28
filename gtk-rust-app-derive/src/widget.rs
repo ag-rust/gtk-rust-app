@@ -6,7 +6,7 @@ use proc_macro::TokenStream;
 use quote::quote;
 use syn::{
     parse_macro_input, punctuated::Punctuated, spanned::Spanned, token::Comma, Attribute, Field,
-    Fields,
+    Fields, Ident,
 };
 
 mod attributes;
@@ -40,16 +40,24 @@ pub fn widget(args: TokenStream, input: TokenStream) -> TokenStream {
     }
     .unwrap();
 
-    let imp_block = get_imp_block(&input, &args, &fields);
+    let imp_block = get_imp_block(&input, &args, fields);
 
-    let signal_connectors = get_signal_connectors(&fields);
-    let signal_emitters = get_signal_emitters(&fields);
-    let signal_handlers = get_signal_handlers(&fields);
+    let signal_connectors = get_signal_connectors(fields);
+    let signal_emitters = get_signal_emitters(fields);
+    let signal_handlers = get_signal_handlers(fields);
 
-    let template_child_accessors = get_template_child_accessors(&fields);
+    let template_child_accessors = get_template_child_accessors(fields);
 
     let parent = args.extends;
     let implements = args.implements;
+
+    let dispose = if let Some(dispose_function) = get_dispose_function(fields) {
+        quote! {
+            self.#dispose_function()
+        }
+    } else {
+        quote! {}
+    };
 
     let store_cleanup = if let Some(store) = &args.store {
         quote! {
@@ -103,7 +111,7 @@ pub fn widget(args: TokenStream, input: TokenStream) -> TokenStream {
                 self.imp().signal_handlers.set(sh);
             }
 
-            fn dispose(&self) {
+            fn _dispose(&self) {
                 use gdk4::subclass::prelude::ObjectSubclassIsExt;
 
                 for sh in self.imp().signal_handlers.take() {
@@ -111,6 +119,8 @@ pub fn widget(args: TokenStream, input: TokenStream) -> TokenStream {
                 }
 
                 #store_cleanup
+
+                #dispose
             }
         }
 
@@ -127,6 +137,13 @@ pub fn widget(args: TokenStream, input: TokenStream) -> TokenStream {
     }
 
     TokenStream::from(gen)
+}
+
+fn get_dispose_function(fields: &Punctuated<Field, Comma>) -> Option<Ident> {
+    fields
+        .iter()
+        .find(|f| get_attr(f, ATTR_DISPOSE).is_some())
+        .and_then(|f| f.ident.clone())
 }
 
 fn get_template_child_accessors(fields: &Punctuated<Field, Comma>) -> Vec<syn::ImplItemMethod> {

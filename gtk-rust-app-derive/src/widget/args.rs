@@ -6,7 +6,7 @@ use syn::{
     parse::Parse,
     punctuated::Punctuated,
     token::{At, Comma},
-    Ident, Token, Path,
+    Ident, Path, Token,
 };
 
 pub struct WidgetMacroArgs {

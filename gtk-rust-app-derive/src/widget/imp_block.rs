@@ -19,7 +19,7 @@ pub fn get_imp_block(
     let struct_attrs = &input.attrs;
 
     let struct_attrs: Vec<&Attribute> = struct_attrs
-        .into_iter()
+        .iter()
         .filter(|a| !a.path.is_ident(ATTR_SKIP_AUTO_IMPL))
         .collect();
 
@@ -37,27 +37,27 @@ pub fn get_imp_block(
         quote! {}
     };
 
-    let struct_fields = get_final_struct_fields(&fields);
+    let struct_fields = get_final_struct_fields(fields);
 
     let parent = &args.extends;
 
     let impl_item = if skip_auto_impl {
         None
     } else {
-        get_impl_item(&widget_name, &args.extends)
+        get_impl_item(widget_name, &args.extends)
     };
 
     let selector_bindings = if args.store.is_some() {
-        get_selector_bindings(&fields)
+        get_selector_bindings(fields)
     } else {
         quote!()
     };
 
-    let param_specs = get_param_specs_from_attrs(&fields);
-    let property_setters = get_property_setters(&fields);
-    let property_getters = get_property_getters(&fields);
+    let param_specs = get_param_specs_from_attrs(fields);
+    let property_setters = get_property_setters(fields);
+    let property_getters = get_property_getters(fields);
 
-    let signals = get_signals_definitions(&fields);
+    let signals = get_signals_definitions(fields);
 
     quote!(
         mod imp {
@@ -106,7 +106,7 @@ pub fn get_imp_block(
                 }
 
                 fn dispose(&self, obj: &Self::Type) {
-                    Self::Type::dispose(obj);
+                    Self::Type::_dispose(obj);
                 }
 
                 fn properties() -> &'static [glib::ParamSpec] {
@@ -182,6 +182,9 @@ fn get_final_struct_fields(fields: &Punctuated<Field, Comma>) -> Punctuated<Fiel
                 continue 'outer;
             }
             if attr.path.is_ident(ATTR_SELECTOR) {
+                continue 'outer;
+            }
+            if attr.path.is_ident(ATTR_DISPOSE) {
                 continue 'outer;
             }
             if attr.path.is_ident(ATTR_SIGNAL_RETURNING) {

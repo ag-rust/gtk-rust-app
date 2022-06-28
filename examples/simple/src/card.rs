@@ -41,11 +41,18 @@ pub struct Card {
     pub card_entry: TemplateChild<gtk::Entry>,
     #[signal_handler(card_entry changed)]
     pub on_card_entry_changed: (),
+
+    // Specify which function should be called on dispose. This is optional.
+    #[dispose]
+    dispose: (),
 }
 
 impl Card {
     // You have to implement this method, otherwise the `#[widget]` macro will fail;
     pub fn constructed(&self) {}
+
+    // this function can have any name. It will be called on widget dispose.
+    fn dispose(&self) {}
 
     fn on_card_button_clicked(&self, _b: gtk::Button) {
         self.emit_card_clicked();

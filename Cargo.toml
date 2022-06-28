@@ -14,13 +14,7 @@ categories = ["gui"]
 default = ["ui", "build", "store"]
 build = []
 store = ["gstore"]
-ui = [
-    "libadwaita",
-    "gtk-rust-app-derive",
-    "gtk",
-    "gdk4",
-    "glib",
-]
+ui = ["libadwaita", "gtk-rust-app-derive", "gtk", "gdk4", "glib"]
 
 [dependencies]
 log = "0.4"
@@ -39,4 +33,3 @@ gtk-rust-app-derive = { version = "0.2", optional = true }
 
 [dev-dependencies]
 serde-xml-rs = "0.5.1"
-
