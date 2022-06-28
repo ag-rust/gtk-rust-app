@@ -2,6 +2,14 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## v0.8.0 - 2022-06-28
+#### Features
+- Allow to specify dispose method - (9782eec) - Florian Loers
+#### Miscellaneous Chores
+- Bump dependency versions - (2a6dbe7) - Florian Loers
+
+- - -
+
 ## v0.7.1 - 2022-06-26
 #### Miscellaneous Chores
 - Improve gettext error messages - (78f35a4) - Florian Loers
