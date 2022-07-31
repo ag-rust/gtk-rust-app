@@ -10,6 +10,16 @@ This libaray aims to provide a framework for adaptive GTK4 and libadwaita apps w
 
 Writing flatpak apps requires several files (.desktop file, appdata.xml, flatpak manifest). gtk-rust-app and its CLI [`gra`](https://gitlab.com/loers/cargo-gra) allow to generate these files based on an extended Cargo.toml.
 
+## Getting started TLDR
+
+```
+cargo install cargo-generate
+cargo generate --git git@gitlab.com:loers/gtk-rust-app-template.git
+cd <your app>
+sudo make install-gsettings
+cargo run
+```
+
 ## Getting started
 
 Creating apps with gtk-rust-app requires to
@@ -18,6 +28,7 @@ Creating apps with gtk-rust-app requires to
 3. Define App pages
 4. Optional: Define a build.rs script
 5. Install cargo-gra subcommand
+6. Install app settings locally
 
 ### Cargo.toml
 
@@ -46,7 +57,8 @@ gtk-rust-app = { git = "https://gitlab.com/loers/gtk-rust-app.git", features = [
 
 # If you want to automatically update generated files you can add this build dependency
 [build-dependencies]
-gtk-rust-app = { git = "https://gitlab.com/loers/gtk-rust-app.git", features = [ "build" ] }
+cargo-gra = "0.3"
+
 
 ```
 
@@ -180,6 +192,10 @@ impl gtk_rust_app::widgets::Page for Home {
 </interface>
 ```
 
+### Write your custom widgets
+
+The examples above mention a `card` module. You can come up with your own idea (it works like the home page) or look into `examples/simple/src/card.rs`.
+
 ### Optional: Build script
 
 Define the build script:
@@ -192,7 +208,7 @@ pub fn main() {
     println!("cargo:rerun-if-changed=src");
     println!("cargo:rerun-if-changed=assets");
     println!("cargo:rerun-if-changed=po");
-    gtk_app_framework::build(None);
+    gra::build(None, None);
 }
 ```
 
@@ -206,7 +222,7 @@ cargo install cargo-gra
 Prepare the app build via:
 
 ```
-cargo gra setup
+cargo gra gen
 ```
 
 and build it as usual:
@@ -228,6 +244,23 @@ That's it. You will see an app like this:
 The app has adaptive behaviour per default.
 
 ![screenshot2.png](https://gitlab.com/loers/cargo-gra/-/raw/refactor-build-tooling-from-gtk-rust-app/examples/complete/screenshot2.png)
+
+#### Install app settings locally
+
+GTK apps define their settings and need gnome or phosh to have these settings installed globally. When you want to run your app without having these settings installed it will crash with an error.
+
+Add the following `Makefile` to your project:
+```
+install-gsettings:
+	install -D target/gra-gen/{{app-id}}.gschema.xml /usr/share/glib-2.0/schemas/{{app-id}}.gschema.xml
+	glib-compile-schemas /usr/share/glib-2.0/schemas
+
+uninstall-gsettings:
+	rm /usr/share/glib-2.0/schemas/{{app-id}}.gschema.xml
+	glib-compile-schemas /usr/share/glib-2.0/schemas
+```
+
+And replace `{{app-id}}` with your app id. Then run `make install-gsettings` and your app should run fine.
 
 ## Run with different language
 

@@ -23,6 +23,10 @@ pub use serde_json;
 #[cfg(feature = "store")]
 pub use gstore;
 
+pub fn app(cargo_toml: &[u8], resources: &[u8]) -> builder::AppBuilder {
+    builder::builder(cargo_toml, resources)
+}
+
 #[cfg(feature = "ui")]
 pub fn load_resources(resource_bytes: &[u8]) {
     let res = gdk4::gio::Resource::from_data(&resource_bytes.into())

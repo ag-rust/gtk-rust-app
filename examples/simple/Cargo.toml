@@ -36,39 +36,39 @@ categories = ["GTK", "Development"]
 # Possible display sizes and how your app can be interacted with
 # See https://www.freedesktop.org/software/appstream/docs/chap-Metadata.html#tag-relations
 recommends = [
-    { display = "small" },
-    { display = "large" },
-    { control = "pointer" },
-    { control = "keyboard" },
-    { control = "touch" },
+  { display = "small" },
+  { display = "large" },
+  { control = "pointer" },
+  { control = "keyboard" },
+  { control = "touch" },
 ]
 # Screenshots that will be shown in the store page. The default screenshot will be the first screen to show in the store.
 # See https://www.freedesktop.org/software/appstream/docs/chap-Metadata.html#tag-screenshots
 screenshots = [
-    { type = "default", url = "https://gitlab.com/loers/gtk-rust-app/-/raw/main/examples/simple/screenshot1.png" },
-    { url = "https://gitlab.com/loers/gtk-rust-app/-/raw/main/examples/simple/screenshot2.png" },
+  { type = "default", url = "https://gitlab.com/loers/gtk-rust-app/-/raw/main/examples/simple/screenshot1.png" },
+  { url = "https://gitlab.com/loers/gtk-rust-app/-/raw/main/examples/simple/screenshot2.png" },
 ]
 # The release history
 releases = [
-    { version = "0.0.2", date = "2021-12-04", description = "Another version." },
-    { version = "0.0.1", date = "2021-11-26", description = "This is the initial version." },
+  { version = "0.0.2", date = "2021-12-04", description = "Another version." },
+  { version = "0.0.1", date = "2021-11-26", description = "This is the initial version." },
 ]
 # See https://hughsie.github.io/oars/generate.html
 content_rating = [
-    { id = "language-humor", value = "none" },     # can be ommitted
-    { id = "money-advertising", value = "mild" },
-    { id = "social-contacts", value = "intense" },
+  { id = "language-humor", value = "none" },     # can be ommitted
+  { id = "money-advertising", value = "mild" },
+  { id = "social-contacts", value = "intense" },
 ]
 # Flatpak permissions of your app
 # See https://docs.flatpak.org/en/latest/sandbox-permissions.html
 permissions = [
-    "share=network",
-    "socket=x11",
-    "socket=fallback-x11",
-    "share=ipc",
-    "socket=wayland",
-    "device=dri",
-    "socket=pulseaudio",
+  "share=network",
+  "socket=x11",
+  "socket=fallback-x11",
+  "share=ipc",
+  "socket=wayland",
+  "device=dri",
+  "socket=pulseaudio",
 ]
 
 flatpak-modules = ["""
@@ -120,3 +120,6 @@ chrono = { version = "0.4" }
 
 # IT gtk-rust-app = { git = "https://gitlab.com/loers/gtk-rust-app.git", branch = "{BRANCH}", features = ["ui"] }
 gtk-rust-app = { path = "../..", features = ["ui"] }
+
+[build-dependencies]
+cargo-gra = "0.3"
