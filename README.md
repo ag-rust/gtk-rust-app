@@ -14,7 +14,7 @@ Writing flatpak apps requires several files (.desktop file, appdata.xml, flatpak
 
 ```
 cargo install cargo-generate
-cargo generate --git https://gitlab.com/loers/gtk-rust-app.git
+cargo generate --git https://gitlab.com/loers/gtk-rust-app-template
 cd <your app>
 sudo make install-gsettings
 cargo run
