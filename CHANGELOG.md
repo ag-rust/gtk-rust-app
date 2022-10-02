@@ -2,6 +2,15 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## v0.9.0 - 2022-10-02
+#### Documentation
+- Correct link to template project - (055375a) - Florian Loers
+- Update cargo-generate template URL - (c884e6e) - Florian Loers
+#### Features
+- Move gra data from Cargo.toml to App.toml - (361aa9a) - Florian Loers
+
+- - -
+
 ## v0.8.1 - 2022-07-31
 #### Bug Fixes
 - Improve README and mention cargo-generate integration - (6c71ca1) - Florian Loers
