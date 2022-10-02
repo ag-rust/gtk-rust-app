@@ -1,6 +1,6 @@
 # GRA Manifest Reference
 
-This document explain the contents of the extended Cargo.toml content from `gtk-rust-app`. It contains a full list of possible sections and fields. Every fields purpose is statet as well as which generated files contain the value and a link to the underlying specification (given there is some).
+This document explain the contents of the App.toml content from `gtk-rust-app`. It contains a full list of possible sections and fields. Every fields purpose is statet as well as which generated files contain the value and a link to the underlying specification (given there is some).
 
 # Table of Contents
 1. [Section [app]](#app)
@@ -12,6 +12,7 @@ This document explain the contents of the extended Cargo.toml content from `gtk-
     - [generic-name](#generic-name)
     - [id](#id)
     - [metadata-license](#metadata-license)
+    - [mimetype](#mimetype)
     - [permissions](#permissions)
     - [recommends](#recommends)
     - [releases](#releases)
@@ -35,6 +36,7 @@ The app section contains all metadata of your app.
 | `generic-name` <a name="generic-name"></a> | The generic name of your app. E.g. your clock app is called `clocky` but the displayed name in a distro is still `Clock`<br>Example:<br> `generic-name = "Clock"` | `String` | [Desktop file spec](https://specifications.freedesktop.org/desktop-entry-spec/desktop-entry-spec-latest.html#recognized-keys)<br>Used in<br>`*.desktop` |
 | `id` <a name="id"></a> | The unique identifier of your app.<br>Example:<br> `id = "org.example.TestApp"` | `String` | [AppStream spec](https://www.freedesktop.org/software/appstream/docs/chap-Metadata.html#tag-id-generic)<br>Used in:<br>`*.flatpak.yml`<br>`*.desktop`<br>`*.appdata.xml` |
 | `metadata-license` <a name="metadata-license"></a> | The license of the metadata xml file used to describe your app.<br> This may be a helpful link: https://techbase.kde.org/MetaInfo/DesktopApps#.3Cmetadata_license.2F.3E<br>Example:<br> `metadata-license = "CC0-1.0"` | `String` | [AppStream spec](https://www.freedesktop.org/software/appstream/docs/chap-Metadata.html#tag-metadata_license)<br>Used in:<br>`*.appdata.xml` |
+| `mimetype` <a name="mimetype"></a> | The license of the metadata xml file used to describe your app.<br> This may be a helpful link: https://developer-old.gnome.org/integration-guide/stable/mime.html.en<br>Example:<br> `mimetype = "image/png"` | `String` | [AppStream spec](https://www.freedesktop.org/software/appstream/docs/chap-Metadata.html#tag-metadata_license)<br>Used in:<br>`*.desktop` |
 | `permissions` <a name="permissions"></a> | A list of permissions your app will need. The values are the finish args for the flatpak build. The resulting flatpak container will request these permissions.<br>Example:<br>`permissions = ["share=network", "socket=wayland"]` | `Vec<String>` | [Flatpak spec](https://docs.flatpak.org/en/latest/sandbox-permissions.html#sandbox-permissions)<br>Used for:<br>`*.flatpak.yml` |
 | `recommends` <a name="recommends"></a> | A list of screen and usage recommendations. Important to notify users about the adaptiveness and inteded input method. Currently only simple values are supported. No Equality or range operators.<br>Example:<br> `recommends = ["small", "large", "pointer", "keyboard", "touch"]` | `Vec<String>` | [Freedesktop Menu spec](https://www.freedesktop.org/software/appstream/docs/chap-Metadata.html#tag-relations)<br>Used in:<br>`*.appdata.xml` |
 | `releases` <a name="releases"></a> | The release history of your app. This will be shown in store pages. Note: It may be useful to use conventional-commits and generate the CHANGELOG and release history based on your commit messages. Checkout [this project](https://gitlab.com/loers/karlender) to see how it can be done. <br>Example:<br>`releases = [{ version = "0.0.2", date = "2021-12-04", description = "The first version."}]`| `Vec<{ version:String, date:String, description:String}>`| [AppStream spec](https://www.freedesktop.org/software/appstream/docs/chap-Metadata.html#tag-releases)<br>Used in:<br>`*.appdata.xml` | 

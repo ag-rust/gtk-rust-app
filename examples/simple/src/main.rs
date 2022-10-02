@@ -20,9 +20,10 @@ fn main() {
 
     info!("{}", gettext("Check po/ dir for translations."));
 
-    // call app builder with metadata from your Cargo.toml and the gresource file compiled by the `gtk_rust_app::build` script (see below).
+    // call app builder with metadata from your Cargo.toml and App.toml and the gresource file compiled by the `gtk_rust_app::build` script (see below).
     gtk_rust_app::builder::builder(
         include_bytes!("../Cargo.toml"),
+        include_bytes!("../App.toml"),
         include_bytes!("../target/gra-gen/compiled.gresource"),
     )
     // include your style sheets here
