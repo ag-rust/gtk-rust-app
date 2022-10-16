@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## v0.10.0 - 2022-10-16
+#### Features
+- Allow to set Application via builder - (6498aa2) - Florian Loers
+
+- - -
+
 ## v0.9.0 - 2022-10-02
 #### Documentation
 - Correct link to template project - (055375a) - Florian Loers
