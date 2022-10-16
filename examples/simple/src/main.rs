@@ -25,6 +25,7 @@ fn main() {
         include_bytes!("../Cargo.toml"),
         include_bytes!("../App.toml"),
         include_bytes!("../target/gra-gen/compiled.gresource"),
+        None
     )
     // include your style sheets here
     .styles(include_str!("styles.css"))

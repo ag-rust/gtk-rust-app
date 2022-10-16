@@ -4,6 +4,7 @@ use gdk4::gio::SimpleAction;
 use gdk4::prelude::{ApplicationExt, ApplicationExtManual};
 use glib::VariantTy;
 use gra::{parse_project_descriptor_bytes, ProjectDescriptor};
+use gtk::builders::ApplicationBuilder;
 use gtk::prelude::GtkApplicationExt;
 use gtk::prelude::*;
 #[cfg(feature = "ui")]
@@ -11,6 +12,7 @@ use libadwaita as adw;
 
 use crate::{init_gettext, load_resources};
 
+/// Load the given css styles for your app.
 pub fn load_styles(_app: &gtk::Application, styles: &str) {
     let provider = gtk::CssProvider::new();
     provider.load_from_data(styles.as_bytes());
@@ -21,6 +23,7 @@ pub fn load_styles(_app: &gtk::Application, styles: &str) {
     );
 }
 
+/// The root application builder. The AppBuilder allows to setup everything based on toml files and metadata.
 pub struct AppBuilder {
     project_descriptor: ProjectDescriptor,
 
@@ -116,7 +119,71 @@ impl AppBuilder {
     }
 }
 
-pub fn builder(cargo_toml: &[u8], app_toml: &[u8], resources: &[u8]) -> AppBuilder {
+///
+/// Root setup function for your GTK application.
+///
+/// # Arguments
+///
+/// - `cargo_toml`: The source of your Cargo.toml (required to get the app binary name).
+/// - `app_toml`: The source of your App.toml (to get all kinds of meta data, settings, actions etc.).
+/// - `resources`: Compiled gtk resources (like icons).
+/// - `app`: Optionally you can provide your own gtk::ApplicationBuilder instance for a customized app setup.
+///
+/// # Example
+///
+/// Also [read this](https://gitlab.com/loers/gtk-rust-app/-/blob/main/examples/simple/src/main.rs) for a complete example.
+///
+/// ```no_run
+/// use gettextrs::gettext;
+/// use gtk::prelude::*;
+/// use gtk_rust_app::*;
+///
+/// gtk_rust_app::app(
+///     &[], //include_bytes!("../Cargo.toml"),
+///     &[], //include_bytes!("../App.toml"),
+///     &[], //include_bytes!("../target/gra-gen/compiled.gresource"),
+///     None,
+/// )
+/// // include your style sheets here
+/// //.styles(include_str!("styles.css"))
+/// .build(
+/// |application, _project_descriptor, settings| {
+///     // setup custom types
+///     // my::Widget::static_type();
+///
+///     // The pages will be placed in this predefined adaptive layout.
+///     let leaflet_layout = gtk_rust_app::widgets::LeafletLayout::builder(settings)
+///         // .add_page(pages::my_page())
+///         .build();
+///
+///     // LeafletLayout contains a toast overlay
+///     leaflet_layout.show_message("Hello world");
+///
+///     // and we use the leaflet layout as root content in the apps window.
+///     let window = gtk_rust_app::window(
+///         application,
+///         gettext("Example"),
+///         settings,
+///         leaflet_layout.upcast_ref(),
+///     );
+///     window.show();
+/// },
+/// |app, _project_descriptor, _settings| {
+///     if let Some(action) = app.lookup_action("quit") {
+///         let simple_action: gdk4::gio::SimpleAction = action.downcast().unwrap();
+///         simple_action.connect_activate(glib::clone!(@weak app => move |_, _| {
+///             app.quit();
+///         }));
+///     }
+/// },
+/// );
+/// ```
+pub fn builder(
+    cargo_toml: &[u8],
+    app_toml: &[u8],
+    resources: &[u8],
+    app: Option<ApplicationBuilder>,
+) -> AppBuilder {
     if let Err(e) = gtk::init() {
         error!("Couldn't initialize GTK: {:?}", e);
     }
@@ -134,7 +201,8 @@ pub fn builder(cargo_toml: &[u8], app_toml: &[u8], resources: &[u8]) -> AppBuild
 
     let app_desc = &project_descriptor.app;
 
-    let app = gtk::Application::builder()
+    let app = app
+        .unwrap_or_else(gtk::Application::builder)
         .application_id(&app_desc.id)
         .build();
     let resource_base_path = format!("/{}/", app_desc.id.replace('.', "/"));
