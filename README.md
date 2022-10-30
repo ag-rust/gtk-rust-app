@@ -1,6 +1,6 @@
 # Rust GTK App Framework
 
-[![pipeline status](https://gitlab.com/loers/gtk-rust-app/badges/main/pipeline.svg)](https://gitlab.com/loers/gtk-rust-app/-/commits/main)
+[![pipeline status](https://gitlab.com/floers/gtk-rust-app/badges/main/pipeline.svg)](https://gitlab.com/floers/gtk-rust-app/-/commits/main)
 [![API](https://docs.rs/gtk-rust-app/badge.svg)](https://docs.rs/gtk-rust-app)
 [![crates.io](https://img.shields.io/crates/v/gtk-rust-app.svg)](https://crates.io/crates/gtk-rust-app)
 
@@ -8,13 +8,13 @@
 
 This libaray aims to provide a framework for adaptive GTK4 and libadwaita apps written in Rust.
 
-Writing flatpak apps requires several files (.desktop file, appdata.xml, flatpak manifest). gtk-rust-app and its CLI [`gra`](https://gitlab.com/loers/cargo-gra) allow to generate these files based on an extended Cargo.toml.
+Writing flatpak apps requires several files (.desktop file, appdata.xml, flatpak manifest). gtk-rust-app and its CLI [`gra`](https://gitlab.com/floers/cargo-gra) allow to generate these files based on an extended Cargo.toml.
 
 ## Getting started TLDR
 
 ```
 cargo install cargo-generate
-cargo generate --git https://gitlab.com/loers/gtk-rust-app-template
+cargo generate --git https://gitlab.com/floers/gtk-rust-app-template
 cd <your app>
 sudo make install-gsettings
 cargo run
@@ -53,7 +53,7 @@ Define app metadata and the dependency to `gtk-rust-app` in your Cargo.toml. [Ch
 
 # as usual
 
-gtk-rust-app = { git = "https://gitlab.com/loers/gtk-rust-app.git", features = [ "ui" ] }
+gtk-rust-app = { git = "https://gitlab.com/floers/gtk-rust-app.git", features = [ "ui" ] }
 
 # If you want to automatically update generated files you can add this build dependency
 [build-dependencies]
@@ -239,11 +239,11 @@ cargo gra flatpak
 
 That's it. You will see an app like this:
 
-![screenshot1.png](https://gitlab.com/loers/cargo-gra/-/raw/refactor-build-tooling-from-gtk-rust-app/examples/complete/screenshot1.png)
+![screenshot1.png](https://gitlab.com/floers/cargo-gra/-/raw/refactor-build-tooling-from-gtk-rust-app/examples/complete/screenshot1.png)
 
 The app has adaptive behaviour per default.
 
-![screenshot2.png](https://gitlab.com/loers/cargo-gra/-/raw/refactor-build-tooling-from-gtk-rust-app/examples/complete/screenshot2.png)
+![screenshot2.png](https://gitlab.com/floers/cargo-gra/-/raw/refactor-build-tooling-from-gtk-rust-app/examples/complete/screenshot2.png)
 
 #### Install app settings locally
 
@@ -295,7 +295,7 @@ flatpak install org.freedesktop.Sdk.Extension.rust-stable//21.08
 
 ## Examples
 
-Checkout the example apps in [carg-gra](https://gitlab.com/loers/cargo-gra/-/tree/refactor-build-tooling-from-gtk-rust-app/examples).
+Checkout the example apps in [carg-gra](https://gitlab.com/floers/cargo-gra/-/tree/refactor-build-tooling-from-gtk-rust-app/examples).
 
 ## Writing custom Widgets
 

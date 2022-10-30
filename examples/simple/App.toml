@@ -1,4 +1,4 @@
-# This section contains meta information about your app. Checkout [this](https://gitlab.com/loers/gtk-rust-app/-/blob/main/docs/Manifest.md) documentation for further information.
+# This section contains meta information about your app. Checkout [this](https://gitlab.com/floers/gtk-rust-app/-/blob/main/docs/Manifest.md) documentation for further information.
 [app]
 flatpak-runtime-version = "42"
 id = "org.example.SimpleExample"
@@ -35,8 +35,8 @@ recommends = [
 # Screenshots that will be shown in the store page. The default screenshot will be the first screen to show in the store.
 # See https://www.freedesktop.org/software/appstream/docs/chap-Metadata.html#tag-screenshots
 screenshots = [
-  { type = "default", url = "https://gitlab.com/loers/gtk-rust-app/-/raw/main/examples/simple/screenshot1.png" },
-  { url = "https://gitlab.com/loers/gtk-rust-app/-/raw/main/examples/simple/screenshot2.png" },
+  { type = "default", url = "https://gitlab.com/floers/gtk-rust-app/-/raw/main/examples/simple/screenshot1.png" },
+  { url = "https://gitlab.com/floers/gtk-rust-app/-/raw/main/examples/simple/screenshot2.png" },
 ]
 # The release history
 releases = [

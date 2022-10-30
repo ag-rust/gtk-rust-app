@@ -131,7 +131,7 @@ impl AppBuilder {
 ///
 /// # Example
 ///
-/// Also [read this](https://gitlab.com/loers/gtk-rust-app/-/blob/main/examples/simple/src/main.rs) for a complete example.
+/// Also [read this](https://gitlab.com/floers/gtk-rust-app/-/blob/main/examples/simple/src/main.rs) for a complete example.
 ///
 /// ```no_run
 /// use gettextrs::gettext;

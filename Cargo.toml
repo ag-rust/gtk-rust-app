@@ -5,7 +5,7 @@ edition = "2021"
 authors = ["Florian Loers"]
 description = "Framework for writing flatpak apps with GTK in Rust"
 readme = "README.md"
-repository = "https://gitlab.com/loers/gtk-rust-app"
+repository = "https://gitlab.com/floers/gtk-rust-app"
 license = "GPL-3.0-or-later"
 keywords = ["GTK", "UI", "flatpak"]
 categories = ["gui"]
@@ -24,7 +24,7 @@ gettext-rs = { version = "0.7", features = ["gettext-system"] }
 gstore = { version = "0.8", optional = true }
 # gstore = { path = "../gstore", optional = true }
 cargo-gra = { version = "0.4", default-features = false }
-# cargo-gra = { git = "https://gitlab.com/loers/cargo-gra", branch = "develop" }
+# cargo-gra = { git = "https://gitlab.com/floers/cargo-gra", branch = "develop" }
 glib = { version = "0.15", optional = true }
 gdk4 = { version = "0.4", optional = true }
 gtk = { version = "0.4", package = "gtk4", optional = true }
