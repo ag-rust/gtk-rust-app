@@ -70,9 +70,9 @@ dependencies = [
 
 [[package]]
 name = "cargo-gra"
-version = "0.4.0"
+version = "0.4.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "07a3f811a44c540db390047b453d903df938ac0bbc8811e9f56c256437d842d4"
+checksum = "51251237c6623c12e8cd4f25ec56f9bb542997c7603fc6a92056209aaed3fb5a"
 dependencies = [
  "fs_extra",
  "nix",
@@ -442,9 +442,9 @@ dependencies = [
 
 [[package]]
 name = "gstore"
-version = "0.8.1"
+version = "0.8.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5e447b66e1b15b01c7ab81a72b11cf81f69ca83fb835ad7921033c6e76b7c714"
+checksum = "af29bf5ed3bb8955718e6cb3d626e6f2549d9790ad8b470ff338bba05583e6bb"
 dependencies = [
  "gdk4",
  "glib",
@@ -459,7 +459,7 @@ dependencies = [
 
 [[package]]
 name = "gtk-rust-app"
-version = "0.10.0"
+version = "0.10.1"
 dependencies = [
  "cargo-gra",
  "gdk4",
@@ -646,15 +646,16 @@ dependencies = [
 
 [[package]]
 name = "nix"
-version = "0.23.1"
+version = "0.25.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9f866317acbd3a240710c63f065ffb1e4fd466259045ccb504130b7f668f35c6"
+checksum = "e322c04a9e3440c327fca7b6c8a63e6890a32fa2ad689db972425f07e0d22abb"
 dependencies = [
+ "autocfg",
  "bitflags",
- "cc",
  "cfg-if",
  "libc",
  "memoffset",
+ "pin-utils",
 ]
 
 [[package]]
@@ -719,9 +720,9 @@ dependencies = [
 
 [[package]]
 name = "pest"
-version = "2.4.0"
+version = "2.4.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "dbc7bc69c062e492337d74d59b120c274fd3d261b6bf6d3207d499b4b379c41a"
+checksum = "a528564cc62c19a7acac4d81e01f39e53e25e17b934878f4c6d25cc2836e62f8"
 dependencies = [
  "thiserror",
  "ucd-trie",
@@ -809,9 +810,9 @@ dependencies = [
 
 [[package]]
 name = "regex"
-version = "1.6.0"
+version = "1.7.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4c4eb3267174b8c6c2f654116623910a0fef09c4753f8dd83db29c48a0df988b"
+checksum = "e076559ef8e241f2ae3479e36f97bd5741c0330689e217ad51ce2c76808b868a"
 dependencies = [
  "aho-corasick",
  "memchr",
@@ -820,9 +821,9 @@ dependencies = [
 
 [[package]]
 name = "regex-syntax"
-version = "0.6.27"
+version = "0.6.28"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a3f87b73ce11b1619a3c6332f45341e0047173771e8b8b73f87bfeefb7b56244"
+checksum = "456c603be3e8d448b072f410900c09faf164fbce2d480456f50eea6e25f9c848"
 
 [[package]]
 name = "rustc_version"

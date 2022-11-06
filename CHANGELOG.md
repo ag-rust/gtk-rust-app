@@ -2,6 +2,13 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## v0.10.1 - 2022-11-06
+#### Bug Fixes
+- Add documentation for require field in App.toml - (4825cb8) - Florian Loers
+- Update project links after move - (1528b6d) - Florian Loers
+
+- - -
+
 ## v0.10.0 - 2022-10-16
 #### Features
 - Allow to set Application via builder - (6498aa2) - Florian Loers
