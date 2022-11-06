@@ -14,6 +14,7 @@ This document explain the contents of the App.toml content from `gtk-rust-app`. 
     - [metadata-license](#metadata-license)
     - [mimetype](#mimetype)
     - [permissions](#permissions)
+    - [requires](#requires)
     - [recommends](#recommends)
     - [releases](#releases)
     - [screenshots](#screenshots)
@@ -38,7 +39,8 @@ The app section contains all metadata of your app.
 | `metadata-license` <a name="metadata-license"></a> | The license of the metadata xml file used to describe your app.<br> This may be a helpful link: https://techbase.kde.org/MetaInfo/DesktopApps#.3Cmetadata_license.2F.3E<br>Example:<br> `metadata-license = "CC0-1.0"` | `String` | [AppStream spec](https://www.freedesktop.org/software/appstream/docs/chap-Metadata.html#tag-metadata_license)<br>Used in:<br>`*.appdata.xml` |
 | `mimetype` <a name="mimetype"></a> | The license of the metadata xml file used to describe your app.<br> This may be a helpful link: https://developer-old.gnome.org/integration-guide/stable/mime.html.en<br>Example:<br> `mimetype = "image/png"` | `String` | [AppStream spec](https://www.freedesktop.org/software/appstream/docs/chap-Metadata.html#tag-metadata_license)<br>Used in:<br>`*.desktop` |
 | `permissions` <a name="permissions"></a> | A list of permissions your app will need. The values are the finish args for the flatpak build. The resulting flatpak container will request these permissions.<br>Example:<br>`permissions = ["share=network", "socket=wayland"]` | `Vec<String>` | [Flatpak spec](https://docs.flatpak.org/en/latest/sandbox-permissions.html#sandbox-permissions)<br>Used for:<br>`*.flatpak.yml` |
-| `recommends` <a name="recommends"></a> | A list of screen and usage recommendations. Important to notify users about the adaptiveness and inteded input method. Currently only simple values are supported. No Equality or range operators.<br>Example:<br> `recommends = ["small", "large", "pointer", "keyboard", "touch"]` | `Vec<String>` | [Freedesktop Menu spec](https://www.freedesktop.org/software/appstream/docs/chap-Metadata.html#tag-relations)<br>Used in:<br>`*.appdata.xml` |
+| `requires` <a name="requires"></a> | A list of screen and usage requirements. Important to notify users about the adaptiveness and inteded input method.<br>Example:<br> `requires = [ { display = ">360" }, { display = "<=1024" } ]` | `Vec<Requirement>` | [Freedesktop Menu spec](https://www.freedesktop.org/software/appstream/docs/chap-Metadata.html#tag-relations)<br>Used in:<br>`*.appdata.xml` |
+| `recommends` <a name="recommends"></a> | A list of screen and usage recommendations. Important to notify users about the adaptiveness and inteded input method.<br>Example:<br> `recommends = [{ control = "pointer"}, { control = "keyboard"}, {control = "touch"}]` | `Vec<Recommendation>` | [Freedesktop Menu spec](https://www.freedesktop.org/software/appstream/docs/chap-Metadata.html#tag-relations)<br>Used in:<br>`*.appdata.xml` |
 | `releases` <a name="releases"></a> | The release history of your app. This will be shown in store pages. Note: It may be useful to use conventional-commits and generate the CHANGELOG and release history based on your commit messages. Checkout [this project](https://gitlab.com/floers/karlender) to see how it can be done. <br>Example:<br>`releases = [{ version = "0.0.2", date = "2021-12-04", description = "The first version."}]`| `Vec<{ version:String, date:String, description:String}>`| [AppStream spec](https://www.freedesktop.org/software/appstream/docs/chap-Metadata.html#tag-releases)<br>Used in:<br>`*.appdata.xml` | 
 | `screenshots` <a name="screenshots"></a> | A list of screenshots. These screenshots will be displayed in the store page.<br>Example:<br> `screenshots = [{ type = "default", url = "https://..." }, { url = "https://..." }]` |`Vec<{type:String, url:String}>`| [AppStream spec](https://www.freedesktop.org/software/appstream/docs/chap-Metadata.html#tag-screenshots)<br>Used in:<br>`*.appdata.xml` |
 | `summary` <a name="summary"></a> | A short description of your app. Will be shown in store pages and in distros search results.<br>Example:<br> `summary = "Time management made easy"` | `String` | [Specification](https://www.freedesktop.org/software/appstream/docs/chap-Metadata.html#tag-summary)<br>[Desktop file spec](https://specifications.freedesktop.org/desktop-entry-spec/desktop-entry-spec-latest.html#recognized-keys)<br>Used in:<br>`*.appdata.xml`<br>`*.desktop (Comment)` |
@@ -78,6 +80,8 @@ Actions are key-value pairs where the key represents the action name. The value 
 ```
 The type string **must** be a valid [Variant type string](https://gtk-rs.org/gtk-rs-core/stable/0.14/docs/glib/struct.VariantType.html#gvariant-type-strings).
 The accelerators values are parsed as [described here](https://docs.gtk.org/gtk4/func.accelerator_parse.html).
+
+*Note: Optionals (like `ms` for Option<String>) do not work ATM and I don't know why.*
 
 ### Example:
 ```toml

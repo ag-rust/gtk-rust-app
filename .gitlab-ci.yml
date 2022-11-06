@@ -40,7 +40,7 @@ stages:
 
 
 formatting & clippy:
-  image: registry.gitlab.com/floers/cargo-gra/x86-64:main
+  image: registry.gitlab.com/floers/cargo-gra/public-x86-64:main
   stage: prechecks
   extends: [.run_on_merge_request]
   cache:
@@ -53,7 +53,7 @@ formatting & clippy:
     - cargo clippy --no-deps --features ui,store
 
 outdated & audit:
-  image: registry.gitlab.com/floers/cargo-gra/x86-64:main
+  image: registry.gitlab.com/floers/cargo-gra/public-x86-64:main
   allow_failure: true
   stage: prechecks
   extends: [.run_on_merge_request]
@@ -87,7 +87,7 @@ release:
     - cargo publish --token $CRATES_IO_TOKEN
 
 update dependency cache:
-  image: registry.gitlab.com/floers/cargo-gra/x86-64:main
+  image: registry.gitlab.com/floers/cargo-gra/public-x86-64:main
   stage: post-release
   extends: [.cache-x86-64]
   rules:
@@ -100,7 +100,7 @@ update dependency cache:
     - cargo build --release
 
 released:
-  image: registry.gitlab.com/floers/cargo-gra/x86-64:main
+  image: registry.gitlab.com/floers/cargo-gra/public-x86-64:main
   stage: post-release
   rules:
     - if: $CI_COMMIT_MESSAGE =~ /chore\(version\):.*/
