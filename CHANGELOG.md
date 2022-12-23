@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## v0.10.2 - 2022-12-23
+#### Bug Fixes
+- Fix window default sizing issue - (b6d7c1c) - Florian Loers
+
+- - -
+
 ## v0.10.1 - 2022-11-06
 #### Bug Fixes
 - Add documentation for require field in App.toml - (4825cb8) - Florian Loers
