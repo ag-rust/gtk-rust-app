@@ -34,4 +34,5 @@ else
     echo git tag -d v$TAG_VERSION
     echo git tag v$TAG_VERSION
     echo git push origin v$TAG_VERSION
+    cargo publish --token $CRATES_IO_TOKEN
 fi
