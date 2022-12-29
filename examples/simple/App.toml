@@ -25,9 +25,8 @@ categories = ["GTK", "Development"]
 
 # Possible display sizes and how your app can be interacted with
 # See https://www.freedesktop.org/software/appstream/docs/chap-Metadata.html#tag-relations
+requires = [{ display = ">360" }]
 recommends = [
-  { display = "small" },
-  { display = "large" },
   { control = "pointer" },
   { control = "keyboard" },
   { control = "touch" },

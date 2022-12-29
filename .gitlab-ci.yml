@@ -78,13 +78,7 @@ release:
   extends: [.run_on_main, .cache-x86-64]
   script:
     - source $HOME/.cargo/env
-    - git remote set-url origin https://${GITLAB_USERNAME}:${GITLAB_TOKEN}@${CI_SERVER_HOST}/${CI_PROJECT_PATH}.git
-    - git config --global user.email "gitlab ci"
-    - git config --global user.name "gitlab ci"
-    - cog bump --auto
-    - TAG_VERSION=$(grep version Cargo.toml | head -1 | sed 's/version = "//g' | sed 's/"//g')
-    - git push --atomic origin v$TAG_VERSION HEAD:$CI_COMMIT_BRANCH
-    - cargo publish --token $CRATES_IO_TOKEN
+    - REMOTE=1 ci/release.sh
 
 update dependency cache:
   image: registry.gitlab.com/floers/cargo-gra/public-x86-64:main
