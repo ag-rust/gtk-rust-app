@@ -2,6 +2,12 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## v0.10.3 - 2022-12-29
+#### Miscellaneous Chores
+- Bump cargo-gra version - (f315ea7) - Florian Loers
+
+- - -
+
 ## v0.10.2 - 2022-12-23
 #### Bug Fixes
 - Fix window default sizing issue - (b6d7c1c) - Florian Loers
