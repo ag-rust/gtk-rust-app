@@ -28,11 +28,11 @@ if [[ "$DRY" == "" ]]; then
     git tag -d v$TAG_VERSION
     git tag v$TAG_VERSION
     git push origin v$TAG_VERSION
+    cargo publish --token $CRATES_IO_TOKEN
 else
     echo Dry running:
     echo git push origin HEAD:$CI_COMMIT_BRANCH
     echo git tag -d v$TAG_VERSION
     echo git tag v$TAG_VERSION
     echo git push origin v$TAG_VERSION
-    cargo publish --token $CRATES_IO_TOKEN
 fi
