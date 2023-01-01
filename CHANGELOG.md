@@ -2,6 +2,14 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## v0.11.0 - 2023-01-01
+#### Features
+- Add gstore debug menu - (a8657f1) - Florian Loers
+#### Miscellaneous Chores
+- Fix automated release to crates.io - (d390463) - Florian Loers
+
+- - -
+
 ## v0.10.3 - 2022-12-29
 #### Miscellaneous Chores
 - Bump cargo-gra version - (f315ea7) - Florian Loers
