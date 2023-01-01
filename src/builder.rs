@@ -109,6 +109,7 @@ impl AppBuilder {
         mut self,
         store: &'static mut gstore::Store<S>,
     ) -> Self {
+        add_gstore_debug_action(&self.app, store);
         self.delegate_store = Some(store.delegate());
         self
     }
@@ -117,6 +118,70 @@ impl AppBuilder {
         self.styles = Some(styles);
         self
     }
+}
+
+#[cfg(feature = "store")]
+static DEBUG_SENDER: once_cell::sync::OnceCell<glib::Sender<(gstore::Action, String)>> =
+    once_cell::sync::OnceCell::new();
+
+#[cfg(not(debug_assertions))]
+fn add_gstore_debug_action<S: std::fmt::Debug + Clone + Default + PartialEq + Eq>(
+    application: &gtk::Application,
+    store: &mut gstore::Store<S>,
+) {
+}
+
+#[cfg(debug_assertions)]
+#[cfg(feature = "store")]
+fn add_gstore_debug_action<S: std::fmt::Debug + Clone + Default + PartialEq + Eq>(
+    application: &gtk::Application,
+    store: &mut gstore::Store<S>,
+) {
+    use glib::PRIORITY_DEFAULT;
+    use gstore::Middleware;
+
+    struct GstoreDebuggingMiddleware;
+    let m = GstoreDebuggingMiddleware;
+
+    let (send, receiver) = glib::MainContext::channel(PRIORITY_DEFAULT);
+    if DEBUG_SENDER.set(send).is_err() {
+        error!("Failed to set up gstore debugging UI: Did you try to initialize gstore twice?");
+    }
+
+    impl<S: std::fmt::Debug + Clone + Default + PartialEq + Eq + 'static> Middleware<S>
+        for GstoreDebuggingMiddleware
+    {
+        fn pre_reduce(&self, a: &gstore::Action, s: &S) {
+            if let Some(sender) = DEBUG_SENDER.get() {
+                if let Err(e) = sender.send((a.clone(), format!("{:#?}", s))) {
+                    println!("Failed to delegate action to gstore debugging: {}", e)
+                }
+            } else {
+                println!("Failed to send action to gstore debugging UI.")
+            }
+        }
+    }
+
+    let name = &"gstore-debug";
+    let action = gdk4::gio::SimpleAction::new(name, None);
+    let w = create_debug_window(receiver);
+    store.append_middleware(Box::new(m));
+    action.connect_activate(glib::clone!(@weak application, @weak w => move |_, _| {
+        w.show();
+    }));
+    application.set_accels_for_action(&format!("app.{}", name), &["<primary><alt>G"]);
+    application.add_action(&action);
+}
+
+#[cfg(debug_assertions)]
+fn create_debug_window(recv: glib::Receiver<(gstore::Action, String)>) -> libadwaita::Window {
+    let d = crate::ui::debugging::GstoreDebug::new(Some(recv));
+    libadwaita::Window::builder()
+        .default_height(600)
+        .default_width(500)
+        .hide_on_close(true)
+        .content(&d)
+        .build()
 }
 
 ///

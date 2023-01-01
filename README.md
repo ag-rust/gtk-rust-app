@@ -23,6 +23,7 @@ cargo run
 ## Getting started
 
 Creating apps with gtk-rust-app requires to
+
 1. Add more metadata to the Cargo.toml
 2. Write some boilerplate code in main.rs
 3. Define App pages
@@ -133,6 +134,7 @@ fn main() {
 ### Define app pages
 
 The home page:
+
 ```rust
 //src/home.rs
 
@@ -215,7 +217,7 @@ pub fn main() {
 ### Install cargo-gra
 
 ```
-cargo install cargo-gra 
+cargo install cargo-gra
 
 ```
 
@@ -237,19 +239,14 @@ You can build a flatpak app via:
 cargo gra flatpak
 ```
 
-That's it. You will see an app like this:
-
-![screenshot1.png](https://gitlab.com/floers/cargo-gra/-/raw/refactor-build-tooling-from-gtk-rust-app/examples/complete/screenshot1.png)
-
-The app has adaptive behaviour per default.
-
-![screenshot2.png](https://gitlab.com/floers/cargo-gra/-/raw/refactor-build-tooling-from-gtk-rust-app/examples/complete/screenshot2.png)
+That's it.
 
 #### Install app settings locally
 
 GTK apps define their settings and need gnome or phosh to have these settings installed globally. When you want to run your app without having these settings installed it will crash with an error.
 
 Add the following `Makefile` to your project:
+
 ```
 install-gsettings:
 	install -D target/gra-gen/{{app-id}}.gschema.xml /usr/share/glib-2.0/schemas/{{app-id}}.gschema.xml
@@ -277,6 +274,7 @@ sudo apt install libgraphene-1.0-dev libgtk-4-dev flatpak-builder
 ```
 
 Arch dependencies:
+
 ```
 TODO
 ```
@@ -307,7 +305,7 @@ https://gtk-rs.org/gtk4-rs/stable/latest/book/introduction.html
 
 Sometimes we need GObjects. Widgets are special GObjects. Similar to the `#[widget]` macro gtk-rust-app allows to define GObejcts quickly with the `#[gobject]` macro. An Example:
 
-We have a domain struct `TodoItem`. Our application state stores these `TodoItems` in a vec and we want to select a single one in a GTK combobox (Or more likely in a `AdwComboRow`) menu. GTK expects a combobox to have a backing `model` which is a list of `GObjects`. Writing a GObject for our `TodoItem` is a lot of boilerplate code and we might not need the whole *objectiveness* because we are not writing object oriented code. Nevertheless we want our combobox to show the possible `TodoItems` and select one probably knowing the selected Id.
+We have a domain struct `TodoItem`. Our application state stores these `TodoItems` in a vec and we want to select a single one in a GTK combobox (Or more likely in a `AdwComboRow`) menu. GTK expects a combobox to have a backing `model` which is a list of `GObjects`. Writing a GObject for our `TodoItem` is a lot of boilerplate code and we might not need the whole _objectiveness_ because we are not writing object oriented code. Nevertheless we want our combobox to show the possible `TodoItems` and select one probably knowing the selected Id.
 
 To address this problem `gtk-rust-app` provides the attribute macro `gobjectify`. The macro allows to define a set of fields for a struct which will be used to generate a GObject definition.
 
@@ -322,3 +320,10 @@ struct TodoItem {
 
 Will generate the GObject `TodoItemGObject` with the properties `id` and `name` and a public method `TodoItem.gobjectify() -> TodoItemGObject`.
 
+## gstore debugging
+
+You can press `Ctrl+Shift+G` to open a debug window for the global state and actions implemented in `gstore`.
+
+Note: This keybinding and window are only available dev builds.
+
+![](./screenshots/gstore_debug.png)
