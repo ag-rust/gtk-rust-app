@@ -151,7 +151,7 @@ fn add_gstore_debug_action<S: std::fmt::Debug + Clone + Default + PartialEq + Eq
     impl<S: std::fmt::Debug + Clone + Default + PartialEq + Eq + 'static> Middleware<S>
         for GstoreDebuggingMiddleware
     {
-        fn pre_reduce(&self, a: &gstore::Action, s: &S) {
+        fn post_reduce(&self, a: &gstore::Action, s: &S) {
             if let Some(sender) = DEBUG_SENDER.get() {
                 if let Err(e) = sender.send((a.clone(), format!("{:#?}", s))) {
                     println!("Failed to delegate action to gstore debugging: {}", e)
