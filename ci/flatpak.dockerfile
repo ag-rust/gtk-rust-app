@@ -1,4 +1,4 @@
-FROM registry.gitlab.com/loers/gtk-rust-app/x86-64:main
+FROM registry.gitlab.com/floers/gtk-rust-app/x86-64:main
 RUN pacman -Syu wget flatpak flatpak-builder --noconfirm && \
 	wget https://nightly.gnome.org/gnome-nightly.flatpakrepo -P target/ && \
     flatpak remote-add --if-not-exists gnome-nightly target/gnome-nightly.flatpakrepo && \

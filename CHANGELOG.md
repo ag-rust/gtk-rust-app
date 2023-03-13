@@ -2,6 +2,74 @@
 All notable changes to this project will be documented in this file. See [conventional commits](https://www.conventionalcommits.org/) for commit guidelines.
 
 - - -
+## v0.11.0 - 2023-01-01
+#### Features
+- Add gstore debug menu - (a8657f1) - Florian Loers
+#### Miscellaneous Chores
+- Fix automated release to crates.io - (d390463) - Florian Loers
+
+- - -
+
+## v0.10.3 - 2022-12-29
+#### Miscellaneous Chores
+- Bump cargo-gra version - (f315ea7) - Florian Loers
+
+- - -
+
+## v0.10.2 - 2022-12-23
+#### Bug Fixes
+- Fix window default sizing issue - (b6d7c1c) - Florian Loers
+
+- - -
+
+## v0.10.1 - 2022-11-06
+#### Bug Fixes
+- Add documentation for require field in App.toml - (4825cb8) - Florian Loers
+- Update project links after move - (1528b6d) - Florian Loers
+
+- - -
+
+## v0.10.0 - 2022-10-16
+#### Features
+- Allow to set Application via builder - (6498aa2) - Florian Loers
+
+- - -
+
+## v0.9.0 - 2022-10-02
+#### Documentation
+- Correct link to template project - (055375a) - Florian Loers
+- Update cargo-generate template URL - (c884e6e) - Florian Loers
+#### Features
+- Move gra data from Cargo.toml to App.toml - (361aa9a) - Florian Loers
+
+- - -
+
+## v0.8.1 - 2022-07-31
+#### Bug Fixes
+- Improve README and mention cargo-generate integration - (6c71ca1) - Florian Loers
+
+- - -
+
+## v0.8.0 - 2022-06-28
+#### Features
+- Allow to specify dispose method - (9782eec) - Florian Loers
+#### Miscellaneous Chores
+- Bump dependency versions - (2a6dbe7) - Florian Loers
+
+- - -
+
+## v0.7.1 - 2022-06-26
+#### Miscellaneous Chores
+- Improve gettext error messages - (78f35a4) - Florian Loers
+
+- - -
+
+## v0.7.0 - 2022-06-25
+#### Features
+- Widgets now can define global store selectors - (418322a) - Florian Loers
+
+- - -
+
 ## v0.6.1 - 2022-04-03
 #### Bug Fixes
 - Return SignalHandlerId in generated connector methods - (39611f8) - Florian Loers

@@ -1,6 +1,6 @@
 # Rust GTK App Framework
 
-[![pipeline status](https://gitlab.com/loers/gtk-rust-app/badges/main/pipeline.svg)](https://gitlab.com/loers/gtk-rust-app/-/commits/main)
+[![pipeline status](https://gitlab.com/floers/gtk-rust-app/badges/main/pipeline.svg)](https://gitlab.com/floers/gtk-rust-app/-/commits/main)
 [![API](https://docs.rs/gtk-rust-app/badge.svg)](https://docs.rs/gtk-rust-app)
 [![crates.io](https://img.shields.io/crates/v/gtk-rust-app.svg)](https://crates.io/crates/gtk-rust-app)
 
@@ -8,16 +8,28 @@
 
 This libaray aims to provide a framework for adaptive GTK4 and libadwaita apps written in Rust.
 
-Writing flatpak apps requires several files (.desktop file, appdata.xml, flatpak manifest). gtk-rust-app and its CLI [`gra`](https://gitlab.com/loers/cargo-gra) allow to generate these files based on an extended Cargo.toml.
+Writing flatpak apps requires several files (.desktop file, appdata.xml, flatpak manifest). gtk-rust-app and its CLI [`gra`](https://gitlab.com/floers/cargo-gra) allow to generate these files based on an extended Cargo.toml.
+
+## Getting started TLDR
+
+```
+cargo install cargo-generate
+cargo generate --git https://gitlab.com/floers/gtk-rust-app-template
+cd <your app>
+sudo make install-gsettings
+cargo run
+```
 
 ## Getting started
 
 Creating apps with gtk-rust-app requires to
+
 1. Add more metadata to the Cargo.toml
 2. Write some boilerplate code in main.rs
 3. Define App pages
 4. Optional: Define a build.rs script
 5. Install cargo-gra subcommand
+6. Install app settings locally
 
 ### Cargo.toml
 
@@ -42,11 +54,12 @@ Define app metadata and the dependency to `gtk-rust-app` in your Cargo.toml. [Ch
 
 # as usual
 
-gtk-rust-app = { git = "https://gitlab.com/loers/gtk-rust-app.git", features = [ "ui" ] }
+gtk-rust-app = { git = "https://gitlab.com/floers/gtk-rust-app.git", features = [ "ui" ] }
 
 # If you want to automatically update generated files you can add this build dependency
 [build-dependencies]
-gtk-rust-app = { git = "https://gitlab.com/loers/gtk-rust-app.git", features = [ "build" ] }
+cargo-gra = "0.3"
+
 
 ```
 
@@ -121,6 +134,7 @@ fn main() {
 ### Define app pages
 
 The home page:
+
 ```rust
 //src/home.rs
 
@@ -180,6 +194,10 @@ impl gtk_rust_app::widgets::Page for Home {
 </interface>
 ```
 
+### Write your custom widgets
+
+The examples above mention a `card` module. You can come up with your own idea (it works like the home page) or look into `examples/simple/src/card.rs`.
+
 ### Optional: Build script
 
 Define the build script:
@@ -192,21 +210,21 @@ pub fn main() {
     println!("cargo:rerun-if-changed=src");
     println!("cargo:rerun-if-changed=assets");
     println!("cargo:rerun-if-changed=po");
-    gtk_app_framework::build(None);
+    gra::build(None, None);
 }
 ```
 
 ### Install cargo-gra
 
 ```
-cargo install cargo-gra 
+cargo install cargo-gra
 
 ```
 
 Prepare the app build via:
 
 ```
-cargo gra setup
+cargo gra gen
 ```
 
 and build it as usual:
@@ -221,13 +239,25 @@ You can build a flatpak app via:
 cargo gra flatpak
 ```
 
-That's it. You will see an app like this:
+That's it.
 
-![screenshot1.png](https://gitlab.com/loers/cargo-gra/-/raw/refactor-build-tooling-from-gtk-rust-app/examples/complete/screenshot1.png)
+#### Install app settings locally
 
-The app has adaptive behaviour per default.
+GTK apps define their settings and need gnome or phosh to have these settings installed globally. When you want to run your app without having these settings installed it will crash with an error.
 
-![screenshot2.png](https://gitlab.com/loers/cargo-gra/-/raw/refactor-build-tooling-from-gtk-rust-app/examples/complete/screenshot2.png)
+Add the following `Makefile` to your project:
+
+```
+install-gsettings:
+	install -D target/gra-gen/{{app-id}}.gschema.xml /usr/share/glib-2.0/schemas/{{app-id}}.gschema.xml
+	glib-compile-schemas /usr/share/glib-2.0/schemas
+
+uninstall-gsettings:
+	rm /usr/share/glib-2.0/schemas/{{app-id}}.gschema.xml
+	glib-compile-schemas /usr/share/glib-2.0/schemas
+```
+
+And replace `{{app-id}}` with your app id. Then run `make install-gsettings` and your app should run fine.
 
 ## Run with different language
 
@@ -244,6 +274,7 @@ sudo apt install libgraphene-1.0-dev libgtk-4-dev flatpak-builder
 ```
 
 Arch dependencies:
+
 ```
 TODO
 ```
@@ -262,7 +293,7 @@ flatpak install org.freedesktop.Sdk.Extension.rust-stable//21.08
 
 ## Examples
 
-Checkout the example apps in [carg-gra](https://gitlab.com/loers/cargo-gra/-/tree/refactor-build-tooling-from-gtk-rust-app/examples).
+Checkout the example apps in [carg-gra](https://gitlab.com/floers/cargo-gra/-/tree/refactor-build-tooling-from-gtk-rust-app/examples).
 
 ## Writing custom Widgets
 
@@ -274,7 +305,7 @@ https://gtk-rs.org/gtk4-rs/stable/latest/book/introduction.html
 
 Sometimes we need GObjects. Widgets are special GObjects. Similar to the `#[widget]` macro gtk-rust-app allows to define GObejcts quickly with the `#[gobject]` macro. An Example:
 
-We have a domain struct `TodoItem`. Our application state stores these `TodoItems` in a vec and we want to select a single one in a GTK combobox (Or more likely in a `AdwComboRow`) menu. GTK expects a combobox to have a backing `model` which is a list of `GObjects`. Writing a GObject for our `TodoItem` is a lot of boilerplate code and we might not need the whole *objectiveness* because we are not writing object oriented code. Nevertheless we want our combobox to show the possible `TodoItems` and select one probably knowing the selected Id.
+We have a domain struct `TodoItem`. Our application state stores these `TodoItems` in a vec and we want to select a single one in a GTK combobox (Or more likely in a `AdwComboRow`) menu. GTK expects a combobox to have a backing `model` which is a list of `GObjects`. Writing a GObject for our `TodoItem` is a lot of boilerplate code and we might not need the whole _objectiveness_ because we are not writing object oriented code. Nevertheless we want our combobox to show the possible `TodoItems` and select one probably knowing the selected Id.
 
 To address this problem `gtk-rust-app` provides the attribute macro `gobjectify`. The macro allows to define a set of fields for a struct which will be used to generate a GObject definition.
 
@@ -289,3 +320,10 @@ struct TodoItem {
 
 Will generate the GObject `TodoItemGObject` with the properties `id` and `name` and a public method `TodoItem.gobjectify() -> TodoItemGObject`.
 
+## gstore debugging
+
+You can press `Ctrl+Shift+G` to open a debug window for the global state and actions implemented in `gstore`.
+
+Note: This keybinding and window are only available dev builds.
+
+![](./screenshots/gstore_debug.png)

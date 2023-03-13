@@ -1,18 +1,17 @@
 [package]
 name = "gtk-rust-app-derive"
-version = "0.2.1"
-edition = "2018"
+version = "0.2.5"
+edition = "2021"
 authors = ["Florian Loers"]
 description = "Macros for gtk-rust-app"
 readme = "README.md"
-repository = "https://gitlab.com/loers/gtk-rust-app"
+repository = "https://gitlab.com/floers/gtk-rust-app"
 license = "GPL-3.0-or-later"
 keywords = ["GTK", "UI"]
 categories = ["gui"]
 
 [lib]
 proc-macro = true
-regex = "1"
 
 [dependencies]
 syn = { version = "1.0", features = [ "full", "fold" ] }

@@ -27,7 +27,6 @@
     <child>
       <object class="GtkButton" id="card_button">
         <property name="label">Button</property>
-        <signal name="clicked" handler="on_click" swapped="true"/>
       </object>
     </child>
 

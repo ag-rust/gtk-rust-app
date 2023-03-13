@@ -23,6 +23,8 @@ pub use serde_json;
 #[cfg(feature = "store")]
 pub use gstore;
 
+pub use builder::builder as app;
+
 #[cfg(feature = "ui")]
 pub fn load_resources(resource_bytes: &[u8]) {
     let res = gdk4::gio::Resource::from_data(&resource_bytes.into())
@@ -39,7 +41,7 @@ pub fn init_gettext(domain: &str) {
             .init(),
         Err(_) => gettextrs::TextDomain::new(domain).init(),
     };
-    match textdomain {
+    match &textdomain {
         Ok(locale) => match locale {
             Some(_locale) => {
                 // nothing to do
@@ -48,14 +50,14 @@ pub fn init_gettext(domain: &str) {
         },
         Err(e) => match e {
             gettextrs::TextDomainError::InvalidLocale(locale) => eprintln!("Warning: Invalid locale {:?}", locale),
-            gettextrs::TextDomainError::TranslationNotFound(locale) => match locale.as_str() {
-                "en" => {
-                    // use default language
-                },
-                _ => error!("Warning: Could not find messages for locale {:?}", locale)
+            gettextrs::TextDomainError::TranslationNotFound(locale) => {
+                warn!("Could not find messages for locale {:?}, text domain: {:?}, TEXT_DOMAIN: {:?}", 
+                    locale,
+                    textdomain,
+                    std::env::var("TEXT_DOMAIN"))
             },
             e => {
-                error!("{:?}", e);
+                error!("Text domain error: {}", e);
             }
         }
     };

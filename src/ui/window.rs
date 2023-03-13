@@ -51,8 +51,8 @@ pub fn window(
         .build();
 
     if let Some(settings) = settings {
-        let w = settings.get("window-width");
-        let h = settings.get("window-height");
+        let w = 0.max(settings.get("window-width"));
+        let h = 0.max(settings.get("window-height"));
 
         window.set_default_width(w);
         window.set_default_height(h);
