@@ -11,6 +11,14 @@ keywords = ["GTK", "UI", "flatpak"]
 categories = ["gui"]
 
 [features]
+default = ["ui", "libadwaita"]
+store = ["gstore"]
+ui = [
+    "gtk-rust-app-derive",
+    "gtk",
+    "gdk4",
+    "glib",
+]
 default = ["ui", "build", "store"]
 build = []
 store = ["gstore"]

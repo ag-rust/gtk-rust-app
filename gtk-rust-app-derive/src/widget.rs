@@ -51,6 +51,37 @@ pub fn widget(args: TokenStream, input: TokenStream) -> TokenStream {
     let parent = args.extends;
     let implements = args.implements;
 
+    let gen = quote! {
+
+        mod imp {
+            use super::*;
+            use glib::ToValue;
+            use gtk::glib;
+            use gtk::subclass::prelude::*;
+            #[cfg(feature = "libadwaita")]
+            use libadwaita::subclass::prelude::*;
+            use glib::ObjectExt;
+            use glib::Cast;
+            use glib::subclass::InitializingObject;
+            use gtk::subclass::widget::CompositeTemplateCallbacks;
+
+            #[derive(gtk::CompositeTemplate, Default)]
+            #(#struct_attrs)*
+            pub struct #widget_name {
+                #struct_fields
+            }
+
+            #[glib::object_subclass]
+            impl ObjectSubclass for #widget_name {
+                const NAME: &'static str = stringify!(#widget_name);
+                type Type = super::#widget_name;
+                type ParentType = #parent;
+
+                fn class_init(klass: &mut Self::Class) {
+                    Self::bind_template(klass);
+                    // Self::bind_template_callbacks(klass);
+                    Self::Type::bind_template_callbacks(klass);
+                }
     let dispose = if let Some(dispose_function) = get_dispose_function(fields) {
         quote! {
             self.#dispose_function()
